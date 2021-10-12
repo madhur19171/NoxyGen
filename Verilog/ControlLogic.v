@@ -232,7 +232,7 @@ module HeadFlitBuffer #(
 assign routeReserveRequestValid = headFlitValidStatus;
 
 endmodule
-
+/*
 
 module HandshakeProtocol 
 	(
@@ -292,4 +292,4 @@ module HandshakeProtocol
 	
 
 endmodule
-
+*/
