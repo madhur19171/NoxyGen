@@ -48,7 +48,8 @@ endmodule
 module ControlFSM
 	#(
 	parameter FlitPerPacket = 4,//HBBT
-	parameter PhitPerFlit = 2)
+	parameter PhitPerFlit = 2,
+	parameter REQUEST_WIDTH = 2)
 	(
 	input clk,
 	input rst,
@@ -110,6 +111,8 @@ module ControlFSM
 	always @(*)begin
 		case(state)
 			UnRouted: nextState = flitValid ? HeadFlit : UnRouted;
+			//After the first flit is received, ready must go down until the route is 
+			//reserved for this request.
 			HeadFlit: nextState = ReservePath;
 			ReservePath: nextState = Success ? Route : Wait;
 			Route: nextState = TailReceived ? TailFlit : Route;
@@ -179,8 +182,11 @@ endmodule
 
 
 module HeadFlitBuffer #(
+			parameter N = 4,	//Number of nodes in the network
+			parameter INDEX = 1,	//This identifies the Node number for Routing Table
 			parameter DATA_WIDTH = 8,
-			parameter PhitPerFlit = 2
+			parameter PhitPerFlit = 2,
+			parameter REQUEST_WIDTH = 2
 			)
 	(	
 	input clk,
@@ -191,12 +197,12 @@ module HeadFlitBuffer #(
 	//From Control FSM
 	input headFlitValid,
 	input [$clog2(PhitPerFlit) : 0] phitCounter,
-	input reserveRoute,
+	input reserveRoute,// Not needed if we are triggering route reserve request as soon as we receive the head flit
 	output routeReserveStatus_CFSM,
 	output headFlitStatus,
 	//To Switch
 	output routeReserveRequestValid,
-	output routeReserveRequest,
+	output[REQUEST_WIDTH - 1 : 0] routeReserveRequest,
 	input routeReserveStatus_Switch
 	);
 	
@@ -227,69 +233,51 @@ module HeadFlitBuffer #(
 	end
 //--------------------------------------HeadFlitValidStatus Ends------------------------------
 
-//As soon as valid head flit is received, a request will be sent
-//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
-assign routeReserveRequestValid = headFlitValidStatus;
+	HeadFlitDecoder #(.N(N), .INDEX(INDEX), .DATA_WIDTH(DATA_WIDTH), .PhitPerFlit(PhitPerFlit), .REQUEST_WIDTH(REQUEST_WIDTH)) headFlitDecoder
+		(
+		.HeadFlit(headBuffer),
+		.RequestMessage(routeReserveRequest)
+		);
+
+	//As soon as valid head flit is received, a request will be sent
+	//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
+	assign routeReserveRequestValid = headFlitValidStatus;
 
 endmodule
-/*
 
-module HandshakeProtocol 
+
+module HeadFlitDecoder #(
+			parameter N = 4,	//This is the number of nodes in the network
+			parameter INDEX = 1,
+			parameter DATA_WIDTH = 8,
+			parameter PhitPerFlit = 2,
+			parameter REQUEST_WIDTH = 2
+			)
 	(
-	input clk,
-	input rst,
-	
-	input valid_in,
-	output reg ready_in = 0,
-	
-	output reg valid_out = 0,
-	input ready_out,
-	
-	output reg read_en = 0,
-	output reg write_en = 0
+	input [PhitPerFlit * DATA_WIDTH - 1 : 0] HeadFlit,
+	output [REQUEST_WIDTH - 1 : 0] RequestMessage
 	);
 	
-	localparam EMPTY = 0, FULL = 1, SEND = 2;
+	//Routing Table declaration:
+	//As of now it is just a huge register that will store routing info.
+	//It should be implemented as a Memory(DRAM preferably) to reduce resource utilization
+	reg [REQUEST_WIDTH * $clog2(N) - 1 : 0] RoutingTable;
 	
-	reg [1 : 0] state = 0, nextState = 0;
-	
-	//Next state Assignment
-	always @(posedge clk)begin
-		if(rst)
-			state <= EMPTY;
-		else
-			state <= nextState;
+	integer i;
+	initial begin
+	//Routing Table needs to be initialized here
+		for(i = 0; i < $clog2(N); i = i + 1)
+			RoutingTable[i] = 0;//We can populate Routing Table from a file as well
 	end
 	
-	//Next State Logic
-	always @(*)begin
-		case(state)
-			EMPTY : nextState = valid_in ? FULL : EMPTY;
-			FULL : nextState = SEND;
-			SEND : nextState = ready_out ? EMPTY : SEND;
-			default : nextState = EMPTY;
-		endcase
-	end
+	wire [$clog2(N) - 1 : 0] Destination;
 	
-	//Output Logic:
-	always @(*)begin
-		if(state == SEND)
-			valid_out = 1;
-		else valid_out = 0;
-			
-		if(state == EMPTY && valid_in == 1)
-			ready_in = 1;
-		else ready_in = 0;
-		
-		if(valid_in == 1 && ready_in == 1)
-			write_en = 1;
-		else write_en = 0;
-		
-		if(state == FULL)
-			read_en = 1;
-		else read_en = 0;
-	end
+	assign Destination = HeadFlit[0 +: $clog2(N)];
 	
-
+	//Right now, it is completely asynchronous, but when it is made using memory,
+	//it will have clock as well and arbitration unit too.
+	assign RequestMessage = RoutingTable[REQUEST_WIDTH * Destination +: REQUEST_WIDTH];
+	
 endmodule
-*/
+
+
