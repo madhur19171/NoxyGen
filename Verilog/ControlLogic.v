@@ -49,7 +49,8 @@ module ControlFSM
 	#(
 	parameter FlitPerPacket = 4,//HBBT
 	parameter PhitPerFlit = 2,
-	parameter REQUEST_WIDTH = 2)
+	parameter REQUEST_WIDTH = 2,
+	parameter TYPE_WIDTH = 2)
 	(
 	input clk,
 	input rst,
@@ -60,6 +61,9 @@ module ControlFSM
 	
 	output valid_out,
 	input ready_out,
+	
+	//Flit Identifier Signals
+	input [TYPE_WIDTH - 1 : 0]FlitType,
 	
 	//Head Flit Buffer Signals
 	output reserveRoute,
@@ -74,7 +78,17 @@ module ControlFSM
 	output pushBuffer,
 	output Handshake,
 	input full
+	
+	//Switch Signal
+	output routeRelieve
 	);
+	
+	//Flit Types:
+	//01: Head
+	//10: Payload
+	//11: Tail
+	
+	localparam HEAD = 1, PAYLOAD = 2, TAIL = 3;
 		
 	localparam UnRouted = 0, HeadFlit = 1, ReservePath = 2, Wait = 3, Route = 4, TailFlit = 5;
 	
@@ -123,6 +137,15 @@ module ControlFSM
 //--------------------------------------FSM Ends------------------------------
 
 
+//-----------------------------------------Route Relieving Logic begins------------------------
+//Route Will be relieved only after the last tail packet has been successfully sent
+
+	assign routeRelieve = FlitType == TAIL & popBuffer;//the flit to be sent is a tail flit and it is going to be popped.
+	//It would be better if we can 
+
+//-----------------------------------------Route Relieving Logic ends------------------------
+
+
 //--------------------------------------PhitCounter Begins------------------------------
 	always @(posedge clk)begin
 		if(rst)
@@ -161,6 +184,7 @@ module ControlFSM
 			flitCounter <= flitCounter + 1;
 	end
 	
+	/*This can be made by reading off the FlitType signal*/
 	assign TailReceived = flitCounter == FlitPerPacket;
 //--------------------------------------FlitCounter Ends------------------------------
 
@@ -203,7 +227,7 @@ module HeadFlitBuffer #(
 	//To Switch
 	output routeReserveRequestValid,
 	output[REQUEST_WIDTH - 1 : 0] routeReserveRequest,
-	input routeReserveStatus_Switch
+	input routeReserveStatus
 	);
 	
 	reg [DATA_WIDTH * PhitPerFlit - 1 : 0] headBuffer = 0;
@@ -225,7 +249,7 @@ module HeadFlitBuffer #(
 		if(rst)
 			headFlitValidStatus <= 0;
 		else
-		if(routeReserveStatus_Switch)
+		if(routeReserveStatus)
 			headFlitValidStatus <= 0;
 		else
 		if(headFlitValid)

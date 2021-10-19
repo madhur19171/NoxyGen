@@ -24,15 +24,19 @@ module SwitchMatrix
 	
 	reg [OUTPUTS - 1 : 0] outputBusy = 0;//Tells which outputs are currently busy with transaction.
 	reg [OUTPUTS - 1 : 0] switchRequest = 0;
+	reg [OUTPUTS - 1 : 0] outputRelieve = 0;
 	
 	reg [INPUTS - 1 : 0] PortBusy = 0;
 	reg [INPUTS - 1 : 0] Conflict = 0;
 	
 //TODO: Handle the situation when two requests come in consecutive clock cycles.
-//For this, outputBust has to be made high as soon as we know that the request will reserve the path
+//For this, outputBusy has to be made high as soon as we know that the request will reserve the path
 //This needs to be done in one clock cycle.
+//Done!
+
+
 //----------------------------------------Switch Controller FSM begins-----------------------------
-	localparam STATE_WIDTH = 2;
+	localparam STATE_WIDTH = 3;
 	localparam UnRouted = 0, Check = 1, Arbitrate = 2, PathReserved1 = 3, PathReserved0 =4;
 	
 	//These registers store the FSM states of all the output ports
@@ -53,9 +57,9 @@ module SwitchMatrix
 			case(switchState[i * STATE_WIDTH +: STATE_WIDTH])
 				UnRouted : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = routeReserveRequestValid[i] ? Check : UnRouted;
 				Check : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = PortBusy[i] ? Check : Conflict[i] ? Arbitrate : PathReserved;
-				Arbitrate :  switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = PathReserved1;
+				Arbitrate :  switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = ~Conflict[i] & ~PortBust[i] ? PathReserved1 : Arbitrate;
 				PathReserved1 : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = PathReserved0;
-				PathReserved0 : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = ~routeRelieve[i] ? PathReserved : outstanding[i] ? Arbitrate : UnRouted;
+				PathReserved0 : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = ~routeRelieve[i] ? PathReserved0 : UnRouted;
 				default : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = UnRouted;
 			endcase
 	end
@@ -68,25 +72,45 @@ module SwitchMatrix
 	//Conflict Signal
 	//If conflict is high, this means that two inputs are racing for the same output port
 	always @(*)
-		for(i = INPUTS - 1; i >= 0; i = i - 1)
+		for(i = INPUTS - 1; i >= 0; i = i - 1)//i = 0 will always be dispatched in case if it is in a conflict
 			Conflict[i] = 1'b0;
-			for(j = i; j >= 0; j = j - 1)
-				Conflict[i] = Conflict[i] | (routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == routeReserveRequest[i * REQUEST_WIDTH +: REQUEST_WIDTH])
+			for(j = i - 1; j >= 0; j = j - 1)
+				// If there is a conflict in the port, it will not be reported for
+				//the lower index. This way we ensure that atleast one conflicted signal 
+				//reserves a path.
+				Conflict[i] = Conflict[i] | 
+				(routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == routeReserveRequest[i * REQUEST_WIDTH +: REQUEST_WIDTH] 
+				& (switchState[i * STATE_WIDTH +: STATE_WIDTH] != UnRouted));//switchState needs to be checked so that a conflicted signal can be dispatched after other signal has finished
 				
 	
 	assign routeReserveStatus = switchState == PathReserved1;
 	
 	always @(posedge clk)begin
-		if(rst) 
-			outputBusy <= 0;
-		else 
-		for(i = INPUTS - 1; i >= 0; i = i - 1)begin
+		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
+			if(rst) 
+				outputBusy[i] <= 0;
+			else 
+			if(outputRelieve[i])
+				outputBusy[i] <= 0;
+			else
 			//Input with lower i is given more priority
-			if(~outputBusy[i] & switchRequest[i])begin//If the output is not busy and there is a switch request
-				outputBusy[i] <= 1;
-			end
-				
+			if(~outputBusy[i] & switchRequest[i])//If the output is not busy and there is a switch request
+				outputBusy[i] <= 1;		
 		end
+	end
+	
+	always @(*)begin
+		for(i = OUTPUTS - 1; i >= 0; i = i - 1)
+			switchRequest[i] = 0;
+			for(j = INPUTS - 1; j >= 0; j = j - 1)
+				switchRequest[i] = switchRequest[i] | (routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & (~PortBusy[j] | Conflict[j]));
+	end
+	
+	always @(*)begin
+		for(i = OUTPUTS - 1; i >= 0; i = i - 1)
+			outputRelieve[i] = 0;
+			for(j = INPUTS - 1; j >= 0; j = j - 1)
+				outputRelieve[i] = outputRelieve[i] | (routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & routeRelieve[j]);
 	end
 	
 endmodule
