@@ -77,7 +77,7 @@ module ControlFSM
 	output reg popBuffer = 0,
 	output pushBuffer,
 	output Handshake,
-	input full
+	input full,
 	
 	//Switch Signal
 	output routeRelieve
@@ -90,7 +90,7 @@ module ControlFSM
 	
 	localparam HEAD = 1, PAYLOAD = 2, TAIL = 3;
 		
-	localparam UnRouted = 0, HeadFlit = 1, ReservePath = 2, Wait = 3, Route = 4, TailFlit = 5;
+	localparam UnRouted = 0, HeadFlit = 1, ReservePath = 2, Route = 3, TailFlit = 4;
 	
 	reg[2 : 0] state = 0, nextState = 0;
 	
@@ -98,16 +98,10 @@ module ControlFSM
 	
 	
 	wire TailReceived;
-	wire Success;
-	wire Failure;
-	wire PathFree;
+
+	wire flitValid;
 	
 	reg pushBuffer_state = 0;
-	
-	
-	assign Success = reservePathStatus;
-	assign reservePath = state == ReservePath;
-	assign route = state == Route;
 	
 //--------------------------------------Handshake Begins------------------------------
 
@@ -128,7 +122,7 @@ module ControlFSM
 			//After the first flit is received, ready must go down until the route is 
 			//reserved for this request.
 			HeadFlit: nextState = ReservePath;
-			ReservePath: nextState = Success ? Route : Wait;
+			ReservePath: nextState = routeReserveStatus ? Route : ReservePath;
 			Route: nextState = TailReceived ? TailFlit : Route;
 			TailFlit: nextState = UnRouted;
 			default: nextState = UnRouted;
@@ -136,17 +130,23 @@ module ControlFSM
 	end
 //--------------------------------------FSM Ends------------------------------
 
+//-----------------------------------------Route Reserving Logic begins------------------------
+
+	assign reserveRoute = state == ReservePath;//the flit to be sent is a tail flit and it is going to be popped.
+
+//-----------------------------------------Route Reserving Logic ends------------------------
+
+
 
 //-----------------------------------------Route Relieving Logic begins------------------------
 //Route Will be relieved only after the last tail packet has been successfully sent
 
 	assign routeRelieve = FlitType == TAIL & popBuffer;//the flit to be sent is a tail flit and it is going to be popped.
-	//It would be better if we can 
 
 //-----------------------------------------Route Relieving Logic ends------------------------
 
 
-//--------------------------------------PhitCounter Begins------------------------------
+//--------------------------------------PhitCounter Begins(Mealy: flitValid --> TODO: Try to make Moore for better clock period)------------------------------
 	always @(posedge clk)begin
 		if(rst)
 			phitCounter <= 0;
@@ -156,26 +156,33 @@ module ControlFSM
 				phitCounter <= 1;//New incoming phit will be part of new flit
 			else phitCounter <= 0;//No new incoming phit so flit counter is 0
 		else
-		if(valid_in & ready_in)
+		if(Handshake)
 			phitCounter <= phitCounter + 1;
 	end
 	
-	assign flitValid = phitCounter == PhitPerFlit;
+	//Since flitValid is made high on the same clock cycle as the last phit is captured,
+	//by the time Unrouted->HeadFlit, there is an extra phit captured in the buffer.
+	//Either received 1 flit, or about to receive the last phit of the flit.
+	assign flitValid = (phitCounter == PhitPerFlit) | (phitCounter == (PhitPerFlit - 1) & Handshake);
 //--------------------------------------PhitCounter Ends------------------------------
 
 //--------------------------------------headFlitValid Begins------------------------------
 	//Once headFlit is valid, HFB will ignore any other flits
 	//A valid status register will be made high in HFB and it will go low after
 	//the tail signal is received.
-	assign headFlitValid = state == UnRouted & flitValid & Handshake
+	assign headFlitValid = state == UnRouted & flitValid & Handshake;
 
 //--------------------------------------headFlitValid Ends------------------------------
 
 
-//--------------------------------------FlitCounter Begins------------------------------
+//--------------------------------------FlitCounter Begins(Mealy: TailReceived --> TODO: Try to make Moore for better clock period))------------------------------
 	always @(posedge clk)begin
 		if(rst)
 			flitCounter <= 0;
+		else
+		if(flitCounter == FlitPerPacket)
+			flitCounter <= 0;//This is just to reset the Counter after all the Flits in the packet are received.
+					//Not doing this will probably have no impact on the functionality.
 		else
 		if(flitValid & state == HeadFlit)
 			flitCounter <= 1;
@@ -185,22 +192,50 @@ module ControlFSM
 	end
 	
 	/*This can be made by reading off the FlitType signal*/
-	assign TailReceived = flitCounter == FlitPerPacket;
+	//Either all FlitPerPacket packets have been received or the last flit of the packet is about to be received in the Route state
+	assign TailReceived = (flitCounter == (FlitPerPacket)) | (flitCounter == (FlitPerPacket - 1) & flitValid & state == Route);//As head is received
 //--------------------------------------FlitCounter Ends------------------------------
 
 
-//--------------------------------------pushBuffer Begins------------------------------
+//--------------------------------------pushBuffer Begins(Mealy)------------------------------
+//Push the data as long as you haven't got the Tail
+//It is assumed for Now that the Buffer capacity is enough to store a complete Packet
+//However, the data following Head is not pushed until the path has been reserved.
+
+//	always @(posedge clk)begin
+//		if(rst)
+//			pushBuffer_state <= 0;
+//		else if(TailReceived)
+//			pushBuffer_state = 0;
+//		else if(state == UnRouted)
+//			pushBuffer_state <= 1;
+//			
+//	end
+
 	always @(posedge clk)begin
 		if(rst)
 			pushBuffer_state <= 0;
-		else
-		if(TailReceived)
-			pushBuffer_state = 0;
 		else if(state == UnRouted)
-			
+			pushBuffer_state <= 1;
+		else if(state == ReservePath & routeReserveStatus)//Just going to Route state
+			pushBuffer_state <= 1;
+		else if(TailReceived)//Stop receiving any buffers as soon you receive the Tail
+			pushBuffer_state <= 0;	
 	end
+
+	assign pushBuffer = pushBuffer_state & Handshake;
+
 //--------------------------------------pushBuffer Ends------------------------------
 
+//--------------------------------------ready_in Begins------------------------------
+
+	//There should be space in the FIFO buffer
+	//valid_in should be high before ready_in is made high
+	//State should be UnRouted to receive Head Flit or it should be Route while routin the packets
+	//after the path has been set up.
+	assign ready_in = ~full & valid_in & (state == UnRouted | state == Route);
+
+//--------------------------------------ready_in Ends------------------------------	
 
 endmodule
 
@@ -227,7 +262,7 @@ module HeadFlitBuffer #(
 	//To Switch
 	output routeReserveRequestValid,
 	output[REQUEST_WIDTH - 1 : 0] routeReserveRequest,
-	input routeReserveStatus
+	input routeReserveStatus_Switch
 	);
 	
 	reg [DATA_WIDTH * PhitPerFlit - 1 : 0] headBuffer = 0;
@@ -249,7 +284,7 @@ module HeadFlitBuffer #(
 		if(rst)
 			headFlitValidStatus <= 0;
 		else
-		if(routeReserveStatus)
+		if(routeReserveStatus_Switch)
 			headFlitValidStatus <= 0;
 		else
 		if(headFlitValid)
@@ -266,6 +301,9 @@ module HeadFlitBuffer #(
 	//As soon as valid head flit is received, a request will be sent
 	//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
 	assign routeReserveRequestValid = headFlitValidStatus;
+
+	//A simple forwarding of this signal to the CFSM
+	assign routeReserveStatus_CFSM = routeReserveStatus_Switch;
 
 endmodule
 
