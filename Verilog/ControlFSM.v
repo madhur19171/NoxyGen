@@ -1,56 +1,10 @@
-//Design for Mesh Based NoC with each switch having 4 Inputs and 4 Outputs
-//Switching control logic will be in a separate unit.
-module ControlLogic
-	#(
-	parameter N = 4,
-	parameter DATA_WIDTH = 8,
-	parameter FlitInPacket = 4
-	) (
-	input clk,
-	input rst,
-	//Input Controls
-	input [N - 1 : 0] valid_in,
-	output [N - 1 : 0] ready_in,
-	//Output Controls
-	output [N - 1 : 0] valid_out,
-	input [N - 1 : 0] ready_out,
-	//Switch Control
-	output [N * $clog2(N) - 1 : 0] sel,//This signal selects the input using the first $clog2(N) bits and assigns the output to the last $clog2(N) bit address output.
-	//Buffer State
-	output [N - 1 : 0]read_en,
-	output [N - 1 : 0]write_en,
-	input [N - 1 : 0] buffer_full//Signals that the buffer is full for now so, do not accept data.
-	);
-	
-	//Direction Encoding for Mesh based switches:
-	//0 : North	1 : South	2 : West	3 : East
-	
-	//The protocol will be:
-	//The Sender will send a valid signal as soon as its data is ready w/o waiting for ready signal.
-	//The receiver will be waiting for the valid signal to become 1. After the valid is 1, sender sends a ready 1.
-	//This way the handshake happens and when both valid and ready are 1.
-	
-	
-	genvar i;
-	
-	generate 
-		for(i = 0; i < N; i = i + 1)begin : Handshake
-			HandshakeProtocol handshakeProtocol
-				(.clk(clk), .rst(rst),
-				.valid_in(valid_in[i]), .ready_in(ready_in[i]),
-				.valid_out(valid_out[i]), .ready_out(ready_out[i]),
-				.read_en(read_en[i]), .write_en(write_en[i]));
-		end
-	endgenerate
-	
-endmodule
-
 module ControlFSM
 	#(
 	parameter FlitPerPacket = 4,//HBBT
 	parameter PhitPerFlit = 2,
 	parameter REQUEST_WIDTH = 2,
-	parameter TYPE_WIDTH = 2)
+	parameter TYPE_WIDTH = 2//For FlitType
+	)
 	(
 	input clk,
 	input rst,
@@ -74,10 +28,11 @@ module ControlFSM
 	input headFlitStatus,
 	
 	//FIFO Signals
-	output reg popBuffer = 0,
+	output popBuffer,
 	output pushBuffer,
 	output Handshake,
 	input full,
+	input empty,
 	
 	//Switch Signal
 	output routeRelieve
@@ -176,6 +131,7 @@ module ControlFSM
 
 
 //--------------------------------------FlitCounter Begins(Mealy: TailReceived --> TODO: Try to make Moore for better clock period))------------------------------
+//Right now, it is doing the work of FlitType signal. It should be made to serve some other purpose.
 	always @(posedge clk)begin
 		if(rst)
 			flitCounter <= 0;
@@ -227,119 +183,33 @@ module ControlFSM
 
 //--------------------------------------pushBuffer Ends------------------------------
 
+//--------------------------------------popBuffer Begins------------------------------
+	//pop the new value after the handshake for the current data has happened.
+	assign popBuffer = valid_out & ready_out;
+
+//--------------------------------------popBuffer Ends------------------------------	
+
 //--------------------------------------ready_in Begins------------------------------
 
 	//There should be space in the FIFO buffer
 	//valid_in should be high before ready_in is made high
-	//State should be UnRouted to receive Head Flit or it should be Route while routin the packets
+	//State should be UnRouted to receive Head Flit or it should be Route while routing the packets
 	//after the path has been set up.
-	assign ready_in = ~full & valid_in & (state == UnRouted | state == Route);
+	assign ready_in = ~full & valid_in & (state == UnRouted | state == Route)
+				| full & valid_in & (state == Route) & valid_out & ready_out;
+				//ready_in can also be high when incoming data is directly forwarded to the output and 
+				//and the receiver is ready to accept the handshake in route state.
 
 //--------------------------------------ready_in Ends------------------------------	
 
-endmodule
+
+//--------------------------------------valid_out Begins------------------------------
+	//If buffer is not empty, it is ready to send out data
+	assign valid_out = ~empty;
+
+//--------------------------------------valid_out Ends------------------------------	
 
 
-module HeadFlitBuffer #(
-			parameter N = 4,	//Number of nodes in the network
-			parameter INDEX = 1,	//This identifies the Node number for Routing Table
-			parameter DATA_WIDTH = 8,
-			parameter PhitPerFlit = 2,
-			parameter REQUEST_WIDTH = 2
-			)
-	(	
-	input clk,
-	input rst,
-	//From FIFO
-	input Handshake,
-	input [DATA_WIDTH - 1 : 0] Head_Phit,
-	//From Control FSM
-	input headFlitValid,
-	input [$clog2(PhitPerFlit) : 0] phitCounter,
-	input reserveRoute,// Not needed if we are triggering route reserve request as soon as we receive the head flit
-	output routeReserveStatus_CFSM,
-	output headFlitStatus,
-	//To Switch
-	output routeReserveRequestValid,
-	output[REQUEST_WIDTH - 1 : 0] routeReserveRequest,
-	input routeReserveStatus_Switch
-	);
-	
-	reg [DATA_WIDTH * PhitPerFlit - 1 : 0] headBuffer = 0;
-	reg headFlitValidStatus = 0;
-	
-
-//--------------------------------------HeadBuffer Begins------------------------------
-	always @(posedge clk)begin
-		if(rst)
-			headBuffer <= 0;
-		else 
-		if(Handshake & ~headFlitValidStatus & ~headFlitValid)
-			headBuffer[DATA_WIDTH * phitCounter +: DATA_WIDTH] <= Head_Phit;
-	end
-//--------------------------------------HeadBuffer Ends------------------------------
-
-//--------------------------------------HeadFlitValidStatus Begins------------------------------
-	always @(posedge clk)begin
-		if(rst)
-			headFlitValidStatus <= 0;
-		else
-		if(routeReserveStatus_Switch)
-			headFlitValidStatus <= 0;
-		else
-		if(headFlitValid)
-			headFlitValidStatus <= 1;
-	end
-//--------------------------------------HeadFlitValidStatus Ends------------------------------
-
-	HeadFlitDecoder #(.N(N), .INDEX(INDEX), .DATA_WIDTH(DATA_WIDTH), .PhitPerFlit(PhitPerFlit), .REQUEST_WIDTH(REQUEST_WIDTH)) headFlitDecoder
-		(
-		.HeadFlit(headBuffer),
-		.RequestMessage(routeReserveRequest)
-		);
-
-	//As soon as valid head flit is received, a request will be sent
-	//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
-	assign routeReserveRequestValid = headFlitValidStatus;
-
-	//A simple forwarding of this signal to the CFSM
-	assign routeReserveStatus_CFSM = routeReserveStatus_Switch;
 
 endmodule
-
-
-module HeadFlitDecoder #(
-			parameter N = 4,	//This is the number of nodes in the network
-			parameter INDEX = 1,
-			parameter DATA_WIDTH = 8,
-			parameter PhitPerFlit = 2,
-			parameter REQUEST_WIDTH = 2
-			)
-	(
-	input [PhitPerFlit * DATA_WIDTH - 1 : 0] HeadFlit,
-	output [REQUEST_WIDTH - 1 : 0] RequestMessage
-	);
-	
-	//Routing Table declaration:
-	//As of now it is just a huge register that will store routing info.
-	//It should be implemented as a Memory(DRAM preferably) to reduce resource utilization
-	reg [REQUEST_WIDTH * $clog2(N) - 1 : 0] RoutingTable;
-	
-	integer i;
-	initial begin
-	//Routing Table needs to be initialized here
-		for(i = 0; i < $clog2(N); i = i + 1)
-			RoutingTable[i] = 0;//We can populate Routing Table from a file as well
-	end
-	
-	wire [$clog2(N) - 1 : 0] Destination;
-	
-	assign Destination = HeadFlit[0 +: $clog2(N)];
-	
-	//Right now, it is completely asynchronous, but when it is made using memory,
-	//it will have clock as well and arbitration unit too.
-	assign RequestMessage = RoutingTable[REQUEST_WIDTH * Destination +: REQUEST_WIDTH];
-	
-endmodule
-
 

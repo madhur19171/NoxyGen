@@ -2,104 +2,126 @@ module ControlLogic_TB;
 	reg clk;
 	reg rst;
 
-	parameter N = 4;
+	parameter N = 2;
+	parameter INPUTS = 2;
+	parameter OUTPUTS = 2;
 	parameter DATA_WIDTH = 32;
+	parameter REQUEST_WIDTH = 1;
+	parameter TYPE_WIDTH = 2;
 	parameter FlitPerPacket = 6;//Head + 4Payloads + Tail
 	parameter PhitPerFlit = 1;
-	parameter REQUEST_WIDTH = 2;
-	parameter TYPE_WIDTH = 2;
+	parameter FIFO_DEPTH = 32;
 
-	reg valid_in;
-	wire ready_in;
-	
-	wire valid_out;
-	reg ready_out;
+	integer i;
 
-	reg [TYPE_WIDTH - 1 : 0] Flit_Type;
+	wire [DATA_WIDTH - 1 : 0] data_out00, data_out01, data_out11, data_out10, data_in01, data_in11;
+	reg [DATA_WIDTH - 1 : 0] data_in00 = 0, data_in10 = 0;
 
-	wire reserveRoute;
-	reg routeReserveStatus;
-	
-	wire headFlitValid;
-	wire [$clog2(PhitPerFlit) : 0] phitCounter;
-	reg headFlitStatus;
-	
-	wire popBuffer;
-	wire pushBuffer;
-	wire Handshake;
-	reg full;
+	wire valid_out00, valid_out01, valid_out11, valid_out10, valid_in01, valid_in11;
+	reg valid_in00 = 0, valid_in10 = 0;	
 
-	wire routeRelieve;
-	
+	wire ready_in00, ready_in01, ready_in11, ready_in10, ready_out01, ready_out11;
+	reg ready_out00 = 0, ready_out10 = 0;
 
-	ControlFSM #(.FlitPerPacket(FlitPerPacket),
-		.PhitPerFlit(PhitPerFlit),
-		.REQUEST_WIDTH(REQUEST_WIDTH),
-		.TYPE_WIDTH(TYPE_WIDTH)) controlFSM
-	(
-	.clk(clk),
+	assign data_in11 = data_out01;
+	assign data_in01 = data_out11;
+
+	assign valid_in11 = valid_out01;
+	assign valid_in01 = valid_out11;
+
+	assign ready_out11 = ready_in01;
+	assign ready_out01 = ready_in11;
+
+	Router 
+	#(.N(N), 
+	.INDEX(0),
+	.INPUTS(INPUTS),
+	.OUTPUTS(OUTPUTS),
+	.DATA_WIDTH(DATA_WIDTH),
+	.TYPE_WIDTH(TYPE_WIDTH),
+	.REQUEST_WIDTH(REQUEST_WIDTH),
+	.FlitPerPacket(FlitPerPacket),
+	.PhitPerFlit(PhitPerFlit),
+	.FIFO_DEPTH(FIFO_DEPTH)
+	) router0
+
+	(.clk(clk),
 	.rst(rst),
-	.valid_in(valid_in),
-	.ready_in(ready_in),
-	.valid_out(valid_out),
-	.ready_out(ready_out),
-	.FlitType(FlitType),
-	.reserveRoute(reserveRoute),
-	.routeReserveStatus(routeReserveStatus),
-	.headFlitValid(headFlitValid),
-	.phitCounter(phitCounter),
-	.headFlitStatus(headFlitStatus),
-	.popBuffer(popBuffer),
-	.pushBuffer(pushBuffer),
-	.Handshake(Handshake),
-	.full(full),
-	.routeRelieve(routeRelieve)
+
+	.data_in({data_in01, data_in00}),
+	.valid_in({valid_in01, valid_in00}),
+	.ready_in({ready_in01, ready_in00}),
+
+	.data_out({data_out01, data_out00}),
+	.valid_out({valid_out01, valid_out00}),
+	.ready_out({ready_out01, ready_out00})
 	);
+
+
+	Router 
+	#(.N(N), 
+	.INDEX(1),
+	.INPUTS(INPUTS),
+	.OUTPUTS(OUTPUTS),
+	.DATA_WIDTH(DATA_WIDTH),
+	.TYPE_WIDTH(TYPE_WIDTH),
+	.REQUEST_WIDTH(REQUEST_WIDTH),
+	.FlitPerPacket(FlitPerPacket),
+	.PhitPerFlit(PhitPerFlit),
+	.FIFO_DEPTH(FIFO_DEPTH)
+	) router1
+
+	(.clk(clk),
+	.rst(rst),
+
+	.data_in({data_in11, data_in10}),
+	.valid_in({valid_in11, valid_in10}),
+	.ready_in({ready_in11, ready_in10}),
+
+	.data_out({data_out11, data_out10}),
+	.valid_out({valid_out11, valid_out10}),
+	.ready_out({ready_out11, ready_out10})
+	);
+
 
 	always #5 clk = ~clk;
 
 	initial begin
-		clk = 0;
+
+		clk = 1;
 		rst = 1;
 
-		valid_in = 0;
-		ready_out = 0;
-		
-		Flit_Type = 0;
+		valid_in00 = 0;
+		valid_in10 = 0;
 
-		routeReserveStatus = 0;
+		ready_out00 = 1;
+		ready_out10 = 1;
 
-		headFlitStatus = 0;
-
-		full = 0;
 	end
 
 	initial begin
-		#10 rst = 0;
+		#20 rst = 0;
 
-		#20 valid_in = 1;
+		#20;
+
+		valid_in00 = 1;
+		#5;
 		
+		for(i = 1; i <= 6; i = i + 1)begin
+			data_in00 = i;
 
-		wait(reserveRoute);
-		@(posedge clk);
-		@(posedge clk);
-		@(posedge clk);
-		@(posedge clk);
-		#5 routeReserveStatus = 1;
-		#10 routeReserveStatus = 0;
-		
-		#30;
+			if(i == 1)
+				data_in00[31 : 30] = 2'd1;
+			else if(i == 6)
+				data_in00[31 : 30] = 2'd3;
+			else 
+				data_in00[31 : 30] = 2'd2;
 
-		wait(reserveRoute);
-		@(posedge clk);
-		@(posedge clk);
-		@(posedge clk);
-		@(posedge clk);
-		#5 routeReserveStatus = 1;
-		#10 routeReserveStatus = 0;
+			wait(ready_in00);
+			@(posedge clk);
+		end
 
-		#40 valid_in = 0;
-		#30 $finish;
+		#100 $finish;
 	end
 
 	
