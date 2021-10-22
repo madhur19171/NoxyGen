@@ -16,7 +16,7 @@ module SwitchControl
 	input [INPUTS - 1 : 0] routeReserveRequestValid,
 	input [INPUTS * REQUEST_WIDTH - 1 : 0] routeReserveRequest,//This signal selects the input using the first $clog2(N) bits and assigns the output to the last $clog2(N) bit address output.
 	input [INPUTS - 1 : 0] routeRelieve,//This bit is used to relieve the path after a transaction is complete, that is, after the tail flit has been received. 
-	output [INPUTS - 1 : 0]routeReserveStatus,//Acknowledgement signal for routeReserveRequest
+	output reg [INPUTS - 1 : 0]routeReserveStatus = 0,//Acknowledgement signal for routeReserveRequest
 	
 	//Switch Routing Signal
 	output reg [OUTPUTS * REQUEST_WIDTH - 1 : 0]routeSelect = 0,
@@ -95,7 +95,10 @@ module SwitchControl
 		end
 				
 	
-	assign routeReserveStatus = switchState == PathReserved1;
+	//routeReserveStatus Signal
+	always @(*)
+		for(i = INPUTS - 1; i >= 0; i = i - 1)
+			routeReserveStatus[i] = switchState[i * STATE_WIDTH +: STATE_WIDTH] == PathReserved1;
 	
 	always @(posedge clk)begin
 		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
@@ -116,7 +119,8 @@ module SwitchControl
 			routeSelect = 0;
 		else
 		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
-			routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] = 0;
+		//Keep the previous route reserve request until it is overwritten.
+			//routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] = 0;
 			for(j = INPUTS - 1; j >= 0; j = j - 1)
 				if(routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & switchState[j * STATE_WIDTH +: STATE_WIDTH] == PathReserved1)
 					routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] = j;
@@ -124,17 +128,19 @@ module SwitchControl
 	end
 	
 	always @(*)begin
-		for(i = OUTPUTS - 1; i >= 0; i = i - 1)
+		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
 			switchRequest[i] = 0;
-			for(j = INPUTS - 1; j >= 0; j = j - 1)
-				switchRequest[i] = switchRequest[i] | (routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & (~PortBusy[j] | Conflict[j]));
+			for(j = INPUTS - 1; j >= 0; j = j - 1)//To be generated when the path is actually reserved.
+				switchRequest[i] = switchRequest[i] | (routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & (~PortBusy[j] | Conflict[j])) & (switchState[j * STATE_WIDTH +: STATE_WIDTH] == PathReserved1);
+		end
 	end
 	
 	always @(*)begin
-		for(i = OUTPUTS - 1; i >= 0; i = i - 1)
+		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
 			outputRelieve[i] = 0;
 			for(j = INPUTS - 1; j >= 0; j = j - 1)
 				outputRelieve[i] = outputRelieve[i] | (routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & routeRelieve[j]);
+		end
 	end
 	
 endmodule

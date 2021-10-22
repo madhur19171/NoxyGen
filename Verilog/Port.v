@@ -30,7 +30,6 @@ module Port #(
 	
 	wire popBuffer;
 	wire pushBuffer;
-	wire Handshake;
 	wire full;
 	wire empty;
 	
@@ -45,6 +44,7 @@ module Port #(
 	) portControlLogic
 	(.clk(clk),
 	.rst(rst),
+	.data_in(data_in),
 	.valid_in(valid_in),
 	.ready_in(ready_in),
 	.valid_out(valid_out),

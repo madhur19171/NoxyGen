@@ -32,7 +32,7 @@ module HeadFlitBuffer #(
 		if(rst)
 			headBuffer <= 0;
 		else 
-		if(Handshake & ~headFlitValidStatus & ~headFlitValid)
+		if(Handshake & ~headFlitValidStatus & headFlitValid)
 			headBuffer[DATA_WIDTH * phitCounter +: DATA_WIDTH] <= Head_Phit;
 	end
 //--------------------------------------HeadBuffer Ends------------------------------

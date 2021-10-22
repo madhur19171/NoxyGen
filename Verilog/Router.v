@@ -35,7 +35,7 @@ module Router #(
 	
 	assign data_in_switch = data_out_port;
 	assign valid_in_switch = valid_out_port;
-	assign ready_in_switch = ready_out_port;
+	assign ready_out_port = ready_in_switch;
 	
 	genvar i;
 	generate

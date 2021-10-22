@@ -31,7 +31,7 @@ module MuxSwitch
 	input [OUTPUTS - 1 : 0] ready_out
 	);
 	
-	integer i;
+	integer i, j;
 
 	
 	//Direction Encoding for Mesh based switches:
@@ -42,27 +42,33 @@ module MuxSwitch
 		data_out = 0;
 		//Lower i inputs will be given prority with this design
 		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
-			data_out[i * DATA_WIDTH +: DATA_WIDTH] = data_in[routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] * DATA_WIDTH +: DATA_WIDTH];
-		end
+			for(j = INPUTS - 1; j >= 0; j = j - 1)
+				if(routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] == j & PortReserved[j])//Port that feeds the output should be reserved.
+					data_out[i * DATA_WIDTH +: DATA_WIDTH] = data_in[j * DATA_WIDTH +: DATA_WIDTH];
+			end
 	end
 	
-	//Valid Mux
+	//Priority Valid Mux
 	always @(*)begin
 		valid_out = 0;
 		//Lower i inputs will be given prority with this design
 		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
-			valid_out[i] = valid_in[routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH]] & outputBusy[i];
+			for(j = INPUTS - 1; j >= 0; j = j - 1)
+				if(routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] == j & PortReserved[j])//Port that feeds the output should be reserved.
+					valid_out[i] = valid_in[j] & outputBusy[i];
 			//Send valid_out only when the output port is routed otherwise the next router may unintentionally receive high valid_in
 		end
 	end
 	
-	//Ready Mux
+	//Priority Ready Mux
 	always @(*)begin
-		ready_in = 0;
 		//Lower i inputs will be given prority with this design
 		for(i = INPUTS - 1; i >= 0; i = i - 1)begin
-			ready_in[i] = ready_out[routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH]] & PortReserved[i];
-			//Relay the ready_in signal only for those inputs for which the path has actually been reserved.
+			ready_in[i] = 0;
+			for(j = OUTPUTS - 1; j >= 0; j = j - 1)
+				if(routeSelect[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & outputBusy[j])
+					ready_in[i] = ready_out[j] & PortReserved[i];
+					//Relay the ready_in signal only for those inputs for which the path has actually been reserved.
 		end
 	end
 	

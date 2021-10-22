@@ -104,24 +104,32 @@ module ControlLogic_TB;
 
 		#20;
 
+		//#5;
 		valid_in00 = 1;
-		#5;
 		
 		for(i = 1; i <= 6; i = i + 1)begin
 			data_in00 = i;
 
-			if(i == 1)
+			if(i == 1)begin
 				data_in00[31 : 30] = 2'd1;
+				
+			end
 			else if(i == 6)
 				data_in00[31 : 30] = 2'd3;
 			else 
 				data_in00[31 : 30] = 2'd2;
-
-			wait(ready_in00);
+			
+			if(i == 1)
+				@(negedge ready_in00);
+			else wait(ready_in00);
 			@(posedge clk);
 		end
 
 		#100 $finish;
+	end
+	
+	initial begin
+		#125 valid_in00 = 0;
 	end
 
 	
