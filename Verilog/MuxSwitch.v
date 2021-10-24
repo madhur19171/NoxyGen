@@ -3,6 +3,8 @@
 //It is the job of Switch Control Logic to do the arbitration and prevent race conditions.
 
 //This module has been designed so that different number of Inputs and outputs are possible.
+
+//Note: High Resource utilization(LUTs) in MuxSwitch!!
 module MuxSwitch
 	#(
 	parameter INPUTS = 4,

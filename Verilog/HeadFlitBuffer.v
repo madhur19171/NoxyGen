@@ -51,6 +51,10 @@ module HeadFlitBuffer #(
 	end
 //--------------------------------------HeadFlitValidStatus Ends------------------------------
 
+    //Right Now, All ports use their own Head FLit Decoder even though the routing information remains the same for all ports in a router
+    //This should ideally become a unified Decoder which can serve all ports. However, this will lead to arbitration in case of request coming at the same time.
+    //This is also latency sensitive and must serve the request as soon as it is received. Design should be changed to make it latency insensitive.
+    //This will allow implementation of flexible custom routing algorithms by just changing HeadFlitDecoder as a black box for the rest of the design.
 	HeadFlitDecoder #(.N(N), .INDEX(INDEX), .DATA_WIDTH(DATA_WIDTH), .PhitPerFlit(PhitPerFlit), .REQUEST_WIDTH(REQUEST_WIDTH)) headFlitDecoder
 		(
 		.HeadFlit(headBuffer),

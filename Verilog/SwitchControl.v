@@ -90,7 +90,7 @@ module SwitchControl
 				//the lower index. This way we ensure that atleast one conflicted signal 
 				//reserves a path.
 				Conflict[i] = Conflict[i] | 
-					(routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == routeReserveRequest[i * REQUEST_WIDTH +: REQUEST_WIDTH]
+					((routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == routeReserveRequest[i * REQUEST_WIDTH +: REQUEST_WIDTH]) & routeReserveRequestValid[i] & routeReserveRequestValid[j]
 					 & (switchState[i * STATE_WIDTH +: STATE_WIDTH] != UnRouted));//switchState needs to be checked so that a conflicted signal can be dispatched after other signal has finished
 		end
 				
