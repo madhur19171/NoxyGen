@@ -57,21 +57,15 @@ module NoC(
 	wire [31 : 0]Node0_in0_data;
 	wire Node0_in0_ready;
 	wire Node0_in0_valid;
-	reg [31 : 0]Node0_in1_data = 0;
+	wire [31 : 0]Node0_in1_data;
 	wire Node0_in1_ready;
-	reg Node0_in1_valid = 0;
-	wire [31 : 0]Node0_in2_data;
-	wire Node0_in2_ready;
-	wire Node0_in2_valid;
+	wire Node0_in1_valid;
 	wire [31 : 0]Node0_out0_data;
 	wire Node0_out0_ready;
 	wire Node0_out0_valid;
 	wire [31 : 0]Node0_out1_data;
-	reg Node0_out1_ready = 0;
+	wire Node0_out1_ready;
 	wire Node0_out1_valid;
-	wire [31 : 0]Node0_out2_data;
-	wire Node0_out2_ready;
-	wire Node0_out2_valid;
 
 	wire Node1_clk;
 	wire Node1_rst;
@@ -165,18 +159,12 @@ module NoC(
 	wire [31 : 0]Node5_in1_data;
 	wire Node5_in1_ready;
 	wire Node5_in1_valid;
-	reg [31 : 0]Node5_in2_data = 0;
-	wire Node5_in2_ready;
-	reg Node5_in2_valid = 0;
 	wire [31 : 0]Node5_out0_data;
 	wire Node5_out0_ready;
 	wire Node5_out0_valid;
 	wire [31 : 0]Node5_out1_data;
 	wire Node5_out1_ready;
 	wire Node5_out1_valid;
-	wire [31 : 0]Node5_out2_data;
-	reg Node5_out2_ready = 0;
-	wire Node5_out2_valid;
 
 
 
@@ -188,9 +176,9 @@ module NoC(
 	assign Node0_data_out = Node0_out0_data;
 	assign Node0_valid_out = Node0_out0_valid;
 	assign Node0_out0_ready = Node0_ready_out;
-	assign Node1_in1_data = Node0_out2_data;
-	assign Node1_in1_valid = Node0_out2_valid;
-	assign Node0_out2_ready = Node1_in1_ready;
+	assign Node1_in1_data = Node0_out1_data;
+	assign Node1_in1_valid = Node0_out1_valid;
+	assign Node0_out1_ready = Node1_in1_ready;
 
 	assign Node1_clk = clk;
 	assign Node1_rst = rst;
@@ -200,9 +188,9 @@ module NoC(
 	assign Node1_data_out = Node1_out0_data;
 	assign Node1_valid_out = Node1_out0_valid;
 	assign Node1_out0_ready = Node1_ready_out;
-	assign Node0_in2_data = Node1_out1_data;
-	assign Node0_in2_valid = Node1_out1_valid;
-	assign Node1_out1_ready = Node0_in2_ready;
+	assign Node0_in1_data = Node1_out1_data;
+	assign Node0_in1_valid = Node1_out1_valid;
+	assign Node1_out1_ready = Node0_in1_ready;
 	assign Node2_in1_data = Node1_out2_data;
 	assign Node2_in1_valid = Node1_out2_valid;
 	assign Node1_out2_ready = Node2_in1_ready;
@@ -264,10 +252,10 @@ module NoC(
 	assign Node4_in2_valid = Node5_out1_valid;
 	assign Node5_out1_ready = Node4_in2_ready;
 
-	Router #(.N(6), .INDEX(0), .INPUTS(3), .OUTPUTS(3), .DATA_WIDTH(32), .TYPE_WIDTH(2), .REQUEST_WIDTH($clog2(3)), .FlitPerPacket(6), .PhitPerFlit(1), .FIFO_DEPTH(16)) Router_Node0
+	Router #(.N(6), .INDEX(0), .INPUTS(2), .OUTPUTS(2), .DATA_WIDTH(32), .TYPE_WIDTH(2), .REQUEST_WIDTH($clog2(2)), .FlitPerPacket(6), .PhitPerFlit(1), .FIFO_DEPTH(16)) Router_Node0
 		(.clk(Node0_clk), .rst(Node0_rst),
-		.data_in_bus({Node0_in2_data, Node0_in1_data, Node0_in0_data}), .valid_in_bus({Node0_in2_valid, Node0_in1_valid, Node0_in0_valid}), .ready_in_bus({Node0_in2_ready, Node0_in1_ready, Node0_in0_ready}), 
-		.data_out_bus({Node0_out2_data, Node0_out1_data, Node0_out0_data}), .valid_out_bus({Node0_out2_valid, Node0_out1_valid, Node0_out0_valid}), .ready_out_bus({Node0_out2_ready, Node0_out1_ready, Node0_out0_ready}));
+		.data_in_bus({Node0_in1_data, Node0_in0_data}), .valid_in_bus({Node0_in1_valid, Node0_in0_valid}), .ready_in_bus({Node0_in1_ready, Node0_in0_ready}), 
+		.data_out_bus({Node0_out1_data, Node0_out0_data}), .valid_out_bus({Node0_out1_valid, Node0_out0_valid}), .ready_out_bus({Node0_out1_ready, Node0_out0_ready}));
 
 	Router #(.N(6), .INDEX(1), .INPUTS(3), .OUTPUTS(3), .DATA_WIDTH(32), .TYPE_WIDTH(2), .REQUEST_WIDTH($clog2(3)), .FlitPerPacket(6), .PhitPerFlit(1), .FIFO_DEPTH(16)) Router_Node1
 		(.clk(Node1_clk), .rst(Node1_rst),
@@ -289,10 +277,10 @@ module NoC(
 		.data_in_bus({Node4_in2_data, Node4_in1_data, Node4_in0_data}), .valid_in_bus({Node4_in2_valid, Node4_in1_valid, Node4_in0_valid}), .ready_in_bus({Node4_in2_ready, Node4_in1_ready, Node4_in0_ready}), 
 		.data_out_bus({Node4_out2_data, Node4_out1_data, Node4_out0_data}), .valid_out_bus({Node4_out2_valid, Node4_out1_valid, Node4_out0_valid}), .ready_out_bus({Node4_out2_ready, Node4_out1_ready, Node4_out0_ready}));
 
-	Router #(.N(6), .INDEX(5), .INPUTS(3), .OUTPUTS(3), .DATA_WIDTH(32), .TYPE_WIDTH(2), .REQUEST_WIDTH($clog2(3)), .FlitPerPacket(6), .PhitPerFlit(1), .FIFO_DEPTH(16)) Router_Node5
+	Router #(.N(6), .INDEX(5), .INPUTS(2), .OUTPUTS(2), .DATA_WIDTH(32), .TYPE_WIDTH(2), .REQUEST_WIDTH($clog2(2)), .FlitPerPacket(6), .PhitPerFlit(1), .FIFO_DEPTH(16)) Router_Node5
 		(.clk(Node5_clk), .rst(Node5_rst),
-		.data_in_bus({Node5_in2_data, Node5_in1_data, Node5_in0_data}), .valid_in_bus({Node5_in2_valid, Node5_in1_valid, Node5_in0_valid}), .ready_in_bus({Node5_in2_ready, Node5_in1_ready, Node5_in0_ready}), 
-		.data_out_bus({Node5_out2_data, Node5_out1_data, Node5_out0_data}), .valid_out_bus({Node5_out2_valid, Node5_out1_valid, Node5_out0_valid}), .ready_out_bus({Node5_out2_ready, Node5_out1_ready, Node5_out0_ready}));
+		.data_in_bus({Node5_in1_data, Node5_in0_data}), .valid_in_bus({Node5_in1_valid, Node5_in0_valid}), .ready_in_bus({Node5_in1_ready, Node5_in0_ready}), 
+		.data_out_bus({Node5_out1_data, Node5_out0_data}), .valid_out_bus({Node5_out1_valid, Node5_out0_valid}), .ready_out_bus({Node5_out1_ready, Node5_out0_ready}));
 
 endmodule
 

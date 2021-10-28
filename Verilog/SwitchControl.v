@@ -24,7 +24,7 @@ module SwitchControl
 	output reg [INPUTS - 1 : 0] PortReserved = 0	//Tells which input ports have reserved an output port for routing.
 	);
 	
-	integer i, j;
+	//integer i, j;
 	
 //	reg [OUTPUTS - 1 : 0] outputBusy = 0;//Tells which outputs are currently busy with transaction.
 	reg [OUTPUTS - 1 : 0] switchRequest = 0;
@@ -46,100 +46,109 @@ module SwitchControl
 	//These registers store the FSM states of all the output ports
 	reg [STATE_WIDTH * INPUTS - 1 : 0] switchState = 0, switchState_next = 0;
 	
+	integer i0;
 	//State Transition for all Output Ports
 	always @(posedge clk)begin
-		for(i = INPUTS - 1; i >= 0; i = i - 1)
+		for(i0 = INPUTS - 1; i0 >= 0; i0 = i0 - 1)
 			if(rst)
-				switchState[i * STATE_WIDTH +: STATE_WIDTH] <= UnRouted;
+				switchState[i0 * STATE_WIDTH +: STATE_WIDTH] <= UnRouted;
 			else 
-				switchState[i * STATE_WIDTH +: STATE_WIDTH] <= switchState_next[i * STATE_WIDTH +: STATE_WIDTH];
+				switchState[i0 * STATE_WIDTH +: STATE_WIDTH] <= switchState_next[i0 * STATE_WIDTH +: STATE_WIDTH];
 	end
 	
+	integer i1;
 	//Next state logic for all Output Ports
 	always @(*)begin
-		for(i = INPUTS - 1; i >= 0; i = i - 1)
-			case(switchState[i * STATE_WIDTH +: STATE_WIDTH])
-				UnRouted : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = routeReserveRequestValid[i] ? Check : UnRouted;
-				Check : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = PortBusy[i] ? Check : Conflict[i] ? Arbitrate : PathReserved1;
-				Arbitrate :  switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = ~Conflict[i] & ~PortBusy[i] ? PathReserved1 : Arbitrate;
-				PathReserved1 : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = PathReserved0;
-				PathReserved0 : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = ~routeRelieve[i] ? PathReserved0 : UnRouted;
-				default : switchState_next[i * STATE_WIDTH +: STATE_WIDTH] = UnRouted;
+		for(i1 = INPUTS - 1; i1 >= 0; i1 = i1 - 1)
+			case(switchState[i1 * STATE_WIDTH +: STATE_WIDTH])
+				UnRouted : switchState_next[i1 * STATE_WIDTH +: STATE_WIDTH] = routeReserveRequestValid[i1] ? Check : UnRouted;
+				Check : switchState_next[i1 * STATE_WIDTH +: STATE_WIDTH] = PortBusy[i1] ? Check : Conflict[i1] ? Arbitrate : PathReserved1;
+				Arbitrate :  switchState_next[i1 * STATE_WIDTH +: STATE_WIDTH] = ~Conflict[i1] & ~PortBusy[i1] ? PathReserved1 : Arbitrate;
+				PathReserved1 : switchState_next[i1 * STATE_WIDTH +: STATE_WIDTH] = PathReserved0;
+				PathReserved0 : switchState_next[i1 * STATE_WIDTH +: STATE_WIDTH] = ~routeRelieve[i1] ? PathReserved0 : UnRouted;
+				default : switchState_next[i1 * STATE_WIDTH +: STATE_WIDTH] = UnRouted;
 			endcase
 	end
 	
+	integer i2;
 	//Port Busy Signal
 	always @(*)
-		for(i = INPUTS - 1; i >= 0; i = i - 1)
-			PortBusy[i] = outputBusy[routeReserveRequest[i * REQUEST_WIDTH +: REQUEST_WIDTH]];
+		for(i2 = INPUTS - 1; i2 >= 0; i2 = i2 - 1)
+			PortBusy[i2] = outputBusy[routeReserveRequest[i2 * REQUEST_WIDTH +: REQUEST_WIDTH]];
 	
 
+	integer i3;
 	//PortReserved Signal
 	always @(*)
-		for(i = INPUTS - 1; i >= 0; i = i - 1)
-			PortReserved[i] = switchState[i * STATE_WIDTH +: STATE_WIDTH] == PathReserved0;
+		for(i3 = INPUTS - 1; i3 >= 0; i3 = i3 - 1)
+			PortReserved[i3] = switchState[i3 * STATE_WIDTH +: STATE_WIDTH] == PathReserved0;
 	
 
+	integer i4, j4;
 	//Conflict Signal
 	//If conflict is high, this means that two inputs are racing for the same output port
 	always @(*)
-		for(i = INPUTS - 1; i >= 0; i = i - 1)begin//i = 0 will always be dispatched in case if it is in a conflict
-			Conflict[i] = 1'b0;
-			for(j = i - 1; j >= 0; j = j - 1)
+		for(i4 = INPUTS - 1; i4 >= 0; i4 = i4 - 1)begin//i = 0 will always be dispatched in case if it is in a conflict
+			Conflict[i4] = 1'b0;
+			for(j4 = i4 - 1; j4 >= 0; j4 = j4 - 1)
 				// If there is a conflict in the port, it will not be reported for
 				//the lower index. This way we ensure that atleast one conflicted signal 
 				//reserves a path.
-				Conflict[i] = Conflict[i] | 
-					((routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == routeReserveRequest[i * REQUEST_WIDTH +: REQUEST_WIDTH]) & routeReserveRequestValid[i] & routeReserveRequestValid[j]
-					 & (switchState[i * STATE_WIDTH +: STATE_WIDTH] != UnRouted));//switchState needs to be checked so that a conflicted signal can be dispatched after other signal has finished
+				Conflict[i4] = Conflict[i4] | 
+					((routeReserveRequest[j4 * REQUEST_WIDTH +: REQUEST_WIDTH] == routeReserveRequest[i4 * REQUEST_WIDTH +: REQUEST_WIDTH]) & routeReserveRequestValid[i4] & routeReserveRequestValid[j4]
+					 & (switchState[i4 * STATE_WIDTH +: STATE_WIDTH] != UnRouted));//switchState needs to be checked so that a conflicted signal can be dispatched after other signal has finished
 		end
 				
-	
+	integer i5;
 	//routeReserveStatus Signal
 	always @(*)
-		for(i = INPUTS - 1; i >= 0; i = i - 1)
-			routeReserveStatus[i] = switchState[i * STATE_WIDTH +: STATE_WIDTH] == PathReserved1;
+		for(i5 = INPUTS - 1; i5 >= 0; i5 = i5 - 1)
+			routeReserveStatus[i5] = switchState[i5 * STATE_WIDTH +: STATE_WIDTH] == PathReserved1;
 	
+	integer i6;
 	always @(posedge clk)begin
-		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
+		for(i6 = OUTPUTS - 1; i6 >= 0; i6 = i6 - 1)begin
 			if(rst) 
-				outputBusy[i] <= 0;
+				outputBusy[i6] <= 0;
 			else 
-			if(outputRelieve[i])
-				outputBusy[i] <= 0;
+			if(outputRelieve[i6])
+				outputBusy[i6] <= 0;
 			else
-			//Input with lower i is given more priority
-			if(~outputBusy[i] & switchRequest[i])//If the output is not busy and there is a switch request
-				outputBusy[i] <= 1;		
+			//Input with lower i6 is given more priority
+			if(~outputBusy[i6] & switchRequest[i6])//If the output is not busy and there is a switch request
+				outputBusy[i6] <= 1;		
 		end
 	end
 
+	integer i7, j7;
 	always @(posedge clk)begin
 		if(rst)
 			routeSelect = 0;
 		else
-		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
+		for(i7 = OUTPUTS - 1; i7 >= 0; i7 = i7 - 1)begin
 		//Keep the previous route reserve request until it is overwritten.
 			//routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] = 0;
-			for(j = INPUTS - 1; j >= 0; j = j - 1)
-				if(routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & switchState[j * STATE_WIDTH +: STATE_WIDTH] == PathReserved1)
-					routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] = j;
+			for(j7 = INPUTS - 1; j7 >= 0; j7 = j7 - 1)
+				if(routeReserveRequest[j7 * REQUEST_WIDTH +: REQUEST_WIDTH] == i7 & switchState[j7 * STATE_WIDTH +: STATE_WIDTH] == PathReserved1)
+					routeSelect[i7 * REQUEST_WIDTH +: REQUEST_WIDTH] = j7;
 		end
 	end
 	
+	integer i8, j8;
 	always @(*)begin
-		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
-			switchRequest[i] = 0;
-			for(j = INPUTS - 1; j >= 0; j = j - 1)//To be generated when the path is actually reserved.
-				switchRequest[i] = switchRequest[i] | (routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & (~PortBusy[j] | Conflict[j])) & (switchState[j * STATE_WIDTH +: STATE_WIDTH] == PathReserved1);
+		for(i8 = OUTPUTS - 1; i8 >= 0; i8 = i8 - 1)begin
+			switchRequest[i8] = 0;
+			for(j8 = INPUTS - 1; j8 >= 0; j8 = j8 - 1)//To be generated when the path is actually reserved.
+				switchRequest[i8] = switchRequest[i8] | (routeReserveRequest[j8 * REQUEST_WIDTH +: REQUEST_WIDTH] == i8 & (~PortBusy[j8] | Conflict[j8])) & (switchState[j8* STATE_WIDTH +: STATE_WIDTH] == PathReserved1);
 		end
 	end
 	
+	integer i9, j9;
 	always @(*)begin
-		for(i = OUTPUTS - 1; i >= 0; i = i - 1)begin
-			outputRelieve[i] = 0;
-			for(j = INPUTS - 1; j >= 0; j = j - 1)
-				outputRelieve[i] = outputRelieve[i] | (routeReserveRequest[j * REQUEST_WIDTH +: REQUEST_WIDTH] == i & routeRelieve[j]);
+		for(i9 = OUTPUTS - 1; i9 >= 0; i9 = i9 - 1)begin
+			outputRelieve[i9] = 0;
+			for(j9 = INPUTS - 1; j9 >= 0; j9 = j9 - 1)
+				outputRelieve[i9] = outputRelieve[i9] | (routeReserveRequest[j9 * REQUEST_WIDTH +: REQUEST_WIDTH] == i9 & routeRelieve[j9]);
 		end
 	end
 	
