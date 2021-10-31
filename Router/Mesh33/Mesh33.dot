@@ -16,38 +16,38 @@ Digraph G {
 	color = "darkgreen";
 		label = "block1";
 		"Node0" -> "Node1" [color = "magenta", from = "out1", to = "in3", Router = true];
-		"Node0" -> "Node3" [color = "magenta", from = "out2", to = "in2", Router = true];
+		"Node0" -> "Node3" [color = "magenta", from = "out2", to = "in3", Router = true];
 		
 		"Node1" -> "Node0" [color = "magenta", from = "out3", to = "in1", Router = true];
 		"Node1" -> "Node2" [color = "magenta", from = "out2", to = "in1", Router = true];
 		"Node1" -> "Node4" [color = "magenta", from = "out1", to = "in3", Router = true];
 		
 		
-		"Node2" -> "Node1" [color = "magenta", from = "out1", to = "in2", Router = true];
+		"Node2" -> "Node1" [color = "magenta", from = "out2", to = "in1", Router = true];
 		"Node2" -> "Node5" [color = "magenta", from = "out2", to = "in1", Router = true];
 		
-		"Node3" -> "Node0" [color = "magenta", from = "out2", to = "in2", Router = true];
-		"Node3" -> "Node4" [color = "magenta", from = "out3", to = "in1", Router = true];
+		"Node3" -> "Node0" [color = "magenta", from = "out3", to = "in2", Router = true];
+		"Node3" -> "Node4" [color = "magenta", from = "out2", to = "in1", Router = true];
 		"Node3" -> "Node6" [color = "magenta", from = "out1", to = "in2", Router = true];
 		
 		"Node4" -> "Node1" [color = "magenta", from = "out3", to = "in1", Router = true];
-		"Node4" -> "Node3" [color = "magenta", from = "out3", to = "in3", Router = true];
+		"Node4" -> "Node3" [color = "magenta", from = "out1", to = "in2", Router = true];
 		"Node4" -> "Node5" [color = "magenta", from = "out4", to = "in3", Router = true];
-		"Node4" -> "Node7" [color = "magenta", from = "out2", to = "in1", Router = true];
+		"Node4" -> "Node7" [color = "magenta", from = "out2", to = "in3", Router = true];
 		
 		"Node5" -> "Node2" [color = "magenta", from = "out1", to = "in2", Router = true];
 		"Node5" -> "Node4" [color = "magenta", from = "out3", to = "in4", Router = true];
 		"Node5" -> "Node8" [color = "magenta", from = "out2", to = "in1", Router = true];
 		
 		"Node6" -> "Node3" [color = "magenta", from = "out2", to = "in1", Router = true];
-		"Node6" -> "Node7" [color = "magenta", from = "out1", to = "in3", Router = true];
+		"Node6" -> "Node7" [color = "magenta", from = "out1", to = "in2", Router = true];
 		
-		"Node7" -> "Node4" [color = "magenta", from = "out1", to = "in2", Router = true];
-		"Node7" -> "Node6" [color = "magenta", from = "out3", to = "in1", Router = true];
-		"Node7" -> "Node8" [color = "magenta", from = "out2", to = "in3", Router = true];
+		"Node7" -> "Node4" [color = "magenta", from = "out3", to = "in2", Router = true];
+		"Node7" -> "Node6" [color = "magenta", from = "out2", to = "in1", Router = true];
+		"Node7" -> "Node8" [color = "magenta", from = "out1", to = "in3", Router = true];
 		
 		"Node8" -> "Node5" [color = "magenta", from = "out1", to = "in2", Router = true];
-		"Node8" -> "Node7" [color = "magenta", from = "out3", to = "in2", Router = true];
+		"Node8" -> "Node7" [color = "magenta", from = "out3", to = "in1", Router = true];
 		
 	}
 
