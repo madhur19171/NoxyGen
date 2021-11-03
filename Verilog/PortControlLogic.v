@@ -13,6 +13,10 @@ module PortControlLogic
 	(
 	input clk,
 	input rst,
+	
+	//From FIFO
+	input [DATA_WIDTH - 1 : 0] data_in,//For Head Flit Buffer
+	
 	//Input Controls
 	input valid_in,
 	output ready_in,
@@ -90,7 +94,7 @@ module PortControlLogic
 	(.clk(clk),
 	.rst(rst),
 	.Handshake(Handshake),
-	.Head_Phit(Head_Phit),
+	.Head_Phit(data_in),//From FIFO
 	.headFlitValid(headFlitValid),
 	.phitCounter(phitCounter),
 	.reserveRoute(reserveRoute),
