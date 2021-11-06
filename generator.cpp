@@ -79,7 +79,7 @@ int main()
     MyFile << "\n";
     MyFile << "\t\tNode" << path_nodes[i] << "_valid_in = 0;";
     FILE *fp;
-    fp = fopen("input_A.dat", "r");
+    fp = fopen("input_q.dat", "r");
     int count = 1;
     char c;
     // Check if file exists
