@@ -46,7 +46,7 @@ module MuxSwitch
 		//Lower i inputs will be given prority with this design
 		for(i1 = OUTPUTS - 1; i1 >= 0; i1 = i1 - 1)begin
 			for(j1 = INPUTS - 1; j1 >= 0; j1 = j1 - 1)
-				if(routeSelect[i1 * REQUEST_WIDTH +: REQUEST_WIDTH] == j1 & PortReserved[j1])//Port that feeds the output should be reserved.
+				if(routeSelect[i1 * REQUEST_WIDTH +: REQUEST_WIDTH] == j1 & PortReserved[j1] & outputBusy[i1])//Port that feeds the output should be reserved.
 					data_out[i1 * DATA_WIDTH +: DATA_WIDTH] = data_in[j1 * DATA_WIDTH +: DATA_WIDTH];
 			end
 	end
@@ -58,8 +58,8 @@ module MuxSwitch
 		//Lower i inputs will be given prority with this design
 		for(i2 = OUTPUTS - 1; i2 >= 0; i2 = i2 - 1)begin
 			for(j2 = INPUTS - 1; j2 >= 0; j2 = j2 - 1)
-				if(routeSelect[i2 * REQUEST_WIDTH +: REQUEST_WIDTH] == j2 & PortReserved[j2])//Port that feeds the output should be reserved.
-					valid_out[i2] = valid_in[j2] & outputBusy[i2];
+				if(routeSelect[i2 * REQUEST_WIDTH +: REQUEST_WIDTH] == j2 & PortReserved[j2] & outputBusy[i2])//Port that feeds the output should be reserved.
+					valid_out[i2] = valid_in[j2];
 			//Send valid_out only when the output port is routed otherwise the next router may unintentionally receive high valid_in
 		end
 	end
@@ -71,8 +71,8 @@ module MuxSwitch
 		for(i3 = INPUTS - 1; i3 >= 0; i3 = i3 - 1)begin
 			ready_in[i3] = 0;
 			for(j3 = OUTPUTS - 1; j3 >= 0; j3 = j3 - 1)
-				if(routeSelect[j3 * REQUEST_WIDTH +: REQUEST_WIDTH] == i3 & outputBusy[j3])
-					ready_in[i3] = ready_out[j3] & PortReserved[i3];
+				if(routeSelect[j3 * REQUEST_WIDTH +: REQUEST_WIDTH] == i3 & outputBusy[j3] & PortReserved[i3])
+					ready_in[i3] = ready_out[j3];
 					//Relay the ready_in signal only for those inputs for which the path has actually been reserved.
 		end
 	end

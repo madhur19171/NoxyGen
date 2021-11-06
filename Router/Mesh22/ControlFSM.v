@@ -102,7 +102,7 @@ module ControlFSM
 
 
 //--------------------------------------PhitCounter Begins(Mealy: flitValid --> TODO: Try to make Moore for better clock period)------------------------------
-	always @(posedge clk)begin
+	/*always @(posedge clk)begin
 		if(rst)
 			phitCounter <= #0.75 0;
 		else
@@ -114,6 +114,9 @@ module ControlFSM
 		if(Handshake)
 			phitCounter <= #0.75 phitCounter + 1;
 	end
+	*/
+	
+	//phitCounter remains 0 for PhitPerFlit = 1
 	
 	//Since flitValid is made high on the same clock cycle as the last phit is captured,
 	//by the time Unrouted->HeadFlit, there is an extra phit captured in the buffer.

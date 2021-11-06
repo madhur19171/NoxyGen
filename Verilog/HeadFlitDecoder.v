@@ -18,21 +18,21 @@ module HeadFlitDecoder #(
 	integer index = INDEX;
 	
 	integer i;
-//	initial begin
-//	//Routing Table needs to be initialized here
-//		$sformat(pathString,"%s %d %s",str1,INDEX);
-//		for(i = 0; i < N; i = i + 1)
-//			RoutingTable[0][i] = 0;//We can populate Routing Table from a file as well
-//		$readmemb({"/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/Verilog/RoutingTable/Node", (INDEX + 48)}, RoutingTable);
-//	end
-	
 	initial begin
 	//Routing Table needs to be initialized here
-		$sformat(pathString,"/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/Verilog/RoutingTable/Node%0d", index);
+//		$sformat(pathString,"%s %d %s",str1,INDEX);
 		for(i = 0; i < N; i = i + 1)
 			RoutingTable[0][i] = 0;//We can populate Routing Table from a file as well
-		$readmemb(pathString, RoutingTable);
+		$readmemb({"/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/Router/Mesh22/RoutingTable/Node", (INDEX + 48), ".mem"}, RoutingTable);
 	end
+	
+//	initial begin
+//	//Routing Table needs to be initialized here
+//		$sformat(pathString,"/media/madhur/SanDisk/Router/RoutingTable/Node%0d", index);
+//		for(i = 0; i < N; i = i + 1)
+//			RoutingTable[0][i] = 0;//We can populate Routing Table from a file as well
+//		$readmemb(pathString, RoutingTable);
+//	end
 
 	wire [$clog2(N) - 1 : 0] Destination;
 	

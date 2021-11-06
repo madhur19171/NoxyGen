@@ -33,6 +33,8 @@ module SwitchControl
 	reg [INPUTS - 1 : 0] PortBusy = 0;
 	reg [INPUTS - 1 : 0] Conflict = 0;
 	
+	reg [INPUTS * REQUEST_WIDTH - 1 : 0] pendingRouteReserveRequest = 0;
+	
 //TODO: Handle the situation when two requests come in consecutive clock cycles.
 //For this, outputBusy has to be made high as soon as we know that the request will reserve the path
 //This needs to be done in one clock cycle.
@@ -51,9 +53,9 @@ module SwitchControl
 	always @(posedge clk)begin
 		for(i0 = INPUTS - 1; i0 >= 0; i0 = i0 - 1)
 			if(rst)
-				switchState[i0 * STATE_WIDTH +: STATE_WIDTH] <= UnRouted;
+				switchState[i0 * STATE_WIDTH +: STATE_WIDTH] <= #1.25 UnRouted;
 			else 
-				switchState[i0 * STATE_WIDTH +: STATE_WIDTH] <= switchState_next[i0 * STATE_WIDTH +: STATE_WIDTH];
+				switchState[i0 * STATE_WIDTH +: STATE_WIDTH] <= #1.25 switchState_next[i0 * STATE_WIDTH +: STATE_WIDTH];
 	end
 	
 	integer i1;
@@ -109,14 +111,14 @@ module SwitchControl
 	always @(posedge clk)begin
 		for(i6 = OUTPUTS - 1; i6 >= 0; i6 = i6 - 1)begin
 			if(rst) 
-				outputBusy[i6] <= 0;
+				outputBusy[i6] <= #0.75 0;
 			else 
 			if(outputRelieve[i6])
-				outputBusy[i6] <= 0;
+				outputBusy[i6] <= #0.75 0;
 			else
 			//Input with lower i6 is given more priority
 			if(~outputBusy[i6] & switchRequest[i6])//If the output is not busy and there is a switch request
-				outputBusy[i6] <= 1;		
+				outputBusy[i6] <= #0.75 1;		
 		end
 	end
 
@@ -143,12 +145,21 @@ module SwitchControl
 		end
 	end
 	
+	/*integer i9, j9;
+	always @(*)begin
+		for(i9 = OUTPUTS - 1; i9 >= 0; i9 = i9 - 1)begin
+			outputRelieve[i9] = 0;
+			for(j9 = INPUTS - 1; j9 >= 0; j9 = j9 - 1)
+				outputRelieve[i9] = outputRelieve[i9] | ((routeReserveRequest[j9 * REQUEST_WIDTH +: REQUEST_WIDTH] == i9 & routeRelieve[j9]));
+		end
+	end*/
+	
 	integer i9, j9;
 	always @(*)begin
 		for(i9 = OUTPUTS - 1; i9 >= 0; i9 = i9 - 1)begin
 			outputRelieve[i9] = 0;
 			for(j9 = INPUTS - 1; j9 >= 0; j9 = j9 - 1)
-				outputRelieve[i9] = outputRelieve[i9] | (routeReserveRequest[j9 * REQUEST_WIDTH +: REQUEST_WIDTH] == i9 & routeRelieve[j9]);
+				outputRelieve[i9] = outputRelieve[i9] | (routeRelieve[j9] & routeSelect[i9 * REQUEST_WIDTH +: REQUEST_WIDTH] == j9 & outputBusy[i9]);
 		end
 	end
 	

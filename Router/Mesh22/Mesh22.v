@@ -197,7 +197,7 @@ module Mesh22(
 		.data_in_bus({Node2_in2_data, Node2_in1_data, Node2_in0_data}), .valid_in_bus({Node2_in2_valid, Node2_in1_valid, Node2_in0_valid}), .ready_in_bus({Node2_in2_ready, Node2_in1_ready, Node2_in0_ready}), 
 		.data_out_bus({Node2_out2_data, Node2_out1_data, Node2_out0_data}), .valid_out_bus({Node2_out2_valid, Node2_out1_valid, Node2_out0_valid}), .ready_out_bus({Node2_out2_ready, Node2_out1_ready, Node2_out0_ready}));
 
-	Router #(.N(4), .INDEX(3), .INPUTS(3), .OUTPUTS(3), .DATA_WIDTH(32), .TYPE_WIDTH(2), .REQUEST_WIDTH($clog2(3)), .FlitPerPacket(6), .PhitPerFlit(1), .FIFO_DEPTH(16)) Router_Node3
+	Router #(.N(4), .INDEX(3), .INPUTS(3), .OUTPUTS(3), .DATA_WIDTH(32), .TYPE_WIDTH(2), .REQUEST_WIDTH($clog2(3)), .FlitPerPacket(6), .PhitPerFlit(1), .FIFO_DEPTH(32)) Router_Node3
 		(.clk(Node3_clk), .rst(Node3_rst),
 		.data_in_bus({Node3_in2_data, Node3_in1_data, Node3_in0_data}), .valid_in_bus({Node3_in2_valid, Node3_in1_valid, Node3_in0_valid}), .ready_in_bus({Node3_in2_ready, Node3_in1_ready, Node3_in0_ready}), 
 		.data_out_bus({Node3_out2_data, Node3_out1_data, Node3_out0_data}), .valid_out_bus({Node3_out2_valid, Node3_out1_valid, Node3_out0_valid}), .ready_out_bus({Node3_out2_ready, Node3_out1_ready, Node3_out0_ready}));

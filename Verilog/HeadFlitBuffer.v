@@ -30,10 +30,10 @@ module HeadFlitBuffer #(
 //--------------------------------------HeadBuffer Begins------------------------------
 	always @(posedge clk)begin
 		if(rst)
-			headBuffer <= 0;
+			headBuffer <= #0.75 0;
 		else 
 		if(Handshake & ~headFlitValidStatus & headFlitValid)
-			headBuffer[DATA_WIDTH * phitCounter +: DATA_WIDTH] <= Head_Phit;
+			headBuffer[DATA_WIDTH * phitCounter +: DATA_WIDTH] <= #0.75 Head_Phit;
 	end
 //--------------------------------------HeadBuffer Ends------------------------------
 
@@ -41,13 +41,13 @@ module HeadFlitBuffer #(
 //headFlitStatus 0 means that the head flit buffer is empty and new head flit can be stored in it.
 	always @(posedge clk)begin
 		if(rst)
-			headFlitValidStatus <= 0;
+			headFlitValidStatus <= #0.75 0;
 		else
 		if(routeReserveStatus_Switch)
-			headFlitValidStatus <= 0;
+			headFlitValidStatus <= #0.75 0;
 		else
 		if(headFlitValid)
-			headFlitValidStatus <= 1;
+			headFlitValidStatus <= #0.75 1;
 	end
 //--------------------------------------HeadFlitValidStatus Ends------------------------------
 
@@ -63,7 +63,7 @@ module HeadFlitBuffer #(
 
 	//As soon as valid head flit is received, a request will be sent
 	//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
-	assign routeReserveRequestValid = headFlitValidStatus;
+	assign #0.5 routeReserveRequestValid = headFlitValidStatus;
 
 	//A simple forwarding of this signal to the CFSM
 	assign routeReserveStatus_CFSM = routeReserveStatus_Switch;

@@ -130,7 +130,7 @@ module NoC_TB;
 		#20;
 		#20;
 
-		#5;
+//		#5;
 		Node0_valid_in = 1;
 		
 		for(i0 = 1; i0 <= 6; i0 = i0 + 1)begin
@@ -156,15 +156,15 @@ module NoC_TB;
 				@(negedge Node0_ready_in);
 			else wait(Node0_ready_in);
 			@(posedge clk);
-//			`ifdef VIVADO
-//			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
-//					//so that Vivado has enough time to setup the data.
-//			`endif
+			`ifdef VIVADO
+			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
+					//so that Vivado has enough time to setup the data.
+			`endif
 		end
 
 		#10 Node0_valid_in = 0;
 		
-		#15 Node0_valid_in = 1;
+		#10 Node0_valid_in = 1;
 		
 		for(i0 = 1; i0 <= 6; i0 = i0 + 1)begin
 			if(i0 == 1)begin//Routing destination fed into head flit
@@ -188,10 +188,10 @@ module NoC_TB;
 				@(negedge Node0_ready_in);
 			else wait(Node0_ready_in);
 			@(posedge clk);
-//			`ifdef VIVADO
-//			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
-//					//so that Vivado has enough time to setup the data.
-//			`endif
+			`ifdef VIVADO
+			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
+					//so that Vivado has enough time to setup the data.
+			`endif
 		end
 		
 		#10 Node0_valid_in = 0;
@@ -204,7 +204,7 @@ module NoC_TB;
 		#20;
 		#20;
 
-		#5;
+//		#5;
 		Node1_valid_in = 1;
 		
 		for(i1 = 1; i1 <= 6; i1 = i1 + 1)begin
@@ -229,10 +229,10 @@ module NoC_TB;
 				@(negedge Node1_ready_in);
 			else wait(Node1_ready_in);
 			@(posedge clk);
-//			`ifdef VIVADO
-//			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
-//					//so that Vivado has enough time to setup the data.
-//			`endif
+			`ifdef VIVADO
+			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
+					//so that Vivado has enough time to setup the data.
+			`endif
 		end
 
 		#10 Node1_valid_in = 0;
@@ -245,7 +245,7 @@ module NoC_TB;
 		#20;
 		#20;
 
-		#5;
+//		#5;
 		Node5_valid_in = 1;
 		
 		for(i5 = 1; i5 <= 6; i5 = i5 + 1)begin
@@ -270,10 +270,10 @@ module NoC_TB;
 				@(negedge Node5_ready_in);
 			else wait(Node5_ready_in);
 			@(posedge clk);
-//			`ifdef VIVADO
-//			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
-//					//so that Vivado has enough time to setup the data.
-//			`endif
+			`ifdef VIVADO
+			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
+					//so that Vivado has enough time to setup the data.
+			`endif
 		end
 
 		#10 Node5_valid_in = 0;
@@ -285,7 +285,7 @@ module NoC_TB;
 		#20;
 		#20;
 
-		#5;
+//		#5;
 		Node8_valid_in = 1;
 		
 		for(i8 = 1; i8 <= 6; i8 = i8 + 1)begin
@@ -310,10 +310,10 @@ module NoC_TB;
 				@(negedge Node8_ready_in);
 			else wait(Node8_ready_in);
 			@(posedge clk);
-//			`ifdef VIVADO
-//			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
-//					//so that Vivado has enough time to setup the data.
-//			`endif
+			`ifdef VIVADO
+			     @(negedge clk);//Vivado has some problem in scheduling data change at posedge trigger, so we provide new data at negedge
+					//so that Vivado has enough time to setup the data.
+			`endif
 		end
 
 		#10 Node8_valid_in = 0;
@@ -369,7 +369,7 @@ module NoC_TB;
 	initial begin
 		$dumpfile("NoC.vcd");
 		$dumpvars(0, NoC_TB);//Dump all the signals
-		#300 $finish;
+		#1000 $finish;
 	end
 	
 endmodule

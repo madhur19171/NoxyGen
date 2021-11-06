@@ -53,7 +53,7 @@ module PortControlLogic
 	wire routeReserveStatus_CFSM;
 	wire [DATA_WIDTH - 1 : 0]Head_Phit;
 	wire headFlitValid;
-	wire [$clog2(PhitPerFlit) : 0] phitCounter = 0;
+	wire [$clog2(PhitPerFlit) : 0] phitCounter;
 	wire headFlitStatus;
 	wire Handshake;
 	

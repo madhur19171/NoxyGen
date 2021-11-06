@@ -102,7 +102,7 @@ module ControlFSM
 
 
 //--------------------------------------PhitCounter Begins(Mealy: flitValid --> TODO: Try to make Moore for better clock period)------------------------------
-	always @(posedge clk)begin
+	/*always @(posedge clk)begin
 		if(rst)
 			phitCounter <= #0.75 0;
 		else
@@ -114,13 +114,16 @@ module ControlFSM
 		if(Handshake)
 			phitCounter <= #0.75 phitCounter + 1;
 	end
+	*/
+	
+	//phitCounter remains 0 for PhitPerFlit = 1
 	
 	//Since flitValid is made high on the same clock cycle as the last phit is captured,
 	//by the time Unrouted->HeadFlit, there is an extra phit captured in the buffer.
 	//Either received 1 flit, or about to receive the last phit of the flit.
 
     always @(*)begin
-        if(phitCounter == PhitPerFlit | (phitCounter == (PhitPerFlit - 1) & Handshake))
+        if((phitCounter == (PhitPerFlit - 1) & Handshake))//if(phitCounter == PhitPerFlit | (phitCounter == (PhitPerFlit - 1) & Handshake))
             flitValid = #0.5 1;
         else 
             flitValid = #0.5 0;
@@ -148,7 +151,7 @@ module ControlFSM
 			flitCounter <= #0.75 0;//This is just to reset the Counter after all the Flits in the packet are received.
 					//Not doing this will probably have no impact on the functionality.
 		else
-		if(flitValid & state == HeadFlit)
+		if(state == HeadFlit)//Changed for VIVADO
 			flitCounter <= #0.75 1;
 		else
 		if(flitValid & state == Route)
@@ -203,8 +206,18 @@ module ControlFSM
 	//valid_in should be high before ready_in is made high
 	//State should be UnRouted to receive Head Flit or it should be Route while routing the packets
 	//after the path has been set up.
+	
+	reg ready_in_temp = 0;
+	
+	always @(negedge clk)begin
+	   ready_in_temp <= 0;
+	   if(~full & valid_in & (state == UnRouted | state == Route)
+				| full & valid_in & (state == Route) & valid_out & ready_out)
+	   ready_in_temp <= 1;
+	end
+	
 	assign #1 ready_in = ~full & valid_in & (state == UnRouted | state == Route)
-				| full & valid_in & (state == Route) & valid_out & ready_out;
+				| full & valid_in & (state == Route) & valid_out & ready_out | ready_in_temp;
 				//ready_in can also be high when incoming data is directly forwarded to the output and 
 				//and the receiver is ready to accept the handshake in route state.
 
