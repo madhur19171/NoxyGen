@@ -76,29 +76,29 @@ module No_tb;
 	wire Node7_ready_out=0;
 
 	Noc noc (.clk(clk), .rst(rst),
-	.Node0_data_in(Node0_data_in),Node0_valid_in(Node0_valid_in), .Node0_ready_in(Node0_ready_in),
-	.Node0_data_out(Node0_data_out),Node0_valid_out(Node0_valid_out), .Node0_ready_out(Node0_ready_out),
+	.Node0_data_in(Node0_data_in),.Node0_valid_in(Node0_valid_in), .Node0_ready_in(Node0_ready_in),
+	.Node0_data_out(Node0_data_out),.Node0_valid_out(Node0_valid_out), .Node0_ready_out(Node0_ready_out),
 
-	.Node1_data_in(Node1_data_in),Node1_valid_in(Node1_valid_in), .Node1_ready_in(Node1_ready_in),
-	.Node1_data_out(Node1_data_out),Node1_valid_out(Node1_valid_out), .Node1_ready_out(Node1_ready_out),
+	.Node1_data_in(Node1_data_in),.Node1_valid_in(Node1_valid_in), .Node1_ready_in(Node1_ready_in),
+	.Node1_data_out(Node1_data_out),.Node1_valid_out(Node1_valid_out), .Node1_ready_out(Node1_ready_out),
 
-	.Node2_data_in(Node2_data_in),Node2_valid_in(Node2_valid_in), .Node2_ready_in(Node2_ready_in),
-	.Node2_data_out(Node2_data_out),Node2_valid_out(Node2_valid_out), .Node2_ready_out(Node2_ready_out),
+	.Node2_data_in(Node2_data_in),.Node2_valid_in(Node2_valid_in), .Node2_ready_in(Node2_ready_in),
+	.Node2_data_out(Node2_data_out),.Node2_valid_out(Node2_valid_out), .Node2_ready_out(Node2_ready_out),
 
-	.Node3_data_in(Node3_data_in),Node3_valid_in(Node3_valid_in), .Node3_ready_in(Node3_ready_in),
-	.Node3_data_out(Node3_data_out),Node3_valid_out(Node3_valid_out), .Node3_ready_out(Node3_ready_out),
+	.Node3_data_in(Node3_data_in),.Node3_valid_in(Node3_valid_in), .Node3_ready_in(Node3_ready_in),
+	.Node3_data_out(Node3_data_out),.Node3_valid_out(Node3_valid_out), .Node3_ready_out(Node3_ready_out),
 
-	.Node4_data_in(Node4_data_in),Node4_valid_in(Node4_valid_in), .Node4_ready_in(Node4_ready_in),
-	.Node4_data_out(Node4_data_out),Node4_valid_out(Node4_valid_out), .Node4_ready_out(Node4_ready_out),
+	.Node4_data_in(Node4_data_in),.Node4_valid_in(Node4_valid_in), .Node4_ready_in(Node4_ready_in),
+	.Node4_data_out(Node4_data_out),.Node4_valid_out(Node4_valid_out), .Node4_ready_out(Node4_ready_out),
 
-	.Node5_data_in(Node5_data_in),Node5_valid_in(Node5_valid_in), .Node5_ready_in(Node5_ready_in),
-	.Node5_data_out(Node5_data_out),Node5_valid_out(Node5_valid_out), .Node5_ready_out(Node5_ready_out),
+	.Node5_data_in(Node5_data_in),.Node5_valid_in(Node5_valid_in), .Node5_ready_in(Node5_ready_in),
+	.Node5_data_out(Node5_data_out),.Node5_valid_out(Node5_valid_out), .Node5_ready_out(Node5_ready_out),
 
-	.Node6_data_in(Node6_data_in),Node6_valid_in(Node6_valid_in), .Node6_ready_in(Node6_ready_in),
-	.Node6_data_out(Node6_data_out),Node6_valid_out(Node6_valid_out), .Node6_ready_out(Node6_ready_out),
+	.Node6_data_in(Node6_data_in),.Node6_valid_in(Node6_valid_in), .Node6_ready_in(Node6_ready_in),
+	.Node6_data_out(Node6_data_out),.Node6_valid_out(Node6_valid_out), .Node6_ready_out(Node6_ready_out),
 
-	.Node7_data_in(Node7_data_in),Node7_valid_in(Node7_valid_in), .Node7_ready_in(Node7_ready_in),
-	.Node7_data_out(Node7_data_out),Node7_valid_out(Node7_valid_out), .Node7_ready_out(Node7_ready_out),
+	.Node7_data_in(Node7_data_in),.Node7_valid_in(Node7_valid_in), .Node7_ready_in(Node7_ready_in),
+	.Node7_data_out(Node7_data_out),.Node7_valid_out(Node7_valid_out), .Node7_ready_out(Node7_ready_out),
 
 	);
 	always #5 clk = ~clk;
