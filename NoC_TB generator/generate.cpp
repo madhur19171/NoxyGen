@@ -79,13 +79,13 @@ int main()
     MyFile << "\n";
     MyFile << "\t\tNode" << path_nodes[i] << "_valid_in = 0;";
     FILE *fp;
-    fp = fopen("input_q.dat", "r");
+    fp = fopen("./sim/sim/INPUT_VECTORS/input_q.dat", "r");
     int count = 1;
     char c;
     // Check if file exists
     if (fp == NULL)
     {
-      printf("Could not open file %s", "input_A.dat");
+      printf("Could not open file %s", "input_q.dat");
       return 0;
     }
 
@@ -111,7 +111,7 @@ int main()
   for (int i = 0; i < path_nodes_num; i++)
   {
     int k = path_nodes[i];
-    MyFile << "\n\n\tinteger i" << path_nodes[i] << ";";
+    MyFile << "\n\n\tinteger i" << path_nodes[i] << ", j" << path_nodes[i] << ";";
     //$readmemh("ex1.mem", ex1_memory);
     int num_of_messages = 2;
 
@@ -126,10 +126,9 @@ int main()
       MyFile << "\n\t\tNode" << path_nodes[i] << "_valid_in = 1;";
       MyFile<< " \n\t\t$readmemh(\"input_q.dat\",ex"<<path_nodes[i]<<"_memory);";
       //int line_count=(count-1)/6;
-      MyFile << "\n\tfor(j" << path_nodes[i] << " = 0; j" << path_nodes[i] << " <"<<line_count[i]<<"; j" << path_nodes[i] << "= j" << path_nodes[i] << " + 1)begin";
-      MyFile << "\n\t\tfor(i" << path_nodes[i] << " = 0; i" << path_nodes[i] << " < 6; i" << path_nodes[i] << "= i" << path_nodes[i] << " + 1)begin";
-      MyFile << "\n\t\t\t";
-      MyFile << "\n\t\t\t\tNode" << k << "_data_in=ex"<<path_nodes[i]<<"_memory[j"<<path_nodes[i]<<"*6+i"<<path_nodes[i]<<"];\n\n\n\n\n";
+      MyFile << "\n\t\tfor(j" << path_nodes[i] << " = 0; j" << path_nodes[i] << " <"<<line_count[i]<<"; j" << path_nodes[i] << "= j" << path_nodes[i] << " + 1)begin";
+      MyFile << "\n\t\t\tfor(i" << path_nodes[i] << " = 0; i" << path_nodes[i] << " < 6; i" << path_nodes[i] << "= i" << path_nodes[i] << " + 1)begin";
+      MyFile << "\n\t\t\t\tNode" << k << "_data_in=ex"<<path_nodes[i]<<"_memory[j"<<path_nodes[i]<<"*6+i"<<path_nodes[i]<<"];";
       /*MyFile << "\n\t\t\t\tif(i" << k << " == 1)begin"
              << "//Routing destination fed into head flit";
       MyFile << "\n\t\t\t\t\tNode" << k << "_data_in=3'd" << i + 1 << ";\n\t\t\t\tend\n\t\t\t\telse";
@@ -141,13 +140,16 @@ int main()
       /*MyFile << "\n\t\t\t\tif(i" << k << " == 1)\n\t\t\t\t\t@(negedge Node" << k << "_ready_in);\n\t\t\t\telse wait(Node0_ready_in);";
       MyFile << "\n\t\t\t\t@(posedge clk);\n\t\t\t\t\t`ifdef VIVADO\n\t\t\t\t\t\t@(negedge clk);\n\t\t\t\t\t`endif";
       */
+      MyFile << "\n\t\t\tend";//Inner Loop End
+
+
+      MyFile << "\n\t\t\t#10 Node" << k << "_valid_in = 0;";
+      MyFile << "\n\t\t\t#15 Node" << 0 << "_valid_in = 1;";
       
-      MyFile << "\n\t\tend";
-      MyFile << "\n\tend";
-
-
-      MyFile << "\n\n\n";
-      MyFile << "\t\t#10 Node" << k << "_valid_in = 0;\n\t\t#15 Node" << 0 << "_valid_in = 1;";
+      MyFile << "\n\t\tend";//Outer Loop End
+      
+      MyFile << "\n\tend";//Initial End
+      MyFile << "\n\n";//Lines between two initial blocks
     }
 
     /*
