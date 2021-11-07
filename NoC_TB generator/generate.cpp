@@ -137,9 +137,9 @@ int main()
              << "\n\t\t\t\t\tNode" << k << "_data_in[" << param_data_width << ":" << param_data_width - 1 << "] = 2'd1;\n\t\t\t\tend";
       MyFile << "\n\t\t\t\telse if (i" << k << " == 6)\n\t\t\t\t\tNode" << k << "_data_in[" << param_data_width << ":" << param_data_width - 1 << "] =2'd3;\n\t\t\t\telse";
       MyFile << "\n\t\t\t\t\tNode" << k << "_data_in[" << param_data_width << ":" << param_data_width - 1 << "] = 2'd2"; //31 : 30] = 2'd2;"*/
-      /*MyFile << "\n\t\t\t\tif(i" << k << " == 1)\n\t\t\t\t\t@(negedge Node" << k << "_ready_in);\n\t\t\t\telse wait(Node0_ready_in);";
+      MyFile << "\n\t\t\t\tif(i" << k << " == 1)\n\t\t\t\t\t@(negedge Node" << k << "_ready_in);\n\t\t\t\telse wait(Node"<<k<<"_ready_in);";
       MyFile << "\n\t\t\t\t@(posedge clk);\n\t\t\t\t\t`ifdef VIVADO\n\t\t\t\t\t\t@(negedge clk);\n\t\t\t\t\t`endif";
-      */
+      
       MyFile << "\n\t\t\tend";//Inner Loop End
 
 
