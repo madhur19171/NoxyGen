@@ -58,8 +58,8 @@ int main()
 
   for (int i = 0; i <= num_of_nodes; i++)
   {
-    MyFile << "\t.Node" << i << "_data_in(Node" << i << "_data_in),Node" << i << "_valid_in(Node" << i << "_valid_in), .Node" << i << "_ready_in(Node" << i << "_ready_in),\n";
-    MyFile << "\t.Node" << i << "_data_out(Node" << i << "_data_out),Node" << i << "_valid_out(Node" << i << "_valid_out), .Node" << i << "_ready_out(Node" << i << "_ready_out),\n";
+    MyFile << "\t.Node" << i << "_data_in(Node" << i << "_data_in),.Node" << i << "_valid_in(Node" << i << "_valid_in), .Node" << i << "_ready_in(Node" << i << "_ready_in),\n";
+    MyFile << "\t.Node" << i << "_data_out(Node" << i << "_data_out),.Node" << i << "_valid_out(Node" << i << "_valid_out), .Node" << i << "_ready_out(Node" << i << "_ready_out),\n";
     MyFile << "\n";
   }
   MyFile << "\t);\n";
@@ -102,7 +102,7 @@ int main()
     cout << count;
     line_count[i]=(count)/6;
     fclose(fp);
-    MyFile << "\n\t\treg [" << 31 << ":0] ex" << path_nodes[i] << "_memory [0:" << count - 2<< "];";
+    MyFile << "\n\t\treg [" << 31 << ":0] ex" << path_nodes[i] << "_memory [0:" << count - 1<< "];";
   }
   int reset_time = 20;
   MyFile << "\n\n\t\t#" << reset_time << " rst=0";
