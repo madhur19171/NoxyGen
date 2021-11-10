@@ -33,17 +33,17 @@ int main()
 
   printf("There are %d files in the current directory.\n", num_of_files);
 
-  string names[] = {"Node0.dat", "Node1.dat", "Node2.dat", "Node3.dat", "Node4.dat", "Node5.dat", "Node6.dat", "Node7.dat", "Node8.dat"};
+  string names[num_of_files] = {"Node0.dat", "Node1.dat", "Node2.dat", "Node3.dat", "Node4.dat", "Node5.dat", "Node6.dat", "Node7.dat", "Node8.dat"};
   // Write to the file
   MyFile << "module NoC_TB;"
          << "\n"
-         << "\treg clk;\n\treg rst;\n"
-         <<"\t integer     fd; ";
+         << "\treg clk;\n\treg rst;\n";
 
   /*reg [31 : 0]Node0_data_in = 0;
 	reg Node0_valid_in = 0;
 	wire Node0_ready_in;
     */
+  //num_of_files=6;
   int param_data_width = 31;
   int num_of_nodes = num_of_files;
   for (int i = 0; i < num_of_nodes; i++)
@@ -62,7 +62,6 @@ int main()
     
     //$readmemh("ex1.mem", ex1_memory);
   }
-  MyFile<<" \n\t\t fd = $fopen(\"ms.out\", \"w\");";
 
   MyFile << "\n\n\tNoc noc (.clk(clk), .rst(rst),\n";
 
@@ -80,6 +79,7 @@ int main()
   MyFile << "\t);\n";
   int clk_period = 5;
   MyFile << "\talways #" << clk_period << " clk = ~clk;\n\n";
+  
 
   int path_nodes[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
   int num_of_messages[] = {0,0,0,0,0, 0, 0, 0, 0}; //If each router sends different data, thn this is the same as teh number of directories in the folder of .dat files
@@ -87,6 +87,10 @@ int main()
   cout << "Path Nodes Number: " << path_nodes_num << endl;
   MyFile << "\n\tinitial\n\tbegin";
   MyFile << "\n\t\tclk=1;\n\t\trst=1;\n\n";
+  for (int i = 0; i < num_of_nodes; i++){
+    MyFile << "\t\tfd"<<i<<"=$fopen(\"output"<<i<<".dat\",\"w\");\n";
+
+  }
   
   std::stringstream memory_instance;
 
@@ -185,6 +189,7 @@ MyFile<<"\n\t\t\t\t\tNode"<<k<<"_data_in["<<param_data_width<<":"<<param_data_wi
 MyFile<<"\n\t\t\t\tif(i"<<k<<" == 1)\n\t\t\t\t\t@(negedge Node"<<k<<"_ready_in);\n\t\t\t\telse wait(Node0_ready_in);";
 MyFile<<"\n\t\t\t\t@(posedge clk);\n\t\t\t\t\t`ifdef VIVADO\n\t\t\t\t\t\t@(negedge clk);\n\t\t\t\t\t`endif";
 MyFile<<"\n\t\t\tend";
+
 MyFile<<"\n\n\n";
 MyFile<<"\t\t#10 Node"<<k<<"_valid_in = 0;\n\t\t#15 Node"<<0<<"_valid_in = 1;";*/
 
@@ -208,10 +213,15 @@ MyFile<<"\n\t\t\tend";
     MyFile << "\t\t//Node" << path_nodes_num << "Output\n";
     MyFile << "\talways @(*)begin\n";
     MyFile << "\t\t\t Node" << i << "_ready_out = Node" << i << "_valid_out;";
-    MyFile << "\n\t\t\tif(Node"<<i<<"_valid_out==1) begin";
-    MyFile<< "\n\t\t\t\t $fwrite(fd, Node"<<i<<"_data_out); \n\t\t\tend";
-
     MyFile << "\n\tend\n";
+    MyFile << "\talways @(posedge clk) begin\n";
+    MyFile << "\t\tif(Node"<<i<<"_valid_out==1)begin\n";
+    MyFile << "\t\t\t$fwriteh(fd"<<i<<",Node"<<0<<"_data_out);\n";
+    MyFile << "\t\t\t$fwriteh(fd,\"\\n\");\n";
+    MyFile << "\t\tend\n";
+    MyFile << "\tend\n\n";
+
+
   }
 
   MyFile << "\tinitial begin\n";
