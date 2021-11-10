@@ -43,6 +43,7 @@ int main()
 	reg Node0_valid_in = 0;
 	wire Node0_ready_in;
     */
+  //num_of_files=6;
   int param_data_width = 31;
   int num_of_nodes = num_of_files;
   for (int i = 0; i < num_of_nodes; i++)
@@ -78,6 +79,7 @@ int main()
   MyFile << "\t);\n";
   int clk_period = 5;
   MyFile << "\talways #" << clk_period << " clk = ~clk;\n\n";
+  
 
   int path_nodes[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
   int num_of_messages[] = {0,0,0,0,0, 0, 0, 0, 0}; //If each router sends different data, thn this is the same as teh number of directories in the folder of .dat files
@@ -85,6 +87,10 @@ int main()
   cout << "Path Nodes Number: " << path_nodes_num << endl;
   MyFile << "\n\tinitial\n\tbegin";
   MyFile << "\n\t\tclk=1;\n\t\trst=1;\n\n";
+  for (int i = 0; i < num_of_nodes; i++){
+    MyFile << "\t\tfd"<<i<<"=$fopen(\"output"<<i<<".dat\",\"w\");\n";
+
+  }
   
   std::stringstream memory_instance;
 
@@ -208,6 +214,14 @@ MyFile<<"\n\t\t\tend";
     MyFile << "\talways @(*)begin\n";
     MyFile << "\t\t\t Node" << i << "_ready_out = Node" << i << "_valid_out;";
     MyFile << "\n\tend\n";
+    MyFile << "\talways @(posedge clk) begin\n";
+    MyFile << "\t\tif(Node"<<i<<"_valid_out==1)begin\n";
+    MyFile << "\t\t\t$fwriteh(fd"<<i<<",Node"<<0<<"_data_out);\n";
+    MyFile << "\t\t\t$fwriteh(fd,\"\\n\");\n";
+    MyFile << "\t\tend\n";
+    MyFile << "\tend\n\n";
+
+
   }
 
   MyFile << "\tinitial begin\n";
