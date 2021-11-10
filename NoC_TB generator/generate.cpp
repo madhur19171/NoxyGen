@@ -5,18 +5,20 @@
 #include <sstream>
 using namespace std;
 
-int main()
+int main(int argc,char** argv)
 {
   // Create and open a text file
   
   //Input file Directory
-  std::string directory = "./sim/sim/INPUT_VECTORS/";
-  
+  std::string directory = argv[1];
+  char direc[256]="";
+  cout<<argv[1];
+  strcat(direc,argv[1]); 
   ofstream MyFile("NoC_TB.v");
   DIR *dp;
   int num_of_files = 0;
   struct dirent *ep;
-  dp = opendir("./sim/sim/INPUT_VECTORS");
+  dp = opendir(direc);
 
   if (dp != NULL)
   {
@@ -34,6 +36,7 @@ int main()
   printf("There are %d files in the current directory.\n", num_of_files);
 
   string names[num_of_files] = {"Node0.dat", "Node1.dat", "Node2.dat", "Node3.dat", "Node4.dat", "Node5.dat", "Node6.dat", "Node7.dat", "Node8.dat"};
+  string delays[num_of_files] = {"delay0.dat", "delay1.dat", "delay2.dat", "delay3.dat", "delay4.dat", "delay5.dat", "delay6.dat", "delay7.dat", "delay8.dat"};
   // Write to the file
   MyFile << "module NoC_TB;"
          << "\n"
@@ -63,7 +66,7 @@ int main()
     //$readmemh("ex1.mem", ex1_memory);
   }
 
-  MyFile << "\n\n\tNoc noc (.clk(clk), .rst(rst),\n";
+  MyFile << "\n\n\tNoC noc (.clk(clk), .rst(rst),\n";
 
   for (int i = 0; i < num_of_nodes - 1; i++)
   {
@@ -125,6 +128,7 @@ int main()
     num_of_messages[i]=(count)/6;
     fclose(fp);
     memory_instance << "\n\t\treg [" << 31 << ":0] ex" << path_nodes[i] << "_memory [0:" << count - 1<< "];";
+    memory_instance << "\n\t\treg [" << 31 << ":0] delay" << path_nodes[i] << "_memory [0:" << count - 1<< "];";
   }
   int reset_time = 20;
   MyFile << "\n\n\t\t#" << reset_time << " rst=0;";
@@ -145,11 +149,13 @@ int main()
              << "\n\tinitial begin";
       MyFile << "\n\t\t#" << wait_time;
       MyFile<< " \n\t\t$readmemh(\"" << directory << names[i] << "\",ex"<<path_nodes[i]<<"_memory);";
+      MyFile<< " \n\t\t$readmemh(\"" << directory << delays[i] << "\",delay"<<path_nodes[i]<<"_memory);";
       //int num_of_messages=(count-1)/6;
       MyFile << "\n\t\tfor(j" << path_nodes[i] << " = 0; j" << path_nodes[i] << " < "<< num_of_messages[i]<<"; j" << path_nodes[i] << " = j" << path_nodes[i] << " + 1)begin";
       MyFile << "\n\t\t\tNode" << path_nodes[i] << "_valid_in = 1;";
       MyFile << "\n\t\t\tfor(i" << path_nodes[i] << " = 0; i" << path_nodes[i] << " < 6; i" << path_nodes[i] << " = i" << path_nodes[i] << " + 1)begin";
       MyFile << "\n\t\t\t\tNode" << k << "_data_in=ex"<<path_nodes[i]<<"_memory[j"<<path_nodes[i]<<"*6+i"<<path_nodes[i]<<"];\n";
+      MyFile << "\n\t\t\t\tfor(k" << path_nodes[i] << " = 0; k" << path_nodes[i] << " < delay"<<path_nodes[i]<<"_memory[i"<<path_nodes[i]<<"]; k" << path_nodes[i] << " = k" << path_nodes[i] << " + 1)begin\n\t\t\t\t\t#1\n\t\t\t\tend";
       /*MyFile << "\n\t\t\t\tif(i" << k << " == 1)begin"
              << "//Routing destination fed into head flit";
       MyFile << "\n\t\t\t\t\tNode" << k << "_data_in=3'd" << i + 1 << ";\n\t\t\t\tend\n\t\t\t\telse";
@@ -158,7 +164,7 @@ int main()
              << "\n\t\t\t\t\tNode" << k << "_data_in[" << param_data_width << ":" << param_data_width - 1 << "] = 2'd1;\n\t\t\t\tend";
       MyFile << "\n\t\t\t\telse if (i" << k << " == 6)\n\t\t\t\t\tNode" << k << "_data_in[" << param_data_width << ":" << param_data_width - 1 << "] =2'd3;\n\t\t\t\telse";
       MyFile << "\n\t\t\t\t\tNode" << k << "_data_in[" << param_data_width << ":" << param_data_width - 1 << "] = 2'd2"; //31 : 30] = 2'd2;"*/
-      MyFile << "\t\t\t\tif(i" << k << " == 0) begin\n";
+      MyFile << "\n\t\t\t\tif(i" << k << " == 0) begin\n";
       MyFile << "\t\t\t\t\t$display(\"Node" << path_nodes[i] << ": Message: %d	Destination: %d\", (j" << path_nodes[i] << " + 1), Node" << path_nodes[i] << "_data_in[3:0]);\n";
       MyFile << "\t\t\t\t\t@(negedge Node" << k << "_ready_in);\n";
       MyFile << "\t\t\t\tend\n";
