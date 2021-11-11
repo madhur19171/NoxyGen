@@ -7,7 +7,7 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	char file_name[256]="";
-	strcat(file_name,"delay_Node");
+	strcat(file_name,"delay");
 	strcat(file_name,argv[3]);
 	strcat(file_name,".dat");
 	ofstream MyFile(file_name);
