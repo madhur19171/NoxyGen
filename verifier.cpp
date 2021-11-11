@@ -71,3 +71,6 @@ int main()
     fclose(fp2);
     return 0;
 }
+
+//references
+//geek for geeks
