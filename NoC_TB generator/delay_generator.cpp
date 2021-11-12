@@ -3,9 +3,12 @@
 #include<stdlib.h>
 #include<fstream>
 #include<string.h>
+#include<time.h>
+
 using namespace std;
 int main(int argc, char** argv)
 {
+	srand(time(0));
 	char file_name[256]="";
 	strcat(file_name,"delay");
 	strcat(file_name,argv[3]);
