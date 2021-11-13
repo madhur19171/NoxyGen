@@ -23,7 +23,7 @@ module HeadFlitDecoder #(
 //		$sformat(pathString,"%s %d %s",str1,INDEX);
 		for(i = 0; i < N; i = i + 1)
 			RoutingTable[0][i] = 0;//We can populate Routing Table from a file as well
-		$readmemb({"/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/Router/Mesh22/RoutingTable/Node", (INDEX + 48), ".mem"}, RoutingTable);
+		$readmemb({"/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/Router/Mesh33/RoutingTable/Node", (INDEX + 48), ".mem"}, RoutingTable);
 	end
 	
 //	initial begin

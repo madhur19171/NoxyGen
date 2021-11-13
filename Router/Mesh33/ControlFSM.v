@@ -151,7 +151,7 @@ module ControlFSM
 			flitCounter <= #0.75 0;//This is just to reset the Counter after all the Flits in the packet are received.
 					//Not doing this will probably have no impact on the functionality.
 		else
-		if(state == UnRouted & flitValid)//Changed for VIVADO
+		if(state == HeadFlit)//Changed for VIVADO
 			flitCounter <= #0.75 1;
 		else
 		if(flitValid & state == Route)
@@ -179,10 +179,6 @@ module ControlFSM
 //			
 //	end
 
-	//pushBuffer_state is depreciated.
-	//It was kept so that another packet may not enter HFB unless the current packet is routed
-	//However, it will no longer be a problem since the switchControl will not give up the route unless the
-	//previous packet has sent a releiving signal.
 	always @(posedge clk)begin
 		if(rst)
 			pushBuffer_state <= #0.75 0;
@@ -191,7 +187,7 @@ module ControlFSM
 		else if(state == ReservePath & routeReserveStatus)//Just going to Route state
 			pushBuffer_state <= #0.75 1;
 		else if(TailReceived)//Stop receiving any buffers as soon you receive the Tail
-			pushBuffer_state <= #0.75 1;	
+			pushBuffer_state <= #0.75 0;	
 	end
 
 	assign #0.5 pushBuffer = pushBuffer_state & Handshake;
