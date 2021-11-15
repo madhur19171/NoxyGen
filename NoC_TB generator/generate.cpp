@@ -182,14 +182,13 @@ int main(int argc,char** argv)
       MyFile << "\t\t\t\t\t\t@(negedge clk);\n";
       MyFile << "\t\t\t\t\t\tNode" << path_nodes[i] << "_valid_in = 0;\n";
       MyFile << "\t\t\t\t\t`endif\n";
-      MyFile << "\t\t\t\tNode" << path_nodes[i] << "_valid_in = 0;\n";
+      MyFile << "\t\t\t\t#1 Node" << path_nodes[i] << "_valid_in = 0;\n";
       
-      MyFile << "\n\t\t\t\tfor(k" << path_nodes[i] << " = 0; k" << path_nodes[i] << " < delay"<<path_nodes[i]<<"_memory[i"<<path_nodes[i]<<"]; k" << path_nodes[i] << " = k" << path_nodes[i] << " + 1)begin\n\t\t\t\t\t#1;\n\t\t\t\tend";
+      MyFile << "\n\t\t\t\tfor(k" << path_nodes[i] << " = 0; k" << path_nodes[i] << " < delay"<<path_nodes[i]<<"_memory[i"<<path_nodes[i]<<"]; k" << path_nodes[i] << " = k" << path_nodes[i] << " + 1)begin\n\t\t\t\t\t#1;\n\t\t\t\tend\n";
+      
+      MyFile << "\t\t\t\t@(negedge clk);\n";
       
       MyFile << "\n\t\t\tend";//Inner Loop End
-
-
-      MyFile << "\n\t\t\t#5 Node" << k << "_valid_in = 0;";
       
       MyFile << "\n\t\tend";//Outer Loop End
       
