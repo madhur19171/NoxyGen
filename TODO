@@ -1,0 +1,9 @@
+The XY/YX modules are combinational logic implemen-
+tations and perform lookahead routing, i.e., the routing is
+performed one-hop in advance, enabling switch allocation
+(for this router) and routing (for the next router) to occur
+in parallel.[1]
+
+
+
+[1]OpenSMART paper
