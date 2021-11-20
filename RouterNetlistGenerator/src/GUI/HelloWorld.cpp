@@ -52,7 +52,7 @@ void HelloWorld::on_button_clicked()
 	switch(result)
 	{
 	case(Gtk::ResponseType::RESPONSE_ACCEPT):
-		{
+			{
 		std::cout << "Select clicked." << std::endl;
 		std::cout << "File selected: " << dialog->get_filename() << std::endl;
 
@@ -60,20 +60,30 @@ void HelloWorld::on_button_clicked()
 
 		VerilogFile verilogFile(verilogFilePath);
 
-//		std::cout << verilogFile.moduleName << std::endl;
-//		std::cout << verilogFile.parametersBlock << std::endl;
-//		std::cout << verilogFile.inputsOutputsBlock << std::endl;
+		std::string instanceName0 = verilogFile.moduleName + "0";
+		std::string instanceName1 = verilogFile.moduleName + "1";
 
-		VerilogParameter verilogParameter(verilogFile.parametersBlock);
-		verilogParameter.printParameters();
+		//		std::cout << verilogFile.moduleName << std::endl;
+		//		std::cout << verilogFile.parametersBlock << std::endl;
+		//		std::cout << verilogFile.inputsOutputsBlock << std::endl;
+
+		VerilogInputOutput verilogInputOutput0(verilogFile.moduleName, instanceName0, verilogFile.inputsOutputsBlock);
+		verilogInputOutput0.printInputOutput();
+
+		VerilogInputOutput verilogInputOutput1(verilogFile.moduleName, instanceName1, verilogFile.inputsOutputsBlock);
+		verilogInputOutput1.printInputOutput();
+
+		std::cout << verilogInputOutput1.outputList[0]->generateOutputconnection(verilogInputOutput0.inputList[3]) << std::endl;
+		std::cout << verilogInputOutput1.outputList[1]->generateOutputconnection(verilogInputOutput0.inputList[2]) << std::endl;
+
 
 		break;
-	    		}
+			}
 	case(Gtk::ResponseType::RESPONSE_CANCEL):
-	    		{
+	    			{
 		std::cout << "Cancel clicked." << std::endl;
 		break;
-	    		}
+	    			}
 	default:
 	{
 		std::cout << "Unexpected button clicked." << std::endl;

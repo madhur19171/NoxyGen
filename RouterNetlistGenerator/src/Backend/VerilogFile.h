@@ -24,9 +24,12 @@ public:
 	virtual ~VerilogFile(){}
 
 	std::string verilogFilePath;
+	//Stores the module name
 	std::string moduleName;
-	bool parameterized;//true if the verilog module has parameters
+	bool parameterized;//true if the Verilog module has parameters
+	//Stores parameters block. If there is no parameter, it stores empty string
 	std::string parametersBlock;
+	//Stores input output block
 	std::string inputsOutputsBlock;
 
 private:
@@ -46,6 +49,13 @@ private:
 
 	std::string verilogCode;
 
+	/*
+	 * These functions are called inside the constructor to parse
+	 * the verilog file and separate it into Module, Parameter and IO
+	 * These three components make up the module signature and these three
+	 * components are all we need to connect the Verilog Module to other
+	 * verilog modules
+	 */
 	std::string readModuleName();
 	std::string readParametersBlock();
 	std::string readInputsOutputsBlock();

@@ -24,6 +24,9 @@ public:
 	Output();//Default Constructor
 	Output(std::string instanceName);
 	virtual ~Output(){}
+
+	void printOutput();
+
 	void outputPortParser(std::string output);
 	std::string generateOutputPortCode();//Generate Module port code for the output
 

@@ -16,6 +16,7 @@
 
 #include "../Backend/VerilogFile.h"
 #include "../Backend/VerilogParameter.h"
+#include "../Backend/VerilogInputOutput.h"
 
 class HelloWorld : public Gtk::Window
 {

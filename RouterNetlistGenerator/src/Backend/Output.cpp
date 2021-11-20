@@ -26,15 +26,29 @@ Output::Output(std::string instanceName) : InputOutput(instanceName){
 	vector_string = "";
 }
 
+void Output::printOutput(){
+	std::cout << "Instance Name: " << instanceName
+			<< "\tPortName: " << portName
+			<< (vector ? ("\tVector: " + vector_string) : "")
+			<< (reg ? "\tReg" : "")
+			<< std::endl;
+}
+
 void Output::outputPortParser(std::string output){
 	vector = output.find("[") != std::string::npos;
+	reg = output.find(" reg ") != std::string::npos || output.find(" reg[") != std::string::npos;
+
 	if(vector){
 		vector_string = trim(substring(output, output.find("["), output.find("]") + 1));
-		portName = trim(substring(output, output.find("]") + 1));
+		if(reg)
+			portName = trim(substring(output, output.find("]") + 1, output.find("=")));
+		else
+			portName = trim(substring(output, output.find("]") + 1));
 	} else
-		portName = trim(substring(output, output.find("output") + 6));
-
-	reg = output.find(" reg ") != std::string::npos || output.find(" reg[") != std::string::npos;
+		if(reg)
+			portName = trim(substring(output, output.find("output") + 6, output.find("=")));
+		else
+			portName = trim(substring(output, output.find("output") + 6));
 }
 
 std::string Output::generateOutputPortCode(){

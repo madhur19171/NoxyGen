@@ -25,6 +25,13 @@ Input::Input(std::string instanceName) : InputOutput(instanceName){
 	vector_string = "";
 }
 
+void Input::printInput(){
+	std::cout << "Instance Name: " << instanceName
+			<< "\tPortName: " << portName
+			<< (vector ? ("\tVector: " + vector_string) : "")
+			<< std::endl;
+}
+
 void Input::inputPortParser(std::string input){
 	vector = input.find("[") != std::string::npos;
 	if(vector){
@@ -39,4 +46,3 @@ std::string Input::generateInputPortCode(){
 	ret += "input " + vector_string + getInstancePortName();
 	return ret;
 }
-

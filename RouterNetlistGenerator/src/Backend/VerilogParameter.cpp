@@ -22,6 +22,13 @@ VerilogParameter::~VerilogParameter() {
 	// TODO Auto-generated destructor stub
 }
 
+void VerilogParameter::printParameters(){
+	std::cout << "Parameters:" << std::endl;
+	for(auto it = parameterMap.begin(); it != parameterMap.end(); it++){
+		std::cout << "Parameter Name: " << it->first << "\t Default Value: " << it->second << std::endl;
+	}
+}
+
 void VerilogParameter::parseParameterBlock(){
 	parameterBlock = trim(parameterBlock);
 	parameterBlock = substring(parameterBlock, 1, parameterBlock.size() - 1);
@@ -51,11 +58,5 @@ void VerilogParameter::parseParameterBlock(){
 		trimVectorElements(vector);
 		removeEmptyStringFromVector(vector);
 		parameterMap[vector[0]] = vector[1];
-	}
-}
-
-void VerilogParameter::printParameters(){
-	for(auto it = parameterMap.begin(); it != parameterMap.end(); it++){
-		std::cout << "Parameter Name: " << it->first << "\t Default Value: " << it->second << std::endl;
 	}
 }

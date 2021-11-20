@@ -24,6 +24,8 @@ public:
 	virtual ~Input(){}
 	void inputPortParser(std::string input);
 	std::string generateInputPortCode();//Generate Module port code for the input
+
+	void printInput();
 };
 
 #endif /* INPUT_H_ */

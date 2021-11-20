@@ -16,11 +16,11 @@
 
 class InputOutput{
 	public:
-	std::string instanceName;//Name of module of which this input is a part of
-	std::string portName;//Name of Input Port
-	bool parameterized;//tells if the port width is Parameterized or not
-	std::string vector_string;//Stores the parameterized vector string
-	bool vector;//whether input port is a vector or a single wire
+	std::string instanceName;//Name of module of which this input/output is a part of
+	std::string portName;//Name of Input/Output Port(initialized by subclass)
+	bool parameterized;//tells if the port width is Parameterized or not(initialized by subclass)
+	std::string vector_string;//Stores the parameterized vector string(initialized by subclass)
+	bool vector;//whether input/output port is a vector or a single wire(initialized by subclass)
 
 	InputOutput();//Default Constructor
 	InputOutput(std::string instanceName);
