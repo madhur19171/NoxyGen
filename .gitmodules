@@ -1,0 +1,3 @@
+[submodule "dot2hdl"]
+	path = dot2hdl
+	url = https://github.com/madhur19171/dot2hdl.git
