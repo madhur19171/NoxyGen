@@ -24,7 +24,7 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.5"
-     inkscape:cx="613"
+     inkscape:cx="1643"
      inkscape:cy="3561"
      inkscape:window-width="1848"
      inkscape:window-height="1016"
@@ -15081,5 +15081,225 @@
          style="font-size:12.7px;stroke-width:0.264583"
          x="42.030849"
          y="801.91962">For X-Y Routing(Deadlock Free)</tspan></text>
+    <rect
+       style="opacity:0.98;fill:none;stroke:#990707;stroke-width:0.264999;paint-order:markers fill stroke"
+       id="rect3835"
+       width="55.817005"
+       height="55.817005"
+       x="360.48889"
+       y="885.78339" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 416.63593,913.48771 h 43.28969"
+       id="path3843" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 388.12346,981.40675 V 941.0252"
+       id="path3845" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 415.8623,1006.7687 h 44.41828"
+       id="path3847" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 488.02998,980.69425 V 940.98823"
+       id="path3849" />
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="416.17139"
+       y="885.2973"
+       id="text3853"><tspan
+         sodipodi:role="line"
+         id="tspan3851"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="416.17139"
+         y="885.2973">0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="406.0101"
+       y="915.99707"
+       id="text3869"><tspan
+         sodipodi:role="line"
+         id="tspan3867"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="406.0101"
+         y="915.99707">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="384.91208"
+       y="939.4361"
+       id="text3873"><tspan
+         sodipodi:role="line"
+         id="tspan3871"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="384.91208"
+         y="939.4361">2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:22.5778px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="381.33099"
+       y="920.97052"
+       id="text3921"><tspan
+         sodipodi:role="line"
+         id="tspan3919"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5778px;font-family:'Lohit Tamil';-inkscape-font-specification:'Lohit Tamil';stroke-width:0.264583"
+         x="381.33099"
+         y="920.97052">0</tspan></text>
+    <rect
+       style="opacity:0.98;fill:none;stroke:#990707;stroke-width:0.264999;paint-order:markers fill stroke"
+       id="rect4011"
+       width="55.817005"
+       height="55.817005"
+       x="461.03113"
+       y="884.1958" />
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="516.31097"
+       y="883.70972"
+       id="text4015"><tspan
+         sodipodi:role="line"
+         id="tspan4013"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="516.31097"
+         y="883.70972">0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="485.00943"
+       y="936.37775"
+       id="text4019"><tspan
+         sodipodi:role="line"
+         id="tspan4017"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="485.00943"
+         y="936.37775">2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="463.24359"
+       y="915.29608"
+       id="text4023"><tspan
+         sodipodi:role="line"
+         id="tspan4021"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="463.24359"
+         y="915.29608">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:22.5778px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="484.07837"
+       y="917.76208"
+       id="text4027"><tspan
+         sodipodi:role="line"
+         id="tspan4025"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5778px;font-family:'Lohit Tamil';-inkscape-font-specification:'Lohit Tamil';stroke-width:0.264583"
+         x="484.07837"
+         y="917.76208">1</tspan></text>
+    <rect
+       style="opacity:0.98;fill:none;stroke:#990707;stroke-width:0.264999;paint-order:markers fill stroke"
+       id="rect4109"
+       width="55.817005"
+       height="55.817005"
+       x="459.88351"
+       y="979.58905" />
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="515.16333"
+       y="977.375"
+       id="text4113"><tspan
+         sodipodi:role="line"
+         id="tspan4111"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="515.16333"
+         y="977.375">0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="465.84525"
+       y="1016.1539"
+       id="text4117"><tspan
+         sodipodi:role="line"
+         id="tspan4115"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="465.84525"
+         y="1016.1539">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="485.50681"
+       y="991.82123"
+       id="text4121"><tspan
+         sodipodi:role="line"
+         id="tspan4119"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="485.50681"
+         y="991.82123">2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:22.5778px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="483.88007"
+       y="1019.2719"
+       id="text4125"><tspan
+         sodipodi:role="line"
+         id="tspan4123"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5778px;font-family:'Lohit Tamil';-inkscape-font-specification:'Lohit Tamil';stroke-width:0.264583"
+         x="483.88007"
+         y="1019.2719">3</tspan></text>
+    <rect
+       style="opacity:0.98;fill:none;stroke:#990707;stroke-width:0.264999;paint-order:markers fill stroke"
+       id="rect4207"
+       width="55.817005"
+       height="55.817005"
+       x="359.50586"
+       y="981.28711" />
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="415.73746"
+       y="979.07306"
+       id="text4211"><tspan
+         sodipodi:role="line"
+         id="tspan4209"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="415.73746"
+         y="979.07306">0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="403.69565"
+       y="1016.1697"
+       id="text4215"><tspan
+         sodipodi:role="line"
+         id="tspan4213"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="403.69565"
+         y="1016.1697">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="383.33362"
+       y="993.66064"
+       id="text4219"><tspan
+         sodipodi:role="line"
+         id="tspan4217"
+         style="font-size:11.2889px;stroke-width:0.264583"
+         x="383.33362"
+         y="993.66064">2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:22.5778px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="378.44098"
+       y="1020.9219"
+       id="text4223"><tspan
+         sodipodi:role="line"
+         id="tspan4221"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5778px;font-family:'Lohit Tamil';-inkscape-font-specification:'Lohit Tamil';stroke-width:0.264583"
+         x="378.44098"
+         y="1020.9219">2</tspan></text>
   </g>
 </svg>

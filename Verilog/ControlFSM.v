@@ -210,15 +210,17 @@ module ControlFSM
 	//valid_in should be high before ready_in is made high
 	//State should be UnRouted to receive Head Flit or it should be Route while routing the packets
 	//after the path has been set up.
-	
+	//Update: ready_in_temp was needed to fix Vivado Simulations
+	//It is no longer needed after giving combinational path delays
 	reg ready_in_temp = 0;
 	
-	always @(negedge clk)begin
+	/*always @(negedge clk)begin
 	   ready_in_temp <= 0;
 	   if(~full & valid_in & (state == UnRouted | state == Route)
 				| full & valid_in & (state == Route) & valid_out & ready_out)
 	   ready_in_temp <= 1;
 	end
+	*/
 	
 	assign #1 ready_in = ~full & valid_in & (state == UnRouted | state == Route)
 				| full & valid_in & (state == Route) & valid_out & ready_out | ready_in_temp;

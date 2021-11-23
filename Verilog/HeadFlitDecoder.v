@@ -62,8 +62,8 @@ module HeadFlitDecoder #(
 	localparam DIM = $floor($sqrt(N));//Dimension is SQRT(N) X SQRT(N)
 	
 	//Finding X and Y cordinates of the current Node.
-	localparam X = INDEX % DIM;
 	localparam Y = $floor(INDEX / DIM);
+	localparam X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
 
 	//Routing Table declaration:
 	//As of now it is just a huge register that will store routing info.
