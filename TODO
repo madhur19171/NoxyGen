@@ -7,3 +7,8 @@ in parallel.[1]
 
 
 [1]OpenSMART paper
+
+Done - Fix FIFO
+Different Network Interfaces like Wishbone, AXI, etc
+Virtual Channel Support
+Priority based routing
