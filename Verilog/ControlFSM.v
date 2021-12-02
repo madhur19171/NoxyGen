@@ -1,13 +1,21 @@
 module ControlFSM
 	#(
+	parameter DATA_WIDTH = 32,
 	parameter FlitPerPacket = 4,//HBBT
 	parameter PhitPerFlit = 2,
+	parameter VC = 4,
 	parameter REQUEST_WIDTH = 2,
 	parameter TYPE_WIDTH = 2//For FlitType
 	)
 	(
 	input clk,
 	input rst,
+	
+	//Data In signal
+	input [DATA_WIDTH - 1 : 0] data_in,
+	
+	//VC control Signals
+	input [VC : 0] VCPlaneSelector,//Selects the currently active VC Plane
 	
 	//Handshake Signals
 	input valid_in,
@@ -24,7 +32,7 @@ module ControlFSM
 	input routeReserveStatus,
 	
 	output headFlitValid,
-	output reg [$clog2(PhitPerFlit) : 0] phitCounter = 0,
+	output [$clog2(PhitPerFlit) : 0] phitCounter,
 	input headFlitStatus,
 	
 	//FIFO Signals
@@ -47,16 +55,37 @@ module ControlFSM
 		
 	localparam UnRouted = 0, HeadFlit = 1, ReservePath = 2, Route = 3, TailFlit = 4;
 	
-	reg[2 : 0] state = 0, nextState = 0;
+//====================================member declarations for all VC plane elements starts=====================================
+
+	//Only Control Path and FIFO signals have to be in compliance with VC
 	
-	reg [$clog2(FlitPerPacket) : 0] flitCounter = 0;
+	reg[VC * 3 - 1 : 0] stateVC = 0, nextStateVC = 0;
+	
+	reg [VC * ($clog2(FlitPerPacket) + 1) - 1 : 0] flitCounterVC = 0;
+	
+	reg [VC - 1 : 0]flitValidVC = 0;
+	
+	reg [VC * ($clog2(PhitPerFlit) + 1) - 1 : 0] phitCounterVC = 0;
+	
+
+//====================================member declarations for all VC plane elements ends=====================================
+
+//=====================================Change Datapath state according to VCPlaneSelector start=================================================
+
+
+//=====================================Change Datapath state according to VCPlaneSelector end=================================================
+	
+//	reg[2 : 0] state = 0, nextState = 0;
+	
+	
+//	reg [$clog2(FlitPerPacket) : 0] flitCounter = 0;
 	
 	
 	wire TailReceived;
 
-	reg flitValid = 0;
+//	reg flitValid = 0;
 
-	reg pushBuffer_state = 0;
+//	reg pushBuffer_state = 0;//Depreciated
 	
 //--------------------------------------Handshake Begins------------------------------
 
@@ -66,28 +95,29 @@ module ControlFSM
 	
 //--------------------------------------FSM Begins------------------------------
 	always @(posedge clk)begin
-		if(rst)
-			state <= #0.75 UnRouted;
-		else state <= #1.25 nextState;//Sequential + Combinational delay
+			if(rst)
+				stateVC[(VCPlaneSelector) * 3 +: 3] <= #0.75 UnRouted;
+			else stateVC[(VCPlaneSelector) * 3 +: 3] <= #1.25 nextStateVC[(VCPlaneSelector) * 3 +: 3];//Sequential + Combinational delay
 	end
 	
 	always @(*)begin
-		case(state)
-			UnRouted: nextState = flitValid ? HeadFlit : UnRouted;
+		nextStateVC = 0;
+		case(stateVC[(VCPlaneSelector) * 3 +: 3])
+			UnRouted: nextStateVC[(VCPlaneSelector) * 3 +: 3] = Handshake ? HeadFlit : UnRouted;
 			//After the first flit is received, ready must go down until the route is 
 			//reserved for this request.
-			HeadFlit: nextState = ReservePath;
-			ReservePath: nextState = routeReserveStatus ? Route : ReservePath;
-			Route: nextState = TailReceived ? TailFlit : Route;
-			TailFlit: nextState = UnRouted;
-			default: nextState = UnRouted;
+			HeadFlit: nextStateVC[(VCPlaneSelector) * 3 +: 3] = ReservePath;
+			ReservePath: nextStateVC[(VCPlaneSelector) * 3 +: 3] = routeReserveStatus ? Route : ReservePath;
+			Route: nextStateVC[(VCPlaneSelector) * 3 +: 3] = TailReceived ? TailFlit : Route;
+			TailFlit: nextStateVC[(VCPlaneSelector) * 3 +: 3] = UnRouted;
+			default: nextStateVC[(VCPlaneSelector) * 3 +: 3] = UnRouted;
 		endcase
 	end
 //--------------------------------------FSM Ends------------------------------
 
 //-----------------------------------------Route Reserving Logic begins------------------------
 
-	assign #0.5 reserveRoute = state == ReservePath;//the flit to be sent is a tail flit and it is going to be popped.
+	assign #0.5 reserveRoute = stateVC[(VCPlaneSelector) * 3 +: 3] == ReservePath;//the flit to be sent is a tail flit and it is going to be popped.
 
 //-----------------------------------------Route Reserving Logic ends------------------------
 
@@ -123,11 +153,16 @@ module ControlFSM
 	//Either received 1 flit, or about to receive the last phit of the flit.
 
     always @(*)begin
-        if((phitCounter == (PhitPerFlit - 1) & Handshake))//if(phitCounter == PhitPerFlit | (phitCounter == (PhitPerFlit - 1) & Handshake))
-            flitValid = #0.5 1;
+    	//#0.1;
+    	flitValidVC = 0;
+        if((phitCounterVC[VCPlaneSelector * ($clog2(PhitPerFlit) + 1) +: ($clog2(PhitPerFlit) + 1)] == (PhitPerFlit - 1) & Handshake))//if(phitCounter == PhitPerFlit | (phitCounter == (PhitPerFlit - 1) & Handshake))
+            flitValidVC[VCPlaneSelector] = #0.5 1;
         else 
-            flitValid = #0.5 0;
+            flitValidVC[VCPlaneSelector] = #0.5 0;
     end
+    
+    
+    assign phitCounter = phitCounterVC[VCPlaneSelector * ($clog2(PhitPerFlit) + 1) +: ($clog2(PhitPerFlit) + 1)];
     	
 //--------------------------------------PhitCounter Ends------------------------------
 
@@ -135,7 +170,7 @@ module ControlFSM
 	//Once headFlit is valid, HFB will ignore any other flits
 	//A valid status register will be made high in HFB and it will go low after
 	//the tail signal is received.
-	assign #0.5 headFlitValid = state == UnRouted & flitValid & Handshake;
+	assign #0.5 headFlitValid = (stateVC[(VCPlaneSelector) * 3 +: 3] == UnRouted) & Handshake;
 
 //--------------------------------------headFlitValid Ends------------------------------
 
@@ -145,22 +180,23 @@ module ControlFSM
 	//Since state is itself generated by a sequential logic, flitCounter will be 1 cycle late
 	always @(posedge clk)begin
 		if(rst)
-			flitCounter <= #0.75 0;
+			flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)]  <= #0.75 0;
 		else
-		if(flitCounter == FlitPerPacket)
-			flitCounter <= #0.75 0;//This is just to reset the Counter after all the Flits in the packet are received.
+		if(flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == FlitPerPacket)
+			flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] <= #0.75 0;//This is just to reset the Counter after all the Flits in the packet are received.
 					//Not doing this will probably have no impact on the functionality.
 		else
-		if(state == UnRouted & flitValid)//Changed for VIVADO
-			flitCounter <= #0.75 1;
+		if(stateVC[(VCPlaneSelector) * 3 +: 3] == UnRouted & Handshake)//Changed for VIVADO
+			flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] <= #0.75 1;
 		else
-		if(flitValid & state == Route)
-			flitCounter <= #0.75 flitCounter + 1;
+		if(Handshake & stateVC[(VCPlaneSelector) * 3 +: 3] == Route)
+			flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] <= #0.75 flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] + 1;
 	end
 	
 	/*This can be made by reading off the FlitType signal*/
 	//Either all FlitPerPacket packets have been received or the last flit of the packet is about to be received in the Route state
-	assign #1 TailReceived = (flitCounter == (FlitPerPacket)) | (flitCounter == (FlitPerPacket - 1) & flitValid & state == Route);//As head is received
+	assign #1 TailReceived = (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket)) 
+				| (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket - 1) & Handshake & stateVC[(VCPlaneSelector) * 3 +: 3] == Route);//As head is received
 //--------------------------------------FlitCounter Ends------------------------------
 
 
@@ -183,7 +219,7 @@ module ControlFSM
 	//It was kept so that another packet may not enter HFB unless the current packet is routed
 	//However, it will no longer be a problem since the switchControl will not give up the route unless the
 	//previous packet has sent a releiving signal.
-	always @(posedge clk)begin
+	/*always @(posedge clk)begin
 		if(rst)
 			pushBuffer_state <= #0.75 0;
 		else if(state == UnRouted)
@@ -192,9 +228,9 @@ module ControlFSM
 			pushBuffer_state <= #0.75 1;
 		else if(TailReceived)//Stop receiving any buffers as soon you receive the Tail
 			pushBuffer_state <= #0.75 1;	
-	end
+	end*/
 
-	assign #0.5 pushBuffer = pushBuffer_state & Handshake;
+	assign #0.5 pushBuffer = Handshake;
 
 //--------------------------------------pushBuffer Ends------------------------------
 
@@ -222,8 +258,8 @@ module ControlFSM
 	end
 	*/
 	
-	assign #1 ready_in = ~full & valid_in & (state == UnRouted | state == Route)
-				| full & valid_in & (state == Route) & valid_out & ready_out | ready_in_temp;
+	assign #1 ready_in = ~full & valid_in & ((stateVC[(VCPlaneSelector) * 3 +: 3] == UnRouted & data_in[31 : 30] == 1) | (stateVC[(VCPlaneSelector) * 3 +: 3] == Route & (data_in[31 : 30] == 2 | data_in[31 : 30] == 3)))
+				| full & valid_in & (stateVC[(VCPlaneSelector) * 3 +: 3] == Route) & valid_out & ready_out | ready_in_temp;
 				//ready_in can also be high when incoming data is directly forwarded to the output and 
 				//and the receiver is ready to accept the handshake in route state.
 
@@ -232,7 +268,7 @@ module ControlFSM
 
 //--------------------------------------valid_out Begins------------------------------
 	//If buffer is not empty, it is ready to send out data
-	assign #0.5 valid_out = ~empty;
+	assign #0.5 valid_out = ~empty;//empty is already multiplexed by VCG
 
 //--------------------------------------valid_out Ends------------------------------	
 

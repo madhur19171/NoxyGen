@@ -1,6 +1,7 @@
 module Router #(
 	parameter N = 100,
 	parameter INDEX = 1,
+	parameter VC = 4,
 	parameter INPUTS = 4,
 	parameter OUTPUTS = 4,
 	parameter DATA_WIDTH = 32,
@@ -33,6 +34,8 @@ module Router #(
 	wire [INPUTS * REQUEST_WIDTH - 1 : 0] routeReserveRequest;
 	wire [INPUTS - 1 : 0]routeReserveStatus;
 	
+	wire [VC : 0] VCPlaneSelectorCFSM, VCPlaneSelectorHFB, VCPlaneSelectorVCG, VCPlaneSelectorSwitchControl;
+	
 	assign data_in_switch = data_out_port;
 	assign valid_in_switch = valid_out_port;
 	assign ready_out_port = ready_in_switch;
@@ -43,6 +46,7 @@ module Router #(
 			Port
 			#(.N(N),
 			.INDEX(INDEX),
+			.VC(VC),
 			.DATA_WIDTH(DATA_WIDTH),
 			.TYPE_WIDTH(TYPE_WIDTH),
 			.REQUEST_WIDTH(REQUEST_WIDTH),
@@ -53,6 +57,10 @@ module Router #(
 			(
 			.clk(clk),
 			.rst(rst),
+			//All Ports share the same VCPlanes
+			.VCPlaneSelectorCFSM(VCPlaneSelectorCFSM),
+			.VCPlaneSelectorHFB(VCPlaneSelectorHFB),
+			.VCPlaneSelectorVCG(VCPlaneSelectorVCG),
 			.data_in(data_in_bus[i * DATA_WIDTH +: DATA_WIDTH]),
 			.valid_in(valid_in_bus[i]),
 			.ready_in(ready_in_bus[i]),
@@ -71,6 +79,7 @@ module Router #(
 
 	Switch
 	#(.N(N),
+	.VC(VC),
 	.INPUTS(INPUTS),
 	.OUTPUTS(OUTPUTS),
 	.DATA_WIDTH(DATA_WIDTH),
@@ -78,7 +87,7 @@ module Router #(
 	) switch
 	(.clk(clk),
 	.rst(rst),
-	
+	.VCPlaneSelectorSwitchControl(VCPlaneSelectorSwitchControl),
 	.routeReserveRequestValid(routeReserveRequestValid),
 	.routeReserveRequest(routeReserveRequest),
 	.routeRelieve(routeRelieve),
@@ -92,5 +101,11 @@ module Router #(
 	.ready_out(ready_out_bus)
 	);
 	
+	VCPlaneController #(.VC(VC)) vcplanecontroller
+		(.clk(clk), .rst(rst),
+		.VCPlaneSelectorCFSM(VCPlaneSelectorCFSM),
+		.VCPlaneSelectorHFB(VCPlaneSelectorHFB),
+		.VCPlaneSelectorVCG(VCPlaneSelectorVCG),
+		.VCPlaneSelectorSwitchControl(VCPlaneSelectorSwitchControl));
 	
 endmodule

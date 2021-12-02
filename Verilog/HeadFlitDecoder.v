@@ -4,6 +4,7 @@ module HeadFlitDecoder #(
 			parameter INDEX = 1,
 			parameter DATA_WIDTH = 8,
 			parameter PhitPerFlit = 2,
+			parameter VC = 4,
 			parameter REQUEST_WIDTH = 2
 			)
 	(
@@ -46,7 +47,6 @@ module HeadFlitDecoder #(
 endmodule
 `endif
 
-`ifdef XY
 module HeadFlitDecoder #(
 			parameter N = 4,	//This is the number of nodes in the network
 			parameter INDEX = 1,
@@ -99,7 +99,7 @@ module HeadFlitDecoder #(
 			else RequestMessage = 1;//X first
 		
 		else if((Y == 0 | Y == (DIM - 1)))
-			if(DestinationX == X && DestinationY == Y)
+			if(DestinationX == X & DestinationY == Y)
 				RequestMessage = 0;//If DX = X and DY = Y, then we are at the destination.
 			else if(DestinationX == X)
 				RequestMessage = 2;
@@ -111,7 +111,7 @@ module HeadFlitDecoder #(
 					RequestMessage = 1;
 				else RequestMessage = 3;//X first
 		else
-			if(DestinationX == X && DestinationY == Y)
+			if(DestinationX == X & DestinationY == Y)
 				RequestMessage = 0;//If DX = X and DY = Y, then we are at the destination.
 			else if(DestinationX == X)
 				if(DestinationY > Y)
@@ -127,5 +127,3 @@ module HeadFlitDecoder #(
 	end
 	
 endmodule
-`endif
-

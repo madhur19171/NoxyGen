@@ -4,6 +4,7 @@ module PortControlLogic
 	#(
 	parameter N = 4,
 	parameter INDEX = 1,
+	parameter VC = 4,
 	parameter DATA_WIDTH = 8,
 	parameter TYPE_WIDTH = 2,
 	parameter REQUEST_WIDTH = 2,
@@ -14,7 +15,11 @@ module PortControlLogic
 	input clk,
 	input rst,
 	
-	//From FIFO
+	//VC control Signals
+	input [VC : 0] VCPlaneSelectorCFSM,//Selects the currently active VC Plane
+	input [VC : 0] VCPlaneSelectorHFB,//Selects the currently active VC Plane
+	
+	//From Port data_in
 	input [DATA_WIDTH - 1 : 0] data_in,//For Head Flit Buffer
 	
 	//Input Controls
@@ -58,12 +63,16 @@ module PortControlLogic
 	wire Handshake;
 	
 	ControlFSM 
-	#(.FlitPerPacket(FlitPerPacket),
+	#(.DATA_WIDTH(DATA_WIDTH),
+	.VC(VC),
+	.FlitPerPacket(FlitPerPacket),
 	.PhitPerFlit(PhitPerFlit),
 	.REQUEST_WIDTH(REQUEST_WIDTH),
 	.TYPE_WIDTH(TYPE_WIDTH)) controlFSM
 	(.clk(clk),
 	.rst(rst),
+	.data_in(data_in),
+	.VCPlaneSelector(VCPlaneSelectorCFSM),
 	.valid_in(valid_in),
 	.ready_in(ready_in),
 	.valid_out(valid_out),
@@ -87,12 +96,14 @@ module PortControlLogic
 	HeadFlitBuffer
 	#(.N(N),
 	.INDEX(INDEX),
+	.VC(VC),
 	.DATA_WIDTH(DATA_WIDTH),
 	.PhitPerFlit(PhitPerFlit),
 	.REQUEST_WIDTH(REQUEST_WIDTH)
 	) headFlitBuffer
 	(.clk(clk),
 	.rst(rst),
+	.VCPlaneSelector(VCPlaneSelectorHFB),
 	.Handshake(Handshake),
 	.Head_Phit(data_in),//From FIFO
 	.headFlitValid(headFlitValid),
