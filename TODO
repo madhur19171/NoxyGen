@@ -1,0 +1,10 @@
+Average Buffer Occupancy for the entire time
+
+Turn off Idle Virtual Channels
+
+Ordering in virtual channels can no longer be ensured
+If a virtual plane experiences lower contention, it will route it's data faster
+than the virtual plane that experiences contention even if the packets are set off later.
+
+Make NodeVerifier more Robust
+Make Generator for new Testbench
