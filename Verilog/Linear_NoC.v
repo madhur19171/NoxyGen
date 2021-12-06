@@ -283,4 +283,3 @@ module NoC(
 		.data_out_bus({Node5_out1_data, Node5_out0_data}), .valid_out_bus({Node5_out1_valid, Node5_out0_valid}), .ready_out_bus({Node5_out1_ready, Node5_out0_ready}));
 
 endmodule
-
