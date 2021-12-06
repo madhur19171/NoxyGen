@@ -1,0 +1,5 @@
+<map id="VCDFileParser::scan_begin" name="VCDFileParser::scan_begin">
+<area shape="rect" id="node1" title="Utility function for starting parsing." alt="" coords="340,5,491,47"/>
+<area shape="rect" id="node2" href="$classVCDFileParser.html#a2733fcd933090ee0cde34adb098abc99" title="Parse the suppled file." alt="" coords="108,13,292,39"/>
+<area shape="rect" id="node3" href="$VCDStandalone_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title="Standalone test function to allow testing of the VCD file parser." alt="" coords="5,13,60,39"/>
+</map>

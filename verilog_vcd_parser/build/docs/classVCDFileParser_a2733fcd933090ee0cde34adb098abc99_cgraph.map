@@ -1,0 +1,5 @@
+<map id="VCDFileParser::parse_file" name="VCDFileParser::parse_file">
+<area shape="rect" id="node1" title="Parse the suppled file." alt="" coords="5,42,189,69"/>
+<area shape="rect" id="node2" href="$classVCDFileParser.html#a6495a1e0de0f322ac71687bbd2e8c76a" title="Utility function for starting parsing." alt="" coords="253,5,404,47"/>
+<area shape="rect" id="node3" href="$classVCDFileParser.html#af21ecc8d90a462c98d97b4ab3aa303db" title="Utility function for stopping parsing." alt="" coords="237,71,420,98"/>
+</map>

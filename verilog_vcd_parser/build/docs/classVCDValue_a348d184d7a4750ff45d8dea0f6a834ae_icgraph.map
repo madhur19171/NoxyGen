@@ -1,0 +1,4 @@
+<map id="VCDValue::VCDBit2Char" name="VCDValue::VCDBit2Char">
+<area shape="rect" id="node1" title="Convert a VCDBit to a single char." alt="" coords="108,5,287,32"/>
+<area shape="rect" id="node2" href="$VCDStandalone_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title="Standalone test function to allow testing of the VCD file parser." alt="" coords="5,5,60,32"/>
+</map>

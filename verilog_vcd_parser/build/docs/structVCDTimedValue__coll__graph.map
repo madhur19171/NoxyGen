@@ -1,0 +1,5 @@
+<map id="VCDTimedValue" name="VCDTimedValue">
+<area shape="rect" id="node1" title="A signal value tagged with times." alt="" coords="15,184,142,211"/>
+<area shape="rect" id="node2" href="$classVCDValue.html" title="Represents a single value found in a VCD File." alt="" coords="35,95,122,121"/>
+<area shape="rect" id="node3" href="$unionVCDValue_1_1valstore.html" title="The actual value stored, as identified by type." alt="" coords="5,5,152,32"/>
+</map>

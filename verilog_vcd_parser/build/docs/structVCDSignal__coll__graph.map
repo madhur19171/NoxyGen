@@ -1,0 +1,4 @@
+<map id="VCDSignal" name="VCDSignal">
+<area shape="rect" id="node1" title="Represents a single signal reference within a VCD file." alt="" coords="5,95,96,121"/>
+<area shape="rect" id="node2" href="$structvcdscope.html" title="Represents a scope type, scope name pair and all of it&#39;s child signals." alt="" coords="9,5,92,32"/>
+</map>

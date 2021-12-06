@@ -1,0 +1,7 @@
+<map id="main" name="main">
+<area shape="rect" id="node1" title="Standalone test function to allow testing of the VCD file parser." alt="" coords="5,67,60,94"/>
+<area shape="rect" id="node2" href="$classVCDFileParser.html#a2733fcd933090ee0cde34adb098abc99" title="Parse the suppled file." alt="" coords="108,42,292,69"/>
+<area shape="rect" id="node5" href="$classVCDValue.html#a348d184d7a4750ff45d8dea0f6a834ae" title="Convert a VCDBit to a single char." alt="" coords="111,93,289,119"/>
+<area shape="rect" id="node3" href="$classVCDFileParser.html#a6495a1e0de0f322ac71687bbd2e8c76a" title="Utility function for starting parsing." alt="" coords="356,5,507,47"/>
+<area shape="rect" id="node4" href="$classVCDFileParser.html#af21ecc8d90a462c98d97b4ab3aa303db" title="Utility function for stopping parsing." alt="" coords="340,71,523,98"/>
+</map>

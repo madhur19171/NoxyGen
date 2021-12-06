@@ -1,0 +1,25 @@
+var classVCDFile =
+[
+    [ "VCDFile", "classVCDFile.html#a1495830c50716f7297d209c07f204547", null ],
+    [ "~VCDFile", "classVCDFile.html#ae2e72695ffd06121218ef6bfd3351033", null ],
+    [ "add_scope", "classVCDFile.html#ad813b24a515a7122c32d9bd1563cc8cc", null ],
+    [ "add_signal", "classVCDFile.html#a26a7ae4b69ae303d5638fe57ede20fe4", null ],
+    [ "add_signal_value", "classVCDFile.html#a27488e699778c2025bc948805c443d2e", null ],
+    [ "add_timestamp", "classVCDFile.html#a44d1d70d3cefcf360ff164f2e65c202e", null ],
+    [ "get_scope", "classVCDFile.html#a66a729daf1e38c9151a6c91d55b2e477", null ],
+    [ "get_scopes", "classVCDFile.html#adb7933f87920b446444e4ca28d774132", null ],
+    [ "get_signal_value_at", "classVCDFile.html#ade88e13edb99a856550b00a796967d37", null ],
+    [ "get_signal_values", "classVCDFile.html#afd220e93d7ce29bdccb15f9013a9b0ea", null ],
+    [ "get_signals", "classVCDFile.html#ac076f905146c342e6301d369a32396e7", null ],
+    [ "get_timestamps", "classVCDFile.html#ab6d53e3b40b610d21a324c665ef6df05", null ],
+    [ "comment", "classVCDFile.html#a8120bcdb0c0b3f2f25241691bf1a177a", null ],
+    [ "date", "classVCDFile.html#a8a42c6199a35494f502a7f08913ad194", null ],
+    [ "root_scope", "classVCDFile.html#a06aaf3ee75e57511f706f33868d8e749", null ],
+    [ "scopes", "classVCDFile.html#a67a1037edb71de770cd4bd44cdd897a4", null ],
+    [ "signals", "classVCDFile.html#a45136fcf333ec93e43f1a07b3ac4c0d8", null ],
+    [ "time_resolution", "classVCDFile.html#ad6f807f5e9878a6eb2497371f1c46c97", null ],
+    [ "time_units", "classVCDFile.html#aa79745052ec264e7de3a4f3f91337235", null ],
+    [ "times", "classVCDFile.html#aefc563c7c1c87a8659fb7ec80cad09b3", null ],
+    [ "val_map", "classVCDFile.html#a6318e3ecfaf3fc44d3939957bb107881", null ],
+    [ "version", "classVCDFile.html#a24dcdedb3d813db1dd5fd3f53b69c7c7", null ]
+];

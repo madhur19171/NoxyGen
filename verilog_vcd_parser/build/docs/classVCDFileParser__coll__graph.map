@@ -1,0 +1,5 @@
+<map id="VCDFileParser" name="VCDFileParser">
+<area shape="rect" id="node1" title="Class for parsing files containing CSP notation." alt="" coords="5,184,119,211"/>
+<area shape="rect" id="node2" href="$classVCDFile.html" title="Top level object to represent a single VCD file." alt="" coords="25,95,99,121"/>
+<area shape="rect" id="node3" href="$structvcdscope.html" title="Represents a scope type, scope name pair and all of it&#39;s child signals." alt="" coords="21,5,103,32"/>
+</map>
