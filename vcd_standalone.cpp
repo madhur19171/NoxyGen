@@ -90,7 +90,11 @@ int main(int argc, char **argv)
 
 }
 
-VCDSignal * mysignal = trace -> get_scope("nodeVerifier0") -> signals[1];
+for (VCDScope *scope : *trace->get_scopes())
+{
+    std::cout << "Scope: " << scope->name << std::endl;
+    for (VCDSignal * mysignal : scope->signals){
+//VCDSignal * mysignal = trace -> get_scope("nodeVerifier0") -> signals[1];
 
 
 // Print the value of this signal at every time step.
@@ -108,7 +112,7 @@ for (VCDTime time : *trace -> get_timestamps()) {
     switch(val -> get_type()) {
         case (VCD_SCALAR):
         {
-            std::cout << VCDValue::VCDBit2Char(val -> get_value_bit())<<"sd";
+            std::cout << VCDValue::VCDBit2Char(val -> get_value_bit());
             break;
         }
         case (VCD_VECTOR):
@@ -137,12 +141,12 @@ for (VCDTime time : *trace -> get_timestamps()) {
                 }
                 else{
                 std::cout<<str3;}
-                //std::cout<<longint;
+                //std::cout<<longint;}
             break;
     }
         case (VCD_REAL):
         {
-            std::cout << val -> get_value_real()<<"dsdds";
+            std::cout << val -> get_value_real();
         }
         default:
         {
@@ -152,5 +156,6 @@ for (VCDTime time : *trace -> get_timestamps()) {
 
     std::cout << std::endl;
 
+}}
 }
 }
