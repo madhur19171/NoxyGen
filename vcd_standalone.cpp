@@ -114,10 +114,18 @@ else if(inp_state==1)
     std::string s2="port";
     //std::cout<<s1;
     if(s1.compare(s2)==0){
-        std::cout<<scope->name<<"\n";
+        std::cout<<scope->name<<"__________________________________________________________________________________________________________________________________________________________________________________________________";
         for (VCDSignal * mysignal : scope->signals){
-            std::cout<<"\n";
-            std::cout << mysignal -> reference << " = ";
+            //std::cout<<"\n";
+            //std::cout << mysignal -> reference << " = ";
+            std::string s11=mysignal->reference;
+            std::string s12="data_in";
+            std::string s13="ready_in";
+            std::string s14="valid_in";
+            std::string s15="data_out";
+            std::string s16="ready_out";
+            std::string s17="valid_out";
+            if(!s11.compare(s12)||!s11.compare(s13)||!s11.compare(s14)||!s11.compare(s15)||!s11.compare(s16)||!s11.compare(s17)){
         
         for (VCDTime time : *trace -> get_timestamps()) {
 
@@ -176,7 +184,7 @@ else if(inp_state==1)
     std::cout << std::endl;
         }
 
-    }
+    }}
     
     //for (VCDSignal * mysignal : scope->signals){
 //VCDSignal * mysignal = trace -> get_scope("nodeVerifier0") -> signals[1];
