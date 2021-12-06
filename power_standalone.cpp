@@ -132,7 +132,18 @@ int main(int argc, char **argv)
                     std::string s16 = "ready_out";
                     std::string s17 = "valid_out";
                     std::string str3_b = "00000000000000000000000000000000";
-                    long power = 0;
+                    std::string str3_bo = "00000000000000000000000000000000";
+                    char rin = '0';
+                    char rout = '0';
+                    char vin = '0';
+                    char vout = '0';
+                    long power_din = 0;
+                    long power_dout = 0;
+                    long power_rin = 0;
+                    long power_rout = 0;
+                    long power_vin = 0;
+                    long power_vout = 0;
+
                     if (!s11.compare(s12))
                     {
 
@@ -166,14 +177,130 @@ int main(int argc, char **argv)
                             {
                                 if (str3[i] != str3_b[i])
                                 {
-                                    power++;
+                                    power_din++;
                                 }
                             }
 
                             str3_b = str3;
                         }
 
-                        std::cout << power * 10 << " is the power of the Data input signal at this port"<< "\n\n";
+                        std::cout << power_din * 10 << " is the power of the Data input signal at this port"
+                                  << "\n\n";
+                    }
+
+                    if (!s11.compare(s15))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+
+                            //std::cout << "t = " << time << ", "   << mysignal -> reference<< " = ";
+                            std::string str3;
+                            VCDBitVector *vecval = val->get_value_vector();
+                            for (auto it = vecval->begin(); it != vecval->end(); ++it)
+                            {
+                                str3 = str3 + VCDValue::VCDBit2Char(*it);
+                                //std::cout << VCDValue::VCDBit2Char(*it);
+                            }
+                            //std::cout <<str3;
+                            long int longint = 0;
+                            int len = str3.size();
+                            for (int i = 0; i < len; i++)
+                            {
+                                longint += (str3[len - i - 1] - 48) * pow(2, i);
+                            }
+                            if (str3.length() == 1)
+                            {
+                                str3 = "00000000000000000000000000000000";
+                                //std::cout<<str3;
+                            }
+
+                            for (int i = 0; i < str3.length(); i++)
+                            {
+                                if (str3[i] != str3_b[i])
+                                {
+                                    power_dout++;
+                                }
+                            }
+
+                            str3_bo = str3;
+                        }
+
+                        //std::cout << power_din * 10 << " is the power of the Data input signal at this port"<< "\n\n";
+                        std::cout << power_dout * 10 << " is the power of the Data output signal at this port"
+                                  << "\n\n";
+                    }
+                    if (!s11.compare(s13))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+                            char c = VCDValue::VCDBit2Char(val->get_value_bit());
+                            if (c != rin)
+                            {
+                                power_rin++;
+                            }
+                            rin = c;
+                        }
+                        std::cout << power_rin * 7 << " is the power of the ready in signal at this port"
+                                  << "\n\n";
+                    }
+
+                    if (!s11.compare(s16))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+                            char c = VCDValue::VCDBit2Char(val->get_value_bit());
+                            if (c != rout)
+                            {
+                                power_rout++;
+                            }
+                            rout = c;
+                        }
+                        std::cout << power_rout * 7 << " is the power of the ready out signal at this port"
+                                  << "\n\n";
+                    }
+
+                    if (!s11.compare(s14))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+                            char c = VCDValue::VCDBit2Char(val->get_value_bit());
+                            if (c != vin)
+                            {
+                                power_vin++;
+                            }
+                            vin = c;
+                        }
+                        std::cout << power_vin * 7 << " is the power of the valid in signal at this port"
+                                  << "\n\n";
+                    }
+                    if (!s11.compare(s17))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+                            char c = VCDValue::VCDBit2Char(val->get_value_bit());
+                            if (c != vout)
+                            {
+                                power_vout++;
+                            }
+                            vout = c;
+                        }
+                        std::cout << power_vout * 7 << " is the power of the valid out signal at this port"
+                                  << "\n\n";
                     }
 
                     /*if(!s11.compare(s12)||!s11.compare(s13)||!s11.compare(s14)||!s11.compare(s15)||!s11.compare(s16)||!s11.compare(s17)){
