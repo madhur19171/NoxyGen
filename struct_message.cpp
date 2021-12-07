@@ -23,7 +23,7 @@ int main()
     vector<vector<int>> dep;
     vector<vector<int>> arr;
     vector<vector<dep_packets*>> d_terminal;
-    vector<vector<arr_packets*>> a_terminal;
+    vector<vector< arr_packets*>> a_terminal;
     int num_of_nodes = 9;
     for (int id = 0; id < num_of_nodes; id++)
     {
@@ -31,6 +31,10 @@ int main()
         vector<int> vala;
         dep.push_back(vald);
         arr.push_back(vala);
+        vector<dep_packets*> samd;
+        d_terminal.push_back(samd);
+        vector<arr_packets*> sama;
+        a_terminal.push_back(sama);
     }
 
     if (myfile.is_open())
@@ -58,7 +62,7 @@ int main()
                 dep[source_i].push_back(message_d);
                 dep[source_i].push_back(destination_d);
                 dep[source_i].push_back(departure_d);
-                dep_packets *outgoing=new  dep_packets();
+                dep_packets* outgoing=new  dep_packets;
                 outgoing->message_dep=message_d;
                 outgoing->destination=destination_d;
                 outgoing->departure=departure_d ;
@@ -98,11 +102,11 @@ int main()
                 arr[destination_i].push_back(message_a);
                 arr[destination_i].push_back(source_a);
                 arr[destination_i].push_back(arrival_a);
-                arr_packets incoming;
-                incoming.message_arr=message_a;
-                incoming.source=source_a;
-                incoming.arrival=arrival_a;
-                //a_terminal[destination_i].push_back(incoming);  ////core fault segmentation here
+                arr_packets* incoming=new arr_packets;
+                incoming->message_arr=message_a;
+                incoming->source=source_a;
+                incoming->arrival=arrival_a;
+                a_terminal[destination_i].push_back(incoming);  ////core fault segmentation here
                 //a_terminal.insert(a_terminal.begin()+destination_i,incoming);
             }
         }
