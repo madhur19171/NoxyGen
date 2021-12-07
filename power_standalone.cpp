@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     }
     else if (argc > 2)
     {
-        if (strcmp(argv[2], "-n") == 0)
+        if (strcmp(argv[2], "-power") == 0)
         {
             //output for dump file
             inp_state = 1;
@@ -108,6 +108,7 @@ int main(int argc, char **argv)
     }
     else if (inp_state == 1)
     {
+        int port_count = 0;
         for (VCDScope *scope : *trace->get_scopes())
         {
             //std::cout << "Scope: " << scope->name << std::endl;
@@ -118,8 +119,16 @@ int main(int argc, char **argv)
             //std::cout<<s1;
             if (s1.compare(s2) == 0)
             {
-                std::cout << scope->name << "______________________________________________";
-                std::cout << "\n";
+                port_count++;
+                long final_din = 0;
+                long final_dout = 0;
+                long final_rin = 0;
+                long final_rout = 0;
+                long final_vin = 0;
+                long final_vout = 0;
+                long fin_pow = 0;
+                //std::cout << scope->name << "______________________________________________";
+                //std::cout << "\n";
                 for (VCDSignal *mysignal : scope->signals)
                 {
                     //std::cout<<"\n";
@@ -184,8 +193,9 @@ int main(int argc, char **argv)
                             str3_b = str3;
                         }
 
-                        std::cout << power_din * 10 << " is the power of the Data input signal at this port"
-                                  << "\n\n";
+                       // std::cout << power_din * 10 << " is the power of the Data input signal at this port"
+                                  //<< "\n\n";
+                        final_din = power_din * 10;
                     }
 
                     if (!s11.compare(s15))
@@ -229,8 +239,8 @@ int main(int argc, char **argv)
                         }
 
                         //std::cout << power_din * 10 << " is the power of the Data input signal at this port"<< "\n\n";
-                        std::cout << power_dout * 10 << " is the power of the Data output signal at this port"
-                                  << "\n\n";
+                        //std::cout << power_dout * 10 << " is the power of the Data output signal at this port"<< "\n\n";
+                        final_dout = power_dout * 10;
                     }
                     if (!s11.compare(s13))
                     {
@@ -246,8 +256,8 @@ int main(int argc, char **argv)
                             }
                             rin = c;
                         }
-                        std::cout << power_rin * 7 << " is the power of the ready in signal at this port"
-                                  << "\n\n";
+                        //std::cout << power_rin * 7 << " is the power of the ready in signal at this port"<< "\n\n";
+                        final_rin = power_rin * 7;
                     }
 
                     if (!s11.compare(s16))
@@ -264,8 +274,8 @@ int main(int argc, char **argv)
                             }
                             rout = c;
                         }
-                        std::cout << power_rout * 7 << " is the power of the ready out signal at this port"
-                                  << "\n\n";
+                        //std::cout << power_rout * 7 << " is the power of the ready out signal at this port"<< "\n\n";
+                        final_rout = power_rout * 7;
                     }
 
                     if (!s11.compare(s14))
@@ -282,8 +292,8 @@ int main(int argc, char **argv)
                             }
                             vin = c;
                         }
-                        std::cout << power_vin * 7 << " is the power of the valid in signal at this port"
-                                  << "\n\n";
+                        //std::cout << power_vin * 7 << " is the power of the valid in signal at this port"<< "\n\n";
+                        final_vin = power_vin * 7;
                     }
                     if (!s11.compare(s17))
                     {
@@ -299,8 +309,9 @@ int main(int argc, char **argv)
                             }
                             vout = c;
                         }
-                        std::cout << power_vout * 7 << " is the power of the valid out signal at this port"
-                                  << "\n\n";
+                        // std::cout << power_vout * 7 << " is the power of the valid out signal at this port"
+                        //<< "\n\n";
+                        final_vout = power_vout * 7;
                     }
 
                     /*if(!s11.compare(s12)||!s11.compare(s13)||!s11.compare(s14)||!s11.compare(s15)||!s11.compare(s16)||!s11.compare(s17)){
@@ -425,7 +436,27 @@ int main(int argc, char **argv)
         
 
         std::cout << std::endl;
+        
       */
+                fin_pow = final_din + final_dout + final_vin + final_vout + final_rin + final_rout;
+                std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+                std::cout << "P O W E R  C O N S U M E D  I N  P O R T  I N S T A N C E -> " << port_count << "\n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "DATA INPUT:                                |  " << final_din << "                                                             \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "DATA OUTPUT:                               |  " << final_dout << "                                                            \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "VALID IN:                                  |  " << final_vin << "                                                             \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "VALID OUT:                                 |  " << final_vout << "                                                            \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "READY IN:                                  |  " << final_rin << "                                                             \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "READY OUT:                                 |  " << final_rout << "                                                             \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n\n\n\n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "NET ENERGY SPENT:                          |  " << fin_pow << "                                                                         |\n\n";
+                std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n\n\n\n";
             }
         }
     }
