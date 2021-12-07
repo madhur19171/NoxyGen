@@ -136,17 +136,29 @@ int main()
         cout << endl;
     }
 
-    /*for(int i=0;i<9;i++){
+    for(int i=0;i<9;i++){
         cout<<"node"<<i<<"\n";
         for(int j=0;j<d_terminal[i].size();j++){
-                cout<<d_terminal[i][j].message_dep<<" "<<d_terminal[i][j].destination<<" "<<d_terminal[i][j].departure;
+                cout<<d_terminal[i][j]->message_dep<<" "<<d_terminal[i][j]->destination<<" "<<d_terminal[i][j]->departure;
                 cout<<"\n";
 
         }
 
 
 
-    }*/
+    }
+    cout<<"ARRIVAL\n";
+    for(int i=0;i<9;i++){
+        cout<<"node"<<i<<"\n";
+        for(int j=0;j<a_terminal[i].size();j++){
+                cout<<a_terminal[i][j]->message_arr<<" "<<a_terminal[i][j]->source<<" "<<a_terminal[i][j]->arrival;
+                cout<<"\n";
+
+        }
+
+
+
+    }
 
 
     }
