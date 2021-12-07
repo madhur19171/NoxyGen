@@ -22,8 +22,8 @@ int main()
     ifstream myfile("optt.txt");
     vector<vector<int>> dep;
     vector<vector<int>> arr;
-    vector<vector<dep_packets>> d_terminal;
-    vector<vector<arr_packets>> a_terminal;
+    vector<vector<dep_packets*>> d_terminal;
+    vector<vector<arr_packets*>> a_terminal;
     int num_of_nodes = 9;
     for (int id = 0; id < num_of_nodes; id++)
     {
@@ -58,10 +58,14 @@ int main()
                 dep[source_i].push_back(message_d);
                 dep[source_i].push_back(destination_d);
                 dep[source_i].push_back(departure_d);
-                dep_packets outgoing;
-                outgoing.message_dep=message_d;
-                outgoing.destination=destination_d;
-                outgoing.departure=departure_d;
+                dep_packets *outgoing=new  dep_packets();
+                outgoing->message_dep=message_d;
+                outgoing->destination=destination_d;
+                outgoing->departure=departure_d ;
+                //struct dep_packets outgoing;
+                //outgoing.message_dep=message_d;
+                //outgoing.destination=destination_d;
+                //outgoing.departure=departure_d;
                 d_terminal[source_i].push_back(outgoing);/////core fault here
                 //d_terminal.insert(d_terminal.begin() + source_i, outgoing);
 
