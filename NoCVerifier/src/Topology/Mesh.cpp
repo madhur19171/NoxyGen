@@ -75,23 +75,23 @@ std::vector<std::string> Mesh::generateTraffic(int numberOfPacketsPerNode, Traff
 				if(k == 0){//Head Flit Generation
 					flit |= destY;
 					flit |= destX << 4;
-					flit |= srcX << 8;
-					flit |= srcY << 12;
+					flit |= srcY << 8;
+					flit |= srcX << 12;
 					flit |= j << 16;//Message Number
 					flit |= 1 << 30;//Head Flit Identifier
 				} else if(k == flitsPerPacket - 1){//Tail Flit Generation
 					flit |= destY;
 					flit |= destX << 4;
-					flit |= srcX << 8;
-					flit |= srcY << 12;
+					flit |= srcY << 8;
+					flit |= srcX << 12;
 					flit |= j << 16;//Message Number
 					flit |= 3 << 30;//Tail Flit Identifier
 				} else{//Body Flit Generation
 					flit |= k;
 					flit |= destY << 4;
 					flit |= destX << 8;
-					flit |= srcX << 12;
-					flit |= srcY << 16;
+					flit |= srcY << 12;
+					flit |= srcX << 16;
 					flit |= j << 20;//Message Number
 					flit |= 2 << 30;//Body Flit Identifier
 				}
