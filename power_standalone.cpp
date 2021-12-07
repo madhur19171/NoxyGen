@@ -26,16 +26,20 @@ int main(int argc, char **argv)
             //output for dump file
             inp_state = 1;
         }
-        else if (strcmp(argv[2], "-i") == 0)
+        else if (strcmp(argv[2], "-time") == 0)
         {
             inp_state = 2;
             inp_timestamp = atof(argv[3]);
+        }
+        else if (strcmp(argv[2], "-help") == 0)
+        {
+            inp_state = 3;
         }
     }
 
     std::string infile(argv[1]);
 
-    std::cout << "Parsing " << infile << std::endl;
+    //
 
     VCDFileParser parser;
 
@@ -77,7 +81,7 @@ int main(int argc, char **argv)
         return 1;
     }*/
     if (inp_state == 0)
-    {
+    { std::cout << "Parsing " << infile << std::endl;
         if (trace == nullptr)
         {
             // Something went wrong.
@@ -193,8 +197,8 @@ int main(int argc, char **argv)
                             str3_b = str3;
                         }
 
-                       // std::cout << power_din * 10 << " is the power of the Data input signal at this port"
-                                  //<< "\n\n";
+                        // std::cout << power_din * 10 << " is the power of the Data input signal at this port"
+                        //<< "\n\n";
                         final_din = power_din * 10;
                     }
 
@@ -464,7 +468,7 @@ int main(int argc, char **argv)
     //add your code...
 
     else if (inp_state == 2)
-    {
+    {   std::cout << "Parsing " << infile << std::endl;
 
         for (VCDScope *scope : *trace->get_scopes())
         {
@@ -536,5 +540,12 @@ int main(int argc, char **argv)
                 std::cout << std::endl;
             }
         }
+    }
+    else if (inp_state == 3)
+    {
+
+        std::cout << "VCD PARSER.\n"
+                  << "To extract signal values at a specified instant of time, use the -time flag fllowed by the time at which the signal values need to be obtained.\n\n";
+        std::cout << "To calculate power at port instances, use the -power flag\n\n";
     }
 }
