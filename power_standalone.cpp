@@ -1,164 +1,539 @@
-// reading a text file
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-using namespace std;
-struct dep_packets
+/*!
+@file
+@brief Definition of the VCDFileParser class
+*/
+#include <string.h>
+#include <iomanip>
+#include <math.h>
+#include "VCDFileParser.hpp"
+#include "/home/divdom/Divin/Semester_5/Computer_Architecture/VCD_parser/verilog-vcd-parser/src/VCDValue.hpp"
+using std::hex;
+/*!
+@brief Standalone test function to allow testing of the VCD file parser.
+*/
+int main(int argc, char **argv)
 {
-    long message_dep;
-    long destination;
-    long departure;
-};
-
-struct arr_packets
-{
-    long message_arr;
-    long source;
-    long arrival;
-};
-
-int main()
-{
-    string line;
-    ifstream myfile("Stats.txt");
-    /*vector<vector<int>> dep;
-    vector<vector<int>> arr;*/
-    //Uncomment to move to sliding-window based implementation
-    vector<vector<dep_packets *>> d_terminal;
-    vector<vector<arr_packets *>> a_terminal;
-    int num_of_nodes = 9; //Requires manual intervention
-    for (int id = 0; id < num_of_nodes; id++)
+    int inp_state = 0;
+    double inp_timestamp = 0;
+    if (argc == 2)
     {
-        /*vector<int> vald;
-        vector<int> vala;
-        dep.push_back(vald);
-        arr.push_back(vala);*/
-        //Uncomment to move to sliding-window based implementation
-        vector<dep_packets *> samd;
-        d_terminal.push_back(samd);
-        vector<arr_packets *> sama;
-        a_terminal.push_back(sama);
+        //output default print style.
     }
-
-    if (myfile.is_open())
+    else if (argc > 2)
     {
-        while (getline(myfile, line))
+        if (strcmp(argv[2], "-power") == 0)
         {
-            if (line.find("Departure") != string::npos)
-            {
-                //means it is sender
-                string source = line.substr(line.find("de:") + 5, line.find("Mes") - line.find("de:") - 5);
-                //cout<<source<<"ssss\n";
-                int source_i = stol(source);
-                //cout<<"source"<<source_i<<"\n";
-                //cout << line.substr(line.find("e: ") + 2, line.find("Des") - line.find("e: ") - 3) << "\n";
-                string message_ds = line.substr(line.find("ge: ") + 4, line.find("Des") - line.find("ge: ") - 3); //<<"\n";
-                int message_d = stol(message_ds);
-                //cout<<message_ds<<"sssssssssssssss\n";
-                string destination_ds = line.substr(line.find("n: ") + 2, line.find("Dep") - line.find("n: ") - 3);
-                int destination_d = stol(destination_ds);
-                //cout<<destination_d<<"sdsd\n";
-                string departure_ds = line.substr(line.find("me: ") + 4, line.length() - line.find("me: "));
-                //cout<<departure_ds<<"sddsd\n";
-                int departure_d = stol(departure_ds);
-                //vector<int> curr_data={message_d,destination_d,departure_d};
-                /*dep[source_i].push_back(message_d);
-                dep[source_i].push_back(destination_d);
-                dep[source_i].push_back(departure_d);*/
-                //Uncomment to move to sliding-window based implementation
-                dep_packets *outgoing = new dep_packets;
-                outgoing->message_dep = message_d;
-                outgoing->destination = destination_d;
-                outgoing->departure = departure_d;
-
-                d_terminal[source_i].push_back(outgoing);
-
-                //cout << line << "\n";
-            }
-            else if (line.find("Arrival") != string::npos)
-            {
-                //means it is receiver
-
-                string destination = line.substr(line.find("de:") + 5, line.find("Mes") - line.find("de:") - 7);
-                //cout<<destination<<"ssss\n";
-                int destination_i = stol(destination);
-                //cout<<"source"<<destination_i<<"\n";//cprrect
-
-                //cout << line.substr(line.find("ge: ") + 2, line.find("Sour") - line.find("ge: ") - 3) << "\n";
-                string message_as = line.substr(line.find("ge: ") + 4, line.find("Sour") - line.find("ge: ") - 5); //<<"\n";
-                int message_a = stol(message_as);
-                //cout<<message_a<<"mess\n";
-                string source_as = line.substr(line.find("ce: ") + 4, line.find("Arr") - line.find("ce: ") - 5);
-                int source_a = stol(source_as);
-                //cout<<source_as<<"sdsd\n";
-                string arrival_as = line.substr(line.find("me: ") + 4, line.length() - line.find("me: "));
-                //cout<<arrival_as<<"sddsd\n";
-                int arrival_a = stol(arrival_as);
-                //vector<int> curr_data={message_a,source_a,arrival_a};
-                /*arr[destination_i].push_back(message_a);
-                arr[destination_i].push_back(source_a);
-                arr[destination_i].push_back(arrival_a);*/
-                //Uncomment to move to sliding-window based implementation
-                arr_packets *incoming = new arr_packets;
-                incoming->message_arr = message_a;
-                incoming->source = source_a;
-                incoming->arrival = arrival_a;
-                a_terminal[destination_i].push_back(incoming);
-            }
+            //output for dump file
+            inp_state = 1;
         }
-        myfile.close();
-        //Uncomment to move to sliding-window based implementation
-        /*cout << "DEPARTURES\n";
-        for (int i = 0; i < dep.size(); i++)
-             {
-            cout << "for node" << i << "\n";
-            for (int j = 0; j < dep[i].size(); j++)
-            {
-                cout << dep[i][j] << " ";
-                if(j%3==2){
-                cout<<"\n";
-            }
-            }
-            cout << endl;
-        }*/
-        /*cout << "ARRIVAL\n";
-        for (int i = 0; i < arr.size(); i++)
+        else if (strcmp(argv[2], "-time") == 0)
         {
-            cout << "for node" << i << "\n";
-            for (int j = 0; j < arr[i].size(); j++)
-            {
-                cout << arr[i][j] << " ";
-                /*if(j%3==2){
-                cout<<"\n";
-            }
-            }
-            cout << endl;
-        }*/
-
-        for (int i = 0; i < 9; i++)
-        {
-            cout << "Node" << i << "\n";
-            for (int j = 0; j < d_terminal[i].size(); j++)
-            {
-                cout << d_terminal[i][j]->message_dep << " " << d_terminal[i][j]->destination << " " << d_terminal[i][j]->departure;
-                cout << "\n";
-            }
+            inp_state = 2;
+            inp_timestamp = atof(argv[3]);
         }
-        cout << "ARRIVAL\n";
-        for (int i = 0; i < 9; i++)
+        else if (strcmp(argv[2], "-help") == 0)
         {
-            cout << "Node " << i << "\n";
-            for (int j = 0; j < a_terminal[i].size(); j++)
-            {
-                cout << a_terminal[i][j]->message_arr << " " << a_terminal[i][j]->source << " " << a_terminal[i][j]->arrival;
-                cout << "\n";
-            }
+            inp_state = 3;
         }
     }
 
+    std::string infile(argv[1]);
+
+    //
+
+    VCDFileParser parser;
+
+    VCDFile *trace = parser.parse_file(infile);
+    /*
+    if (trace)
+    {
+        std::cout << "Parse successful." << std::endl;
+        std::cout << "Version:       " << trace->version << std::endl;
+        std::cout << "Date:          " << trace->date << std::endl;
+        std::cout << "Signal count:  " << trace->get_signals()->size() << std::endl;
+        for(int i=0 ;i < trace->get_timestamps()->size();i++)
+        {
+        std::cout << "Times Recorded:" << trace->get_timestamps()->at(i) << std::endl;
+        }
+        std::cout << "hello";
+        // Print out every signal in every scope.
+        for (VCDScope *scope : *trace->get_scopes())
+        {
+            std::cout << "Scope: " << scope->name << std::endl;
+            for (VCDSignal *signal : scope->signals)
+            {
+                std::cout << "\t" << signal->hash << "\t"
+                          << signal->reference;
+                std::cout<<trace->get_signal_value_at(signal->hash,trace->get_timestamps()->at(1),false);
+                if (signal->size > 1)
+                {
+                    std::cout << " [" << signal->size << ":0]";
+                }
+                std::cout << std::endl;
+            }
+        }
+        delete trace;
+        return 0;
+    }
     else
-        cout << "Unable to open file";
+    {
+        std::cout << "Parse Failed." << std::endl;
+        return 1;
+    }*/
+    if (inp_state == 0)
+    { std::cout << "Parsing " << infile << std::endl;
+        if (trace == nullptr)
+        {
+            // Something went wrong.
+        }
+        else
+        {
 
-    return 0;
+            for (VCDScope *scope : *trace->get_scopes())
+            {
+
+                std::cout << "Scope: " << scope->name << std::endl;
+
+                for (VCDSignal *signal : scope->signals)
+                {
+
+                    std::cout << "\t" << signal->hash << "\t"
+                              << signal->reference;
+
+                    if (signal->size > 1)
+                    {
+                        std::cout << " [" << signal->size << ":0]";
+                    }
+
+                    std::cout << std::endl;
+                }
+            }
+        }
+    }
+    else if (inp_state == 1)
+    {
+        int port_count = 0;
+        for (VCDScope *scope : *trace->get_scopes())
+        {
+            //std::cout << "Scope: " << scope->name << std::endl;
+            //char[256] s1="";
+            //strcpy(s1,scope->name);
+            std::string s1 = scope->name;
+            std::string s2 = "port";
+            //std::cout<<s1;
+            if (s1.compare(s2) == 0)
+            {
+                port_count++;
+                long final_din = 0;
+                long final_dout = 0;
+                long final_rin = 0;
+                long final_rout = 0;
+                long final_vin = 0;
+                long final_vout = 0;
+                long fin_pow = 0;
+                //std::cout << scope->name << "______________________________________________";
+                //std::cout << "\n";
+                for (VCDSignal *mysignal : scope->signals)
+                {
+                    //std::cout<<"\n";
+                    //std::cout << mysignal -> reference << " = ";
+                    std::string s11 = mysignal->reference;
+                    std::string s12 = "data_in";
+                    std::string s13 = "ready_in";
+                    std::string s14 = "valid_in";
+                    std::string s15 = "data_out";
+                    std::string s16 = "ready_out";
+                    std::string s17 = "valid_out";
+                    std::string str3_b = "00000000000000000000000000000000";
+                    std::string str3_bo = "00000000000000000000000000000000";
+                    char rin = '0';
+                    char rout = '0';
+                    char vin = '0';
+                    char vout = '0';
+                    long power_din = 0;
+                    long power_dout = 0;
+                    long power_rin = 0;
+                    long power_rout = 0;
+                    long power_vin = 0;
+                    long power_vout = 0;
+
+                    if (!s11.compare(s12))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+
+                            //std::cout << "t = " << time << ", "   << mysignal -> reference<< " = ";
+                            std::string str3;
+                            VCDBitVector *vecval = val->get_value_vector();
+                            for (auto it = vecval->begin(); it != vecval->end(); ++it)
+                            {
+                                str3 = str3 + VCDValue::VCDBit2Char(*it);
+                                //std::cout << VCDValue::VCDBit2Char(*it);
+                            }
+                            //std::cout <<str3;
+                            long int longint = 0;
+                            int len = str3.size();
+                            for (int i = 0; i < len; i++)
+                            {
+                                longint += (str3[len - i - 1] - 48) * pow(2, i);
+                            }
+                            if (str3.length() == 1)
+                            {
+                                str3 = "00000000000000000000000000000000";
+                                //std::cout<<str3;
+                            }
+
+                            for (int i = 0; i < str3.length(); i++)
+                            {
+                                if (str3[i] != str3_b[i])
+                                {
+                                    power_din++;
+                                }
+                            }
+
+                            str3_b = str3;
+                        }
+
+                        // std::cout << power_din * 10 << " is the power of the Data input signal at this port"
+                        //<< "\n\n";
+                        final_din = power_din * 10;
+                    }
+
+                    if (!s11.compare(s15))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+
+                            //std::cout << "t = " << time << ", "   << mysignal -> reference<< " = ";
+                            std::string str3;
+                            VCDBitVector *vecval = val->get_value_vector();
+                            for (auto it = vecval->begin(); it != vecval->end(); ++it)
+                            {
+                                str3 = str3 + VCDValue::VCDBit2Char(*it);
+                                //std::cout << VCDValue::VCDBit2Char(*it);
+                            }
+                            //std::cout <<str3;
+                            long int longint = 0;
+                            int len = str3.size();
+                            for (int i = 0; i < len; i++)
+                            {
+                                longint += (str3[len - i - 1] - 48) * pow(2, i);
+                            }
+                            if (str3.length() == 1)
+                            {
+                                str3 = "00000000000000000000000000000000";
+                                //std::cout<<str3;
+                            }
+
+                            for (int i = 0; i < str3.length(); i++)
+                            {
+                                if (str3[i] != str3_b[i])
+                                {
+                                    power_dout++;
+                                }
+                            }
+
+                            str3_bo = str3;
+                        }
+
+                        //std::cout << power_din * 10 << " is the power of the Data input signal at this port"<< "\n\n";
+                        //std::cout << power_dout * 10 << " is the power of the Data output signal at this port"<< "\n\n";
+                        final_dout = power_dout * 10;
+                    }
+                    if (!s11.compare(s13))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+                            char c = VCDValue::VCDBit2Char(val->get_value_bit());
+                            if (c != rin)
+                            {
+                                power_rin++;
+                            }
+                            rin = c;
+                        }
+                        //std::cout << power_rin * 7 << " is the power of the ready in signal at this port"<< "\n\n";
+                        final_rin = power_rin * 7;
+                    }
+
+                    if (!s11.compare(s16))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+                            char c = VCDValue::VCDBit2Char(val->get_value_bit());
+                            if (c != rout)
+                            {
+                                power_rout++;
+                            }
+                            rout = c;
+                        }
+                        //std::cout << power_rout * 7 << " is the power of the ready out signal at this port"<< "\n\n";
+                        final_rout = power_rout * 7;
+                    }
+
+                    if (!s11.compare(s14))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+                            char c = VCDValue::VCDBit2Char(val->get_value_bit());
+                            if (c != vin)
+                            {
+                                power_vin++;
+                            }
+                            vin = c;
+                        }
+                        //std::cout << power_vin * 7 << " is the power of the valid in signal at this port"<< "\n\n";
+                        final_vin = power_vin * 7;
+                    }
+                    if (!s11.compare(s17))
+                    {
+
+                        for (VCDTime time : *trace->get_timestamps())
+                        {
+
+                            VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+                            char c = VCDValue::VCDBit2Char(val->get_value_bit());
+                            if (c != vout)
+                            {
+                                power_vout++;
+                            }
+                            vout = c;
+                        }
+                        // std::cout << power_vout * 7 << " is the power of the valid out signal at this port"
+                        //<< "\n\n";
+                        final_vout = power_vout * 7;
+                    }
+
+                    /*if(!s11.compare(s12)||!s11.compare(s13)||!s11.compare(s14)||!s11.compare(s15)||!s11.compare(s16)||!s11.compare(s17)){
+            
+                for (VCDTime time : *trace -> get_timestamps()) {
+                        VCDValue * val = trace -> get_signal_value_at( mysignal -> hash, time);
+                        std::cout << "t = " << time << ", "   << mysignal -> reference<< " = ";
+                        
+                        // Assumes val is not nullptr!
+                        switch(val -> get_type()) {
+                            case (VCD_SCALAR):
+                            {
+                                std::cout << VCDValue::VCDBit2Char(val -> get_value_bit());
+                                break;
+                            }
+                            case (VCD_VECTOR):
+                            {   
+                                std::string str3;
+                                VCDBitVector * vecval = val -> get_value_vector();
+                                for(auto it = vecval -> begin();it != vecval -> end();++it) {
+                                    str3=str3+VCDValue::VCDBit2Char(*it);        
+                                    //std::cout << VCDValue::VCDBit2Char(*it);
+                                    
+                                }
+                                //std::cout <<str3;
+                                long int longint=0;
+                                    int len=str3.size();
+                                    for(int i=0;i<len;i++)
+                                    {
+                                    longint+=( str3[len-i-1]-48) * pow(2,i);
+                                    }
+                                    if(str3.length()==1){
+                                        str3="00000000000000000000000000000000";
+                                        std::cout<<str3;
+                                    }
+                                    else{
+                                    std::cout<<str3;}
+                                    //std::cout<<longint;}
+                                break;
+                        }
+                            case (VCD_REAL):
+                            {
+                                std::cout << val -> get_value_real();
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
+                        std::cout << std::endl;
+                            }
+        }*/
+                }
+
+                //for (VCDSignal * mysignal : scope->signals){
+                //VCDSignal * mysignal = trace -> get_scope("nodeVerifier0") -> signals[1];
+
+                // Print the value of this signal at every time step.
+                //std::cout<<"size "<<mysignal -> size<<"\n";
+
+                //VCDTime time=inp_timestamp;
+                //VCDValue * val = trace -> get_signal_value_at( mysignal -> hash, time);
+                //std::cout<<"\n";
+                //std::cout << mysignal -> reference
+                //<< " = ";
+
+                // Assumes val is not nullptr!
+
+                /*switch(val -> get_type()) {
+            case (VCD_SCALAR):
+            {
+                std::cout << VCDValue::VCDBit2Char(val -> get_value_bit());
+                break;
+            }
+            case (VCD_VECTOR):
+            {   std::string str3;
+                VCDBitVector * vecval = val -> get_value_vector();
+                for(auto it = vecval -> begin();
+                        it != vecval -> end();
+                        ++it) {
+                    str3=str3+VCDValue::VCDBit2Char(*it);        
+                    //std::cout << VCDValue::VCDBit2Char(*it);
+                    
+                }
+                //std::cout <<str3;
+                
+                long int longint=0;
+                    int len=str3.size();
+                    for(int i=0;i<len;i++)
+                    {
+                    longint+=( str3[len-i-1]-48) * pow(2,i);
+                    }
+                    if(str3.length()==1){
+                        str3="00000000000000000000000000000000";
+                        std::cout<<str3;
+                    }
+                    else{
+                    std::cout<<str3;}
+                    //std::cout<<longint;}
+                break;
+        }
+            case (VCD_REAL):
+            {
+                std::cout << val -> get_value_real();
+            }
+            default:
+            {
+                break;
+            }
+        }
+        
+        std::cout << std::endl;
+        
+      */
+                fin_pow = final_din + final_dout + final_vin + final_vout + final_rin + final_rout;
+                std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+                std::cout << "P O W E R  C O N S U M E D  I N  P O R T  I N S T A N C E -> " << port_count << "\n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "DATA INPUT:                                |  " << final_din << "                                                             \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "DATA OUTPUT:                               |  " << final_dout << "                                                            \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "VALID IN:                                  |  " << final_vin << "                                                             \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "VALID OUT:                                 |  " << final_vout << "                                                            \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "READY IN:                                  |  " << final_rin << "                                                             \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "READY OUT:                                 |  " << final_rout << "                                                             \n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n\n\n\n";
+                std::cout << "------------------------------------------------------------------------------------------------------------------------------\n";
+                std::cout << "NET ENERGY SPENT:                          |  " << fin_pow << "                                                                         |\n\n";
+                std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n\n\n\n";
+            }
+        }
+    }
+
+    //add your code...
+
+    else if (inp_state == 2)
+    {   std::cout << "Parsing " << infile << std::endl;
+
+        for (VCDScope *scope : *trace->get_scopes())
+        {
+            std::cout << "Scope: " << scope->name << std::endl;
+            for (VCDSignal *mysignal : scope->signals)
+            {
+                //VCDSignal * mysignal = trace -> get_scope("nodeVerifier0") -> signals[1];
+
+                // Print the value of this signal at every time step.
+                std::cout << "size " << mysignal->size << "\n";
+
+                VCDTime time = inp_timestamp;
+                VCDValue *val = trace->get_signal_value_at(mysignal->hash, time);
+
+                std::cout << mysignal->reference
+                          << " = ";
+
+                // Assumes val is not nullptr!
+
+                switch (val->get_type())
+                {
+                case (VCD_SCALAR):
+                {
+                    std::cout << VCDValue::VCDBit2Char(val->get_value_bit());
+                    break;
+                }
+                case (VCD_VECTOR):
+
+                {
+                    std::string str3;
+                    VCDBitVector *vecval = val->get_value_vector();
+                    for (auto it = vecval->begin();
+                         it != vecval->end();
+                         ++it)
+                    {
+                        str3 = str3 + VCDValue::VCDBit2Char(*it);
+                        //std::cout << VCDValue::VCDBit2Char(*it);
+                    }
+                    //std::cout <<str3;
+
+                    long int longint = 0;
+                    int len = str3.size();
+                    for (int i = 0; i < len; i++)
+                    {
+                        longint += (str3[len - i - 1] - 48) * pow(2, i);
+                    }
+                    if (str3.length() == 1)
+                    {
+                        str3 = "00000000000000000000000000000000";
+                        std::cout << str3;
+                    }
+                    else
+                    {
+                        std::cout << str3;
+                    }
+                    //std::cout<<longint;}
+                    break;
+                }
+                case (VCD_REAL):
+                {
+                    std::cout << val->get_value_real();
+                }
+                default:
+                {
+                    break;
+                }
+                }
+
+                std::cout << std::endl;
+            }
+        }
+    }
+    else if (inp_state == 3)
+    {
+
+        std::cout << "VCD PARSER.\n"
+                  << "To extract signal values at a specified instant of time, use the -time flag fllowed by the time at which the signal values need to be obtained.\n\n";
+        std::cout << "To calculate power at port instances, use the -power flag\n\n";
+    }
 }
