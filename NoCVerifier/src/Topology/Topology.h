@@ -16,6 +16,9 @@
 #include <sstream>
 #include <stdlib.h>
 #include <math.h>
+#include <random>
+#include <chrono>
+#include <functional>
 #include <time.h>
 #include "../definitions.h"
 

@@ -89,25 +89,13 @@
 					</folderInfo>
 				</configuration>
 			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="NoCVerifier.cdt.managedbuild.target.gnu.exe.265771506" name="Executable" projectType="cdt.managedbuild.target.gnu.exe"/>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.604420185;cdt.managedbuild.config.gnu.exe.release.604420185.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.680879440;cdt.managedbuild.tool.gnu.cpp.compiler.input.239696868">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.513988767;cdt.managedbuild.config.gnu.exe.debug.513988767.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.715049414;cdt.managedbuild.tool.gnu.c.compiler.input.171639919">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.604420185;cdt.managedbuild.config.gnu.exe.release.604420185.;cdt.managedbuild.tool.gnu.c.compiler.exe.release.522599685;cdt.managedbuild.tool.gnu.c.compiler.input.266179910">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.513988767;cdt.managedbuild.config.gnu.exe.debug.513988767.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.304222609;cdt.managedbuild.tool.gnu.cpp.compiler.input.984543992">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="scannerConfiguration"/>
 </cproject>

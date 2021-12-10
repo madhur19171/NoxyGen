@@ -15,7 +15,7 @@ int main(){
 	int N = 9;
 	int flitsPerPacket = 16;
 	int phitsPerFlit = 1;
-	int numberOfPacketsPerNode = 16;
+	int numberOfPacketsPerNode = 128;
 	int maxDelay = 1;
 
 	std::vector<std::string> nodeList;
@@ -37,4 +37,3 @@ int main(){
 
 	return 0;
 }
-

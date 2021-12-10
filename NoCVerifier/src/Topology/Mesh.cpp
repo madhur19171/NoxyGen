@@ -23,7 +23,7 @@ Mesh::Mesh(int N) : Topology(N){
 }
 
 Mesh::Mesh(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit) :
-								Topology(N, nodeList, flitsPerPacket, phitsPerFlit){
+																Topology(N, nodeList, flitsPerPacket, phitsPerFlit){
 	this->dimX = floor(sqrt(N));
 	this->dimY = floor(sqrt(N));
 	this->topologyType = MESH;
@@ -48,10 +48,16 @@ std::vector<std::string> Mesh::generateTraffic(int numberOfPacketsPerNode, Traff
 		source = i;
 		destination = -1;
 
+		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+		std::default_random_engine generator (seed);
+		//		std::uniform_int_distribution<int> distribution(0,N - 1);
+		std::normal_distribution<double> distribution(N / 2.0 , 1.0);
+		auto randomDestinationGenerator = std::bind ( distribution, generator );
+
 		for(int j = 0; j < numberOfPacketsPerNode; j++){
 			do{
-				destination = rand() % N;//Find a random destination
-			} while (destination == source);//Destination should not be same as the source
+				destination = int(randomDestinationGenerator());//Find a random destination
+			} while (destination == source || (destination < 0 || destination >= N));//Destination should not be same as the source
 
 			//Find X and Y cordinates of Source and Destination Nodes
 			srcX = source % dimX;
