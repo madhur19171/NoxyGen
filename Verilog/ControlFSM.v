@@ -151,7 +151,7 @@ module ControlFSM
 	//Since flitValid is made high on the same clock cycle as the last phit is captured,
 	//by the time Unrouted->HeadFlit, there is an extra phit captured in the buffer.
 	//Either received 1 flit, or about to receive the last phit of the flit.
-
+/* verilator lint_off WIDTH */
     always @(*)begin
     	//#0.1;
     	flitValidVC = 0;
@@ -195,8 +195,10 @@ module ControlFSM
 	
 	/*This can be made by reading off the FlitType signal*/
 	//Either all FlitPerPacket packets have been received or the last flit of the packet is about to be received in the Route state
-	assign #1 TailReceived = (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket)) 
-				| (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket - 1) & Handshake & stateVC[(VCPlaneSelector) * 3 +: 3] == Route);//As head is received
+	//assign #1 TailReceived = (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket)) 
+	//			| (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket - 1) & Handshake & stateVC[(VCPlaneSelector) * 3 +: 3] == Route);//As head is received
+	assign #0.5 TailReceived = routeRelieve;//This is done to prevent the inherent deadlock: https://drive.google.com/drive/folders/1x2UQKeuYesTLqcaESWlTEPoAZx7Gac0P?usp=sharing
+
 //--------------------------------------FlitCounter Ends------------------------------
 
 
@@ -258,8 +260,12 @@ module ControlFSM
 	end
 	*/
 	
-	assign #1 ready_in = ~full & valid_in & ((stateVC[(VCPlaneSelector) * 3 +: 3] == UnRouted & data_in[31 : 30] == 1) | (stateVC[(VCPlaneSelector) * 3 +: 3] == Route & (data_in[31 : 30] == 2 | data_in[31 : 30] == 3)))
-				| full & valid_in & (stateVC[(VCPlaneSelector) * 3 +: 3] == Route) & valid_out & ready_out | ready_in_temp;
+	assign #1 ready_in = ~full & valid_in & ((stateVC[(VCPlaneSelector) * 3 +: 3] == UnRouted & data_in[31 : 30] == 1) | (stateVC[(VCPlaneSelector) * 3 +: 3] == Route & (data_in[31 : 30] == 2 | data_in[31 : 30] == 3)));
+				//| full & valid_in & (stateVC[(VCPlaneSelector) * 3 +: 3] == Route) & valid_out & ready_out | ready_in_temp;//Comment out if setup violation happens. This line will 
+				//make the ready go high if the next link is available and fifo is full. It is like a simulataneous read and write.
+				//But it will lead to setup time viloations because now, the entire ready path is combinatonal without any buffers
+				//ready is anded in all paths.
+				
 				//ready_in can also be high when incoming data is directly forwarded to the output and 
 				//and the receiver is ready to accept the handshake in route state.
 
