@@ -66,7 +66,7 @@ int main(int argc,char** argv)
     //$readmemh("ex1.mem", ex1_memory);
   }
 
-  MyFile << "\n\n\tNoC noc (.clk(clk), .rst(rst),\n";
+  MyFile << "\n\n\tMesh33 noc (.clk(clk), .rst(rst),\n";
 
   for (int i = 0; i < num_of_nodes - 1; i++)
   {
@@ -81,7 +81,7 @@ int main(int argc,char** argv)
   
   MyFile << "\t);\n";
   int clk_period = 5;
-  MyFile << "\talways #" << clk_period << " clk = ~clk;\n\n";
+  //MyFile << "\talways #" << clk_period << " clk = ~clk;\n\n";
   
 
   int path_nodes[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
