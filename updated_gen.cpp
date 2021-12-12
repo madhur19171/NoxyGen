@@ -14,7 +14,7 @@ int main(int argc,char** argv)
   char direc[256]="";
   cout<<argv[1];
   strcat(direc,argv[1]); 
-  ofstream MyFile("NoC_TB.v");
+  ofstream MyFile("NoC_TB_VC.v");
   DIR *dp;
   int num_of_files = 0;
   struct dirent *ep;
