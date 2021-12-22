@@ -17,3 +17,8 @@ Use machine learning may be? https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arn
 
 How do non-head packets know where to route in wormhole? Body and tail are also given some bits to identify 
 the destination, wouldn't more packets be required to transfer the same amount of data?
+
+Buffer Management needs to be changed. Currently, the system is Handshake based so the Valid signal has
+to traverse the entire link and consequently, Ready signal also has to travel the entire link before even
+a single flit is sent. This will mess up the critical path. Better would be to use Credit based and On/Off.
+These 3 types of Buffer Management systems can be provided in the library.

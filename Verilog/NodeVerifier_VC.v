@@ -225,8 +225,8 @@ module NodeVerifier
 		if(valid_out & ready_out)begin
 			if(data_out[31 : 30] == 2'b11)
 				$display("Node%0d: Message: %0d Source: %0d Arrival_Time: %0d", ID, (data_out[29 : 16] + 1), data_out[11:8] * DIM + data_out[15 : 12], timeCounter);
-			$fwriteh(fd, "0x%h", data_out);
-			$fwriteh(fd,"\n");
+			$fwrite(fd, "0x%h", data_out);
+			$fwrite(fd,"\n");
 		end
 	end
 endmodule
@@ -258,9 +258,18 @@ module NodeVerifier
 	
 	localparam DIM = $floor($sqrt(N));
 	
+	reg [63 : 0] timeCounter = 0; 
 	integer fd;
 	reg [31 : 0] ex_memory [0 : numberOfPackets * FlitsPerPacket - 1];
 	reg [31 : 0] delay_memory [0 : numberOfPackets * FlitsPerPacket - 1];
+	
+	
+	always @(posedge clk, posedge rst)begin
+		if(rst)
+			timeCounter <= 0;
+		else
+			timeCounter <= timeCounter + 1;
+	end
 	
 	
 	integer i, j, k;
@@ -312,9 +321,9 @@ module NodeVerifier
 	always @(posedge clk) begin
 		if(valid_out & ready_out)begin
 		if(data_out[31 : 30] == 2'b11)
-				$display("Node%d: Message: %d	Source: %d Arrival_Time: %d", ID, (data_out[29 : 16] + 1), data_out[11:8] * DIM + data_out[15 : 12], timeCounter);
-			$fwriteh(fd, "0x%h", data_out);
-			$fwriteh(fd,"\n");
+				$display("Node%0d: Message: %0d Source: %0d Arrival_Time: %0d", ID, (data_out[29 : 16] + 1), data_out[11:8] * DIM + data_out[15 : 12], timeCounter);
+			$fwrite(fd, "0x%h", data_out);
+			$fwrite(fd,"\n");
 		end
 	end
 endmodule
