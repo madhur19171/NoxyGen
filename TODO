@@ -1,0 +1,19 @@
+Average Buffer Occupancy for the entire time
+
+Turn off Idle Virtual Channels
+
+Ordering in virtual channels can no longer be ensured
+If a virtual plane experiences lower contention, it will route it's data faster
+than the virtual plane that experiences contention even if the packets are set off later.
+
+Make NodeVerifier more Robust
+Make Generator for new Testbench
+
+Make a Congestion aware NoC. Congestion detection signal can be sent beside ready to tell
+the sender if there is congestion in this VC.
+If some other VC has no congestion, then packets should preferably be routed to that VC.
+We can even have multi bit congestion detection to relay the severity of congestion.
+Use machine learning may be? https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6176721
+
+How do non-head packets know where to route in wormhole? Body and tail are also given some bits to identify 
+the destination, wouldn't more packets be required to transfer the same amount of data?
