@@ -35,8 +35,8 @@ int main(int argc,char** argv)
 
   printf("There are %d files in the current directory.\n", num_of_files);
 
-  string names[num_of_files] = {"Node0.dat", "Node1.dat", "Node2.dat", "Node3.dat", "Node4.dat", "Node5.dat", "Node6.dat", "Node7.dat", "Node8.dat"};
-  string delays[num_of_files] = {"delay0.dat", "delay1.dat", "delay2.dat", "delay3.dat", "delay4.dat", "delay5.dat", "delay6.dat", "delay7.dat", "delay8.dat"};
+  //string names[num_of_files] = {"Node0.dat", "Node1.dat", "Node2.dat", "Node3.dat", "Node4.dat", "Node5.dat", "Node6.dat", "Node7.dat", "Node8.dat"};
+  //string delays[num_of_files] = {"delay0.dat", "delay1.dat", "delay2.dat", "delay3.dat", "delay4.dat", "delay5.dat", "delay6.dat", "delay7.dat", "delay8.dat"};
   // Write to the file
   MyFile << "module NoC_TB;"
          << "\n"
@@ -84,10 +84,10 @@ int main(int argc,char** argv)
   //MyFile << "\talways #" << clk_period << " clk = ~clk;\n\n";
   
 
-  int path_nodes[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-  int num_of_messages[] = {0,0,0,0,0, 0, 0, 0, 0}; //If each router sends different data, thn this is the same as teh number of directories in the folder of .dat files
-  int path_nodes_num = sizeof(path_nodes) / sizeof(path_nodes[0]);
-  cout << "Path Nodes Number: " << path_nodes_num << endl;
+  //int path_nodes[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+  //int num_of_messages[] = {0,0,0,0,0, 0, 0, 0, 0}; //If each router sends different data, thn this is the same as teh number of directories in the folder of .dat files
+  //int path_nodes_num = sizeof(path_nodes) / sizeof(path_nodes[0]);
+  //cout << "Path Nodes Number: " << path_nodes_num << endl;
   //MyFile << "\n\tinitial\n\tbegin";
   //MyFile << "\n\t\tclk=1;\n\t\trst=1;\n\n";
   //for (int i = 0; i < num_of_nodes; i++){
