@@ -8,11 +8,12 @@ using namespace std;
 
 /*
 	Format:
-	argv[1]: Directory in which traffic files are present
-	argv[2]: flitsPerPacket
-	argv[3]: packetsPerNode
-	argv[4]: Number Of Virtual Channels
-	argv[5]: Debug Level --> d0: Dump All Signals; d1: Dump only Test Bench Signals
+	argv[1]: Directory in which Input Traffic files are present
+	argv[2]: Directory in which Output Traffic files will be stored
+	argv[3]: flitsPerPacket
+	argv[4]: packetsPerNode
+	argv[5]: Number Of Virtual Channels
+	argv[6]: Debug Level --> d0: Dump All Signals; d1: Dump only Test Bench Signals
 */
 
 int main(int argc,char** argv)
@@ -20,11 +21,12 @@ int main(int argc,char** argv)
   // Create and open a text file
   
   //Input file Directory
-  std::string directory = argv[1];
-  int flitsPerPacket = stoi(argv[2]);
-  int packetsPerNode = stoi(argv[3]);
-  int VC = stoi(argv[4]);
-  std::string debugLevel = argv[5];//Debug level d0 means dump all the signals. d1 means dump only the Testbench signals.
+  std::string directory_in = argv[1];
+  std::string directory_out = argv[2];
+  int flitsPerPacket = stoi(argv[3]);
+  int packetsPerNode = stoi(argv[4]);
+  int VC = stoi(argv[5]);
+  std::string debugLevel = argv[6];//Debug level d0 means dump all the signals. d1 means dump only the Testbench signals.
   char direc[256]="";
   cout<<argv[1];
   strcat(direc,argv[1]); 
@@ -116,9 +118,9 @@ int main(int argc,char** argv)
   {
     int k = i;
    MyFile << "\tNodeVerifier #(.ID("<<k<<"), .N(" << num_of_nodes << "), .VC(" << VC << "),\n";
-   MyFile<<"\t.dataInputFilePath(\"" << directory << "Node"<<k<<".dat\"),\n";
-   MyFile<<"\t.delayInputFilePath(\"" << directory << "delay"<<k<<".dat\"),\n"; 
-   MyFile<<"\t.outputFilePath(\"output"<<k<<".dat\"), .FlitsPerPacket(" << flitsPerPacket << "), .numberOfPackets(" << packetsPerNode << ")) nodeVerifier"<<k<<"\n";
+   MyFile<<"\t.dataInputFilePath(\"" << directory_in << "Node"<<k<<".dat\"),\n";
+   MyFile<<"\t.delayInputFilePath(\"" << directory_in << "delay"<<k<<".dat\"),\n"; 
+   MyFile<<"\t.outputFilePath(\"" << directory_out << "output"<<k<<".dat\"), .FlitsPerPacket(" << flitsPerPacket << "), .numberOfPackets(" << packetsPerNode << ")) nodeVerifier"<<k<<"\n";
 		
 		MyFile<<"\t(.clk(clk), .rst(rst),\n"; 
 		MyFile<<"\t.data_in(Node"<<k<<"_data_in), .valid_in(Node"<<k<<"_valid_in), .ready_in(Node"<<k<<"_ready_in),\n";
