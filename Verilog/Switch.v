@@ -1,5 +1,6 @@
 module Switch 
 	#(parameter N = 4,
+	parameter VC = 4,
 	parameter INPUTS = 4,
 	parameter OUTPUTS = 4,
 	parameter DATA_WIDTH = 8,
@@ -8,6 +9,9 @@ module Switch
 	(
 	input clk,
 	input rst,
+	
+	input [VC : 0] VCPlaneSelectorSwitchControl,
+	
 	//Request Signals:
 	input [INPUTS - 1 : 0] routeReserveRequestValid,
 	input [INPUTS * REQUEST_WIDTH - 1 : 0] routeReserveRequest,//This signal selects the input using the first $clog2(N) bits and assigns the output to the last $clog2(N) bit address output.
@@ -31,6 +35,7 @@ module Switch
 	
 	SwitchControl
 	#(.N(N),
+	.VC(VC),
 	.INPUTS(INPUTS),
 	.OUTPUTS(OUTPUTS),
 	.DATA_WIDTH(DATA_WIDTH),
@@ -38,6 +43,7 @@ module Switch
 	
 	(.clk(clk),
 	.rst(rst),
+	.VCPlaneSelector(VCPlaneSelectorSwitchControl),
 	.routeReserveRequestValid(routeReserveRequestValid),
 	.routeReserveRequest(routeReserveRequest),
 	.routeRelieve(routeRelieve),

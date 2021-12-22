@@ -1,6 +1,7 @@
 module Port #(
 	parameter N = 4,
 	parameter INDEX = 1,
+	parameter VC = 4,
 	parameter DATA_WIDTH = 8,
 	parameter TYPE_WIDTH = 2,
 	parameter REQUEST_WIDTH = 2,
@@ -12,6 +13,12 @@ module Port #(
 	(
 	input clk,
 	input rst,
+	
+	//VC control Signals
+	input [VC : 0] VCPlaneSelectorCFSM,//Selects the currently active VC Plane
+	input [VC : 0] VCPlaneSelectorHFB,//Selects the currently active VC Plane
+	input [VC : 0] VCPlaneSelectorVCG,//Selects the currently active VC Plane
+	
 	//Input Controls
 	input [DATA_WIDTH - 1 : 0] data_in,
 	input valid_in,
@@ -36,6 +43,7 @@ module Port #(
 	PortControlLogic 
 	#(.N(N),
 	.INDEX(INDEX),
+	.VC(VC),
 	.DATA_WIDTH(DATA_WIDTH),
 	.TYPE_WIDTH(TYPE_WIDTH),
 	.REQUEST_WIDTH(REQUEST_WIDTH),
@@ -44,6 +52,8 @@ module Port #(
 	) portControlLogic
 	(.clk(clk),
 	.rst(rst),
+	.VCPlaneSelectorCFSM(VCPlaneSelectorCFSM),
+	.VCPlaneSelectorHFB(VCPlaneSelectorHFB),
 	.data_in(data_in),
 	.valid_in(valid_in),
 	.ready_in(ready_in),
@@ -60,11 +70,13 @@ module Port #(
 	.routeReserveStatus(routeReserveStatus)
 	);
 	
-	FIFO 
-	#(.DATA_WIDTH(DATA_WIDTH),
-	.FIFO_DEPTH(FIFO_DEPTH)) fifo
+	VCG 
+	#(.VC(VC),
+	.DATA_WIDTH(DATA_WIDTH),
+	.FIFO_DEPTH(FIFO_DEPTH)) vcg
 	(.clk(clk),
 	.rst(rst),
+	.VCPlaneSelector(VCPlaneSelectorVCG),
 	.empty(empty),
 	.rd_en(popBuffer),
 	.dout(data_out),

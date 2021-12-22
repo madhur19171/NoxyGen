@@ -3,11 +3,16 @@ module HeadFlitBuffer #(
 			parameter INDEX = 1,	//This identifies the Node number for Routing Table
 			parameter DATA_WIDTH = 8,
 			parameter PhitPerFlit = 2,
+			parameter VC = 4,
 			parameter REQUEST_WIDTH = 2
 			)
 	(	
 	input clk,
 	input rst,
+	
+	//VC control Signals
+	input [VC : 0] VCPlaneSelector,//Selects the currently active VC Plane
+	
 	//From FIFO
 	input Handshake,
 	input [DATA_WIDTH - 1 : 0] Head_Phit,
@@ -23,31 +28,31 @@ module HeadFlitBuffer #(
 	input routeReserveStatus_Switch
 	);
 	
-	reg [DATA_WIDTH * PhitPerFlit - 1 : 0] headBuffer = 0;
-	reg headFlitValidStatus = 0;
+	reg [VC * DATA_WIDTH * PhitPerFlit - 1 : 0] headBufferVC = 0;
+	reg [VC - 1 : 0]headFlitValidStatusVC = 0;
 	
 
-//--------------------------------------HeadBuffer Begins------------------------------
+//--------------------------------------headBufferVC Begins------------------------------
 	always @(posedge clk)begin
 		if(rst)
-			headBuffer <= #0.75 0;
+			headBufferVC[VCPlaneSelector * DATA_WIDTH * PhitPerFlit +: DATA_WIDTH * PhitPerFlit] <= #0.75 0;
 		else 
-		if(Handshake & ~headFlitValidStatus & headFlitValid)
-			headBuffer[DATA_WIDTH * phitCounter +: DATA_WIDTH] <= #0.75 Head_Phit;
+		if(Handshake & ~headFlitValidStatusVC[VCPlaneSelector] & headFlitValid)
+			headBufferVC[VCPlaneSelector * DATA_WIDTH * PhitPerFlit +: DATA_WIDTH * PhitPerFlit] <= #0.75 Head_Phit;
 	end
-//--------------------------------------HeadBuffer Ends------------------------------
+//--------------------------------------headBufferVC Ends------------------------------
 
 //--------------------------------------HeadFlitValidStatus Begins------------------------------
 //headFlitStatus 0 means that the head flit buffer is empty and new head flit can be stored in it.
 	always @(posedge clk)begin
 		if(rst)
-			headFlitValidStatus <= #0.75 0;
+			headFlitValidStatusVC[VCPlaneSelector] <= #0.75 0;
 		else
 		if(routeReserveStatus_Switch)
-			headFlitValidStatus <= #0.75 0;
+			headFlitValidStatusVC[VCPlaneSelector] <= #0.75 0;
 		else
 		if(headFlitValid)
-			headFlitValidStatus <= #0.75 1;
+			headFlitValidStatusVC[VCPlaneSelector] <= #0.75 1;
 	end
 //--------------------------------------HeadFlitValidStatus Ends------------------------------
 
@@ -55,15 +60,16 @@ module HeadFlitBuffer #(
     //This should ideally become a unified Decoder which can serve all ports. However, this will lead to arbitration in case of request coming at the same time.
     //This is also latency sensitive and must serve the request as soon as it is received. Design should be changed to make it latency insensitive.
     //This will allow implementation of flexible custom routing algorithms by just changing HeadFlitDecoder as a black box for the rest of the design.
+    //HFD will share the same VC plane as the HFB
 	HeadFlitDecoder #(.N(N), .INDEX(INDEX), .DATA_WIDTH(DATA_WIDTH), .PhitPerFlit(PhitPerFlit), .REQUEST_WIDTH(REQUEST_WIDTH)) headFlitDecoder
 		(
-		.HeadFlit(headBuffer),
+		.HeadFlit(headBufferVC[VCPlaneSelector * DATA_WIDTH * PhitPerFlit +: DATA_WIDTH * PhitPerFlit]),
 		.RequestMessage(routeReserveRequest)
 		);
 
 	//As soon as valid head flit is received, a request will be sent
 	//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
-	assign #0.5 routeReserveRequestValid = headFlitValidStatus;
+	assign #0.5 routeReserveRequestValid = headFlitValidStatusVC[VCPlaneSelector];
 
 	//A simple forwarding of this signal to the CFSM
 	assign routeReserveStatus_CFSM = routeReserveStatus_Switch;
