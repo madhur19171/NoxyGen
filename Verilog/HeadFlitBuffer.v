@@ -1,3 +1,5 @@
+//For now, this buffer can handle only two consecutive packets
+
 module HeadFlitBuffer #(
 			parameter N = 4,	//Number of nodes in the network
 			parameter INDEX = 1,	//This identifies the Node number for Routing Table
@@ -19,6 +21,7 @@ module HeadFlitBuffer #(
 	//From Control FSM
 	input headFlitValid,
 	input [$clog2(PhitPerFlit) : 0] phitCounter,//Not needed if we are triggering route reserve request as soon as we receive the head flit
+	input routeRelieve,
 	input reserveRoute,// Not needed if we are triggering route reserve request as soon as we receive the head flit
 	output routeReserveStatus_CFSM,
 	output headFlitStatus,
@@ -28,8 +31,12 @@ module HeadFlitBuffer #(
 	input routeReserveStatus_Switch
 	);
 	
+	localparam STATE_WIDTH = 2;
+	
+	localparam Idle = 0, SendRequest = 1, IdleBuffered = 2, HeadFlitBuffered = 3;
+	
 	reg [VC * DATA_WIDTH * PhitPerFlit - 1 : 0] headBufferVC = 0;
-	reg [VC - 1 : 0]headFlitValidStatusVC = 0;
+	reg [VC * STATE_WIDTH - 1 : 0] state = Idle;
 	
 
 //--------------------------------------headBufferVC Begins------------------------------
@@ -37,24 +44,26 @@ module HeadFlitBuffer #(
 		if(rst)
 			headBufferVC[VCPlaneSelector * DATA_WIDTH * PhitPerFlit +: DATA_WIDTH * PhitPerFlit] <= #0.75 0;
 		else 
-		if(Handshake & ~headFlitValidStatusVC[VCPlaneSelector] & headFlitValid)
+		if(Handshake & (state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] == Idle || state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] == IdleBuffered) & headFlitValid)
 			headBufferVC[VCPlaneSelector * DATA_WIDTH * PhitPerFlit +: DATA_WIDTH * PhitPerFlit] <= #0.75 Head_Phit;
 	end
 //--------------------------------------headBufferVC Ends------------------------------
 
-//--------------------------------------HeadFlitValidStatus Begins------------------------------
+//--------------------------------------HeadBuffer FSM Begins------------------------------
 //headFlitStatus 0 means that the head flit buffer is empty and new head flit can be stored in it.
 	always @(posedge clk)begin
 		if(rst)
-			headFlitValidStatusVC[VCPlaneSelector] <= #0.75 0;
+			state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 0;
 		else
-		if(routeReserveStatus_Switch)
-			headFlitValidStatusVC[VCPlaneSelector] <= #0.75 0;
-		else
-		if(headFlitValid)
-			headFlitValidStatusVC[VCPlaneSelector] <= #0.75 1;
+			case(state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH])
+				Idle: state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 headFlitValid ? SendRequest : Idle;
+				SendRequest: state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 routeReserveStatus_Switch ? IdleBuffered : SendRequest;
+				IdleBuffered: state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 headFlitValid & routeRelieve ? SendRequest : routeRelieve ? Idle : headFlitValid ? HeadFlitBuffered : IdleBuffered;
+				HeadFlitBuffered: state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 routeRelieve ? SendRequest : HeadFlitBuffered;
+				default: state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 Idle;
+			endcase
 	end
-//--------------------------------------HeadFlitValidStatus Ends------------------------------
+//--------------------------------------HeadBuffer FSM Ends------------------------------
 
     //Right Now, All ports use their own Head FLit Decoder even though the routing information remains the same for all ports in a router
     //This should ideally become a unified Decoder which can serve all ports. However, this will lead to arbitration in case of request coming at the same time.
@@ -69,7 +78,7 @@ module HeadFlitBuffer #(
 
 	//As soon as valid head flit is received, a request will be sent
 	//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
-	assign #0.5 routeReserveRequestValid = headFlitValidStatusVC[VCPlaneSelector];
+	assign #0.5 routeReserveRequestValid = state[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] == SendRequest;
 
 	//A simple forwarding of this signal to the CFSM
 	assign routeReserveStatus_CFSM = routeReserveStatus_Switch;

@@ -108,6 +108,7 @@ module PortControlLogic
 	.Head_Phit(data_in),//From FIFO
 	.headFlitValid(headFlitValid),
 	.phitCounter(phitCounter),
+	.routeRelieve(routeRelieve),
 	.reserveRoute(reserveRoute),
 	.routeReserveStatus_CFSM(routeReserveStatus_CFSM),
 	.headFlitStatus(headFlitStatus),
