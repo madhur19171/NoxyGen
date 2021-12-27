@@ -195,9 +195,9 @@ module ControlFSM
 	
 	/*This can be made by reading off the FlitType signal*/
 	//Either all FlitPerPacket packets have been received or the last flit of the packet is about to be received in the Route state
-	//assign #1 TailReceived = (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket)) 
-	//			| (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket - 1) & Handshake & stateVC[(VCPlaneSelector) * 3 +: 3] == Route);//As head is received
-	assign #0.5 TailReceived = routeRelieve;//This is done to prevent the inherent deadlock: https://drive.google.com/drive/folders/1x2UQKeuYesTLqcaESWlTEPoAZx7Gac0P?usp=sharing
+	assign #1 TailReceived = (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket)) 
+				| (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket - 1) & Handshake & stateVC[(VCPlaneSelector) * 3 +: 3] == Route);//As head is received
+	//assign #0.5 TailReceived = routeRelieve;//Using this signal, the CMSM and HFB become non-pipelined
 
 //--------------------------------------FlitCounter Ends------------------------------
 
@@ -259,8 +259,15 @@ module ControlFSM
 	   ready_in_temp <= 1;
 	end
 	*/
-	
-	assign #1 ready_in = ~full & valid_in & ((stateVC[(VCPlaneSelector) * 3 +: 3] == UnRouted & data_in[31 : 30] == 1) | (stateVC[(VCPlaneSelector) * 3 +: 3] == Route & (data_in[31 : 30] == 2 | data_in[31 : 30] == 3)));
+				//If state is in Route, then it is sure that the port has reserved its path in the switch
+				//So we can safely buffer one more packet in the input buffer given that it does not try to 
+				//send routing request until the current packet is done routing.
+				//If we try to decode head of next packet before the current packet has actually received a route reserve status,
+				//the new packet may overwrite the request. This is why the new packets are not even received until the current packet
+				//has successfully reserved a path in the switch.
+	assign #1 ready_in = ~full & valid_in & ((stateVC[(VCPlaneSelector) * 3 +: 3] == UnRouted & data_in[31 : 30] == 1) //If we are receiving Head Flit
+				| (stateVC[(VCPlaneSelector) * 3 +: 3] == Route & (data_in[31 : 30] == 2 | data_in[31 : 30] == 3)));//If we are receiving Body/Tail flit when the router is routing
+				
 				//| full & valid_in & (stateVC[(VCPlaneSelector) * 3 +: 3] == Route) & valid_out & ready_out | ready_in_temp;//Comment out if setup violation happens. This line will 
 				//make the ready go high if the next link is available and fifo is full. It is like a simulataneous read and write.
 				//But it will lead to setup time viloations because now, the entire ready path is combinatonal without any buffers
