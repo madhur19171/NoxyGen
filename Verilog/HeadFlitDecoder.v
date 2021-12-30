@@ -55,19 +55,24 @@ module HeadFlitDecoder #(
 			parameter REQUEST_WIDTH = 2
 			)
 	(
+	input decodeHeadFlit,
 	input [PhitPerFlit * DATA_WIDTH - 1 : 0] HeadFlit,
-	output reg [REQUEST_WIDTH - 1 : 0] RequestMessage = 0
+	output reg [REQUEST_WIDTH - 1 : 0] RequestMessage = 0,
+	output headFlitDecoded
 	);
+	
+	assign #0.5 headFlitDecoded = decodeHeadFlit;	//Since this decoder is combinational, 
+							//we send decoded signal as we receive decode instruction
 	
 	localparam DIM = $floor($sqrt(N));//Dimension is SQRT(N) X SQRT(N)
 	
 	//Finding X and Y cordinates of the current Node.
 	`ifdef VIVADO
-	integer Y = $floor(INDEX / DIM);
-	integer X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
+		integer Y = $floor(INDEX / DIM);
+		integer X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
 	`else
-	localparam Y = $floor(INDEX / DIM);
-	localparam X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
+		localparam Y = $floor(INDEX / DIM);
+		localparam X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
 	`endif
 	
 	//Routing Table declaration:

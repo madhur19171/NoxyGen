@@ -9,6 +9,7 @@ module Router #(
 	parameter REQUEST_WIDTH = $clog2(OUTPUTS),
 	parameter FlitPerPacket = 6,
 	parameter PhitPerFlit = 1,
+	parameter HFBDepth = 4,
 	parameter FIFO_DEPTH = 32
 	) 
 	
@@ -52,6 +53,7 @@ module Router #(
 			.REQUEST_WIDTH(REQUEST_WIDTH),
 			.FlitPerPacket(FlitPerPacket),
 			.PhitPerFlit(PhitPerFlit),
+			.HFBDepth(HFBDepth),
 			.FIFO_DEPTH(FIFO_DEPTH)
 			) port
 			(
