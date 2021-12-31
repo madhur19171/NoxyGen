@@ -33,13 +33,13 @@ module Switch
 	wire [OUTPUTS - 1 : 0] outputBusy;
 	wire [INPUTS - 1 : 0] PortReserved;
 	
-	SwitchControl
+	SwitchControlGroup
 	#(.N(N),
 	.VC(VC),
 	.INPUTS(INPUTS),
 	.OUTPUTS(OUTPUTS),
 	.DATA_WIDTH(DATA_WIDTH),
-	.REQUEST_WIDTH(REQUEST_WIDTH)) switchControl
+	.REQUEST_WIDTH(REQUEST_WIDTH)) switchControlGroup
 	
 	(.clk(clk),
 	.rst(rst),

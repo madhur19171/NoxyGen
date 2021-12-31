@@ -25,7 +25,7 @@ module NodeVerifier
 	
 	localparam DIM = $floor($sqrt(N));
 	
-	integer fd, fd_read;
+	integer fd;
 	reg [31 : 0] ex_memory [0 : numberOfPackets * FlitsPerPacket - 1];
 	reg [31 : 0] delay_memory [0 : numberOfPackets * FlitsPerPacket - 1];
 	
@@ -212,16 +212,8 @@ module NodeVerifier
 		end
 	end
 	
-	reg[31 : 0]dataInput;
-	integer dataInput_index = 0;
 	initial begin
-		fd_read = $fopen(dataInputFilePath, "r");
-		if(!fd_read)
-			$display("File %s not opened successfully", dataInputFilePath);
-		while($fscanf(fd_read, "0x%x", dataInput))
-			ex_memory[dataInput_index] = data_input;
-		$fclose(fd_read);
-		//$readmemh(dataInputFilePath, ex_memory); 
+		$readmemh(dataInputFilePath, ex_memory); 
 		$readmemh(delayInputFilePath, delay_memory);
 		fd=$fopen(outputFilePath,"w");
 	end
