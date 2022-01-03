@@ -9,6 +9,7 @@ module PortControlLogic
 	parameter TYPE_WIDTH = 2,
 	parameter REQUEST_WIDTH = 2,
 	parameter FlitPerPacket = 6,
+	parameter HFBDepth = 4,
 	parameter PhitPerFlit = 1
 	) 
 	(
@@ -62,6 +63,11 @@ module PortControlLogic
 	wire headFlitStatus;
 	wire Handshake;
 	
+	wire HFBFull;
+	wire HFBEmpty;
+	wire decodeHeadFlit;
+	wire headFlitDecoded;
+	
 	ControlFSM 
 	#(.DATA_WIDTH(DATA_WIDTH),
 	.VC(VC),
@@ -83,7 +89,11 @@ module PortControlLogic
 	.routeReserveStatus(routeReserveStatus_CFSM),
 	.headFlitValid(headFlitValid),
 	.phitCounter(phitCounter),
-	.headFlitStatus(headFlitStatus),
+	
+	.HFBFull(HFBFull),
+	.HFBEmpty(HFBEmpty),
+	.decodeHeadFlit(decodeHeadFlit),
+	.headFlitDecoded(headFlitDecoded),
 	
 	.popBuffer(popBuffer),
 	.pushBuffer(pushBuffer),
@@ -99,6 +109,7 @@ module PortControlLogic
 	.VC(VC),
 	.DATA_WIDTH(DATA_WIDTH),
 	.PhitPerFlit(PhitPerFlit),
+	.HFBDepth(HFBDepth),
 	.REQUEST_WIDTH(REQUEST_WIDTH)
 	) headFlitBuffer
 	(.clk(clk),
@@ -111,7 +122,12 @@ module PortControlLogic
 	.routeRelieve(routeRelieve),
 	.reserveRoute(reserveRoute),
 	.routeReserveStatus_CFSM(routeReserveStatus_CFSM),
-	.headFlitStatus(headFlitStatus),
+	
+	.HFBFull(HFBFull),
+	.HFBEmpty(HFBEmpty),
+	.decodeHeadFlit(decodeHeadFlit),
+	.headFlitDecoded(headFlitDecoded),
+	
 	.routeReserveRequestValid(routeReserveRequestValid),
 	.routeReserveRequest(routeReserveRequest),
 	.routeReserveStatus_Switch(routeReserveStatus)

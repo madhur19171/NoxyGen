@@ -7,7 +7,8 @@ module SwitchControl
 	parameter OUTPUTS = 4,
 	parameter DATA_WIDTH = 8,
 	parameter REQUEST_WIDTH = 2,
-	parameter VC = 4
+	parameter AssignedVC = 4,
+	parameter VC = 1
 	) 
 	
 	(
@@ -33,22 +34,21 @@ module SwitchControl
 	
 //	reg [OUTPUTS - 1 : 0] outputBusy = 0;//Tells which outputs are currently busy with transaction.
 
-	reg [VC * OUTPUTS * REQUEST_WIDTH - 1 : 0]routeSelectVC = 0;
-	reg [VC * OUTPUTS - 1 : 0] outputBusyVC = 0;
-	reg [VC * INPUTS - 1 : 0] PortReservedVC = 0;
-	reg [VC * INPUTS - 1 : 0] routeReserveStatusVC = 0;
+	reg [OUTPUTS * REQUEST_WIDTH - 1 : 0]routeSelectVC = 0;
+	reg [OUTPUTS - 1 : 0] outputBusyVC = 0;
+	reg [INPUTS - 1 : 0] PortReservedVC = 0;
+	reg [INPUTS - 1 : 0] routeReserveStatusVC = 0;
 
-	reg [VC * OUTPUTS - 1 : 0] switchRequestVC = 0;
-	reg [VC * OUTPUTS - 1 : 0] outputRelieveVC = 0;
+	reg [OUTPUTS - 1 : 0] switchRequestVC = 0;
+	reg [OUTPUTS - 1 : 0] outputRelieveVC = 0;
 	
-	reg [VC * INPUTS - 1 : 0] PortBusyVC = 0;
-	reg [VC * INPUTS - 1 : 0] ConflictVC = 0;
+	reg [INPUTS - 1 : 0] PortBusyVC = 0;
+	reg [INPUTS - 1 : 0] ConflictVC = 0;
 	
 
-//TODO: Handle the situation when two requests come in consecutive clock cycles.
-//For this, outputBusy has to be made high as soon as we know that the request will reserve the path
-//This needs to be done in one clock cycle.
-//Done!
+//This Switch Controller will transit to other states only when
+//VCPlaneSelector is equal to AssignedVC. This means that the FSMs will be active 
+//when the virtual plane becomes active. At other times, it will be inactive.
 
 
 //----------------------------------------Switch Controller FSM begins-----------------------------
@@ -56,16 +56,16 @@ module SwitchControl
 	localparam UnRouted = 0, Check = 1, Arbitrate = 2, PathReserved1 = 3, PathReserved0 =4;
 	
 	//These registers store the FSM states of all the output ports
-	reg [VC * STATE_WIDTH * INPUTS - 1 : 0] switchStateVC = 0, switchState_nextVC = 0;
+	reg [STATE_WIDTH * INPUTS - 1 : 0] switchStateVC = 0, switchState_nextVC = 0;
 	
 	integer i0;
 	//State Transition for all Output Ports
 	always @(posedge clk)begin
 		for(i0 = INPUTS - 1; i0 >= 0; i0 = i0 - 1)
 			if(rst)
-				switchStateVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i0 * STATE_WIDTH +: STATE_WIDTH] <= #1.25 UnRouted;
-			else 
-				switchStateVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i0 * STATE_WIDTH +: STATE_WIDTH] <= #1.25 switchState_nextVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i0 * STATE_WIDTH +: STATE_WIDTH];
+				switchStateVC[0 * STATE_WIDTH * INPUTS + i0 * STATE_WIDTH +: STATE_WIDTH] <= #1.25 UnRouted;
+			else if(VCPlaneSelector == AssignedVC)
+				switchStateVC[0 * STATE_WIDTH * INPUTS + i0 * STATE_WIDTH +: STATE_WIDTH] <= #1.25 switchState_nextVC[0 * STATE_WIDTH * INPUTS + i0 * STATE_WIDTH +: STATE_WIDTH];
 	end
 	
 	integer i1;
@@ -73,13 +73,13 @@ module SwitchControl
 	always @(*)begin
 		switchState_nextVC = 0;
 		for(i1 = INPUTS - 1; i1 >= 0; i1 = i1 - 1)
-			case(switchStateVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH])
-				UnRouted : switchState_nextVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = routeReserveRequestValid[i1] ? Check : UnRouted;
-				Check : switchState_nextVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = PortBusyVC[VCPlaneSelector * INPUTS + i1] ? Check : ConflictVC[VCPlaneSelector * INPUTS + i1] ? Arbitrate : PathReserved1;
-				Arbitrate :  switchState_nextVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = ~ConflictVC[VCPlaneSelector * INPUTS + i1] & ~PortBusyVC[VCPlaneSelector * INPUTS + i1] ? PathReserved1 : Arbitrate;
-				PathReserved1 : switchState_nextVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = PathReserved0;
-				PathReserved0 : switchState_nextVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = ~routeRelieve[i1] ? PathReserved0 : UnRouted;
-				default : switchState_nextVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = UnRouted;
+			case(switchStateVC[0 * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH])
+				UnRouted : switchState_nextVC[0 * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = routeReserveRequestValid[i1] ? Check : UnRouted;
+				Check : switchState_nextVC[0 * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = PortBusyVC[0 * INPUTS + i1] ? Check : ConflictVC[0 * INPUTS + i1] ? Arbitrate : PathReserved1;
+				Arbitrate :  switchState_nextVC[0 * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = ~ConflictVC[0 * INPUTS + i1] & ~PortBusyVC[0 * INPUTS + i1] ? PathReserved1 : Arbitrate;
+				PathReserved1 : switchState_nextVC[0 * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = PathReserved0;
+				PathReserved0 : switchState_nextVC[0 * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = ~routeRelieve[i1] ? PathReserved0 : UnRouted;
+				default : switchState_nextVC[0 * STATE_WIDTH * INPUTS + i1 * STATE_WIDTH +: STATE_WIDTH] = UnRouted;
 			endcase
 	end
 	
@@ -88,7 +88,7 @@ module SwitchControl
 	always @(*)begin
 		PortBusyVC = 0;
 		for(i2 = INPUTS - 1; i2 >= 0; i2 = i2 - 1)
-			PortBusyVC[VCPlaneSelector * INPUTS + i2] = outputBusyVC[VCPlaneSelector * OUTPUTS + routeReserveRequest[i2 * REQUEST_WIDTH +: REQUEST_WIDTH]];
+			PortBusyVC[0 * INPUTS + i2] = outputBusyVC[0 * OUTPUTS + routeReserveRequest[i2 * REQUEST_WIDTH +: REQUEST_WIDTH]];
 	end
 	
 	
@@ -98,9 +98,9 @@ module SwitchControl
 	always @(*)begin
 		PortReservedVC = 0;
 		for(i3 = INPUTS - 1; i3 >= 0; i3 = i3 - 1)
-			PortReservedVC[VCPlaneSelector * INPUTS + i3] = switchStateVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i3 * STATE_WIDTH +: STATE_WIDTH] == PathReserved0;
+			PortReservedVC[0 * INPUTS + i3] = switchStateVC[0 * STATE_WIDTH * INPUTS + i3 * STATE_WIDTH +: STATE_WIDTH] == PathReserved0;
 	end
-	assign PortReserved = PortReservedVC[VCPlaneSelector * INPUTS +: INPUTS];
+	assign PortReserved = PortReservedVC[0 * INPUTS +: INPUTS];
 	
 
 	integer i4, j4;
@@ -113,10 +113,10 @@ module SwitchControl
 				// If there is a conflict in the port, it will not be reported for
 				//the lower index. This way we ensure that atleast one conflicted signal 
 				//reserves a path.
-				ConflictVC[VCPlaneSelector * INPUTS + i4] = ConflictVC[VCPlaneSelector * INPUTS + i4] | 
+				ConflictVC[0 * INPUTS + i4] = ConflictVC[0 * INPUTS + i4] | 
 					((routeReserveRequest[j4 * REQUEST_WIDTH +: REQUEST_WIDTH] == routeReserveRequest[i4 * REQUEST_WIDTH +: REQUEST_WIDTH]) 
 					& routeReserveRequestValid[i4] & routeReserveRequestValid[j4]
-					& (switchStateVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i4 * STATE_WIDTH +: STATE_WIDTH] != UnRouted));//switchState needs to be checked so that a conflicted signal can be dispatched after other signal has finished
+					& (switchStateVC[0 * STATE_WIDTH * INPUTS + i4 * STATE_WIDTH +: STATE_WIDTH] != UnRouted));//switchState needs to be checked so that a conflicted signal can be dispatched after other signal has finished
 		end
 	end
 				
@@ -125,52 +125,52 @@ module SwitchControl
 	always @(*)begin
 		routeReserveStatusVC = 0;
 		for(i5 = INPUTS - 1; i5 >= 0; i5 = i5 - 1)
-			routeReserveStatusVC[VCPlaneSelector * INPUTS + i5] = switchStateVC[VCPlaneSelector * STATE_WIDTH * INPUTS + i5 * STATE_WIDTH +: STATE_WIDTH] == PathReserved1;
+			routeReserveStatusVC[0 * INPUTS + i5] = switchStateVC[0 * STATE_WIDTH * INPUTS + i5 * STATE_WIDTH +: STATE_WIDTH] == PathReserved1;
 	end
-	assign routeReserveStatus = routeReserveStatusVC[VCPlaneSelector * INPUTS +: INPUTS];
+	assign routeReserveStatus = routeReserveStatusVC[0 * INPUTS +: INPUTS];
 	
 	integer i6;
 	always @(posedge clk)begin
 		for(i6 = OUTPUTS - 1; i6 >= 0; i6 = i6 - 1)begin
 			if(rst) 
-				outputBusyVC[VCPlaneSelector * OUTPUTS + i6] <= #0.75 0;
-			else 
-			if(outputRelieveVC[VCPlaneSelector * OUTPUTS + i6])
-				outputBusyVC[VCPlaneSelector * OUTPUTS + i6] <= #0.75 0;
+				outputBusyVC[0 * OUTPUTS + i6] <= #0.75 0;
+			else if(VCPlaneSelector == AssignedVC)
+			if(outputRelieveVC[0 * OUTPUTS + i6])
+				outputBusyVC[0 * OUTPUTS + i6] <= #0.75 0;
 			else
 			//Input with lower i6 is given more priority
-			if(~outputBusyVC[VCPlaneSelector * OUTPUTS + i6] & switchRequestVC[VCPlaneSelector * OUTPUTS + i6])//If the output is not busy and there is a switch request
-				outputBusyVC[VCPlaneSelector * OUTPUTS + i6] <= #0.75 1;		
+			if(~outputBusyVC[0 * OUTPUTS + i6] & switchRequestVC[0 * OUTPUTS + i6])//If the output is not busy and there is a switch request
+				outputBusyVC[0 * OUTPUTS + i6] <= #0.75 1;		
 		end
 	end
-	assign outputBusy = outputBusyVC[VCPlaneSelector * OUTPUTS +: OUTPUTS];
+	assign outputBusy = outputBusyVC[0 * OUTPUTS +: OUTPUTS];
 
 
 	//There is a possibility of Hold time violation in this always block
 	integer i7, j7;
 	always @(posedge clk)begin
 		if(rst)
-			routeSelectVC[VCPlaneSelector * OUTPUTS * REQUEST_WIDTH +: OUTPUTS * REQUEST_WIDTH] = 0;
-		else
+			routeSelectVC[0 * OUTPUTS * REQUEST_WIDTH +: OUTPUTS * REQUEST_WIDTH] = 0;
+		else if(VCPlaneSelector == AssignedVC)
 		for(i7 = OUTPUTS - 1; i7 >= 0; i7 = i7 - 1)begin
 		//Keep the previous route reserve request until it is overwritten.
 			//routeSelect[i * REQUEST_WIDTH +: REQUEST_WIDTH] = 0;
 			for(j7 = INPUTS - 1; j7 >= 0; j7 = j7 - 1)
-				if(routeReserveRequest[j7 * REQUEST_WIDTH +: REQUEST_WIDTH] == i7 & switchStateVC[VCPlaneSelector * STATE_WIDTH * INPUTS + j7 * STATE_WIDTH +: STATE_WIDTH] == PathReserved1)
-					routeSelectVC[VCPlaneSelector * OUTPUTS * REQUEST_WIDTH + i7 * REQUEST_WIDTH +: REQUEST_WIDTH] = j7;
+				if(routeReserveRequest[j7 * REQUEST_WIDTH +: REQUEST_WIDTH] == i7 & switchStateVC[0 * STATE_WIDTH * INPUTS + j7 * STATE_WIDTH +: STATE_WIDTH] == PathReserved1)
+					routeSelectVC[0 * OUTPUTS * REQUEST_WIDTH + i7 * REQUEST_WIDTH +: REQUEST_WIDTH] = j7;
 		end
 	end
-	assign routeSelect = routeSelectVC[VCPlaneSelector * OUTPUTS * REQUEST_WIDTH +: OUTPUTS * REQUEST_WIDTH];
+	assign routeSelect = routeSelectVC[0 * OUTPUTS * REQUEST_WIDTH +: OUTPUTS * REQUEST_WIDTH];
 	
 	integer i8, j8;
 	always @(*)begin
 		switchRequestVC = 0;
 		for(i8 = OUTPUTS - 1; i8 >= 0; i8 = i8 - 1)begin
 			for(j8 = INPUTS - 1; j8 >= 0; j8 = j8 - 1)//To be generated when the path is actually reserved.
-				switchRequestVC[VCPlaneSelector * OUTPUTS + i8] = switchRequestVC[VCPlaneSelector * OUTPUTS + i8]
+				switchRequestVC[0 * OUTPUTS + i8] = switchRequestVC[0 * OUTPUTS + i8]
 										| (routeReserveRequest[j8 * REQUEST_WIDTH +: REQUEST_WIDTH] == i8
-										& (~PortBusyVC[VCPlaneSelector * INPUTS + j8] | ConflictVC[VCPlaneSelector * INPUTS + j8])) 
-										& (switchStateVC[VCPlaneSelector * STATE_WIDTH * INPUTS + j8 * STATE_WIDTH +: STATE_WIDTH] == PathReserved1);
+										& (~PortBusyVC[0 * INPUTS + j8] | ConflictVC[0 * INPUTS + j8])) 
+										& (switchStateVC[0 * STATE_WIDTH * INPUTS + j8 * STATE_WIDTH +: STATE_WIDTH] == PathReserved1);
 		end
 	end
 	
@@ -188,10 +188,10 @@ module SwitchControl
 		outputRelieveVC = 0;
 		for(i9 = OUTPUTS - 1; i9 >= 0; i9 = i9 - 1)begin
 			for(j9 = INPUTS - 1; j9 >= 0; j9 = j9 - 1)
-				outputRelieveVC[VCPlaneSelector * OUTPUTS + i9] = outputRelieveVC[VCPlaneSelector * OUTPUTS + i9] 
+				outputRelieveVC[0 * OUTPUTS + i9] = outputRelieveVC[0 * OUTPUTS + i9] 
 										| (routeRelieve[j9] 
-										& routeSelectVC[VCPlaneSelector * OUTPUTS * REQUEST_WIDTH + i9 * REQUEST_WIDTH +: REQUEST_WIDTH] == j9 
-										& outputBusyVC[VCPlaneSelector * OUTPUTS + i9]);
+										& routeSelectVC[0 * OUTPUTS * REQUEST_WIDTH + i9 * REQUEST_WIDTH +: REQUEST_WIDTH] == j9 
+										& outputBusyVC[0 * OUTPUTS + i9]);
 		end
 	end
 	

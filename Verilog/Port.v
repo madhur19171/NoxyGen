@@ -7,6 +7,7 @@ module Port #(
 	parameter REQUEST_WIDTH = 2,
 	parameter FlitPerPacket = 6,
 	parameter PhitPerFlit = 1,
+	parameter HFBDepth = 4,
 	parameter FIFO_DEPTH = 32
 	) 
 	
@@ -48,6 +49,7 @@ module Port #(
 	.TYPE_WIDTH(TYPE_WIDTH),
 	.REQUEST_WIDTH(REQUEST_WIDTH),
 	.FlitPerPacket(FlitPerPacket),
+	.HFBDepth(HFBDepth),
 	.PhitPerFlit(PhitPerFlit)
 	) portControlLogic
 	(.clk(clk),
