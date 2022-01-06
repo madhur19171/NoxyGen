@@ -41,6 +41,7 @@ private:
 	std::vector <std::string> inputTrafficList;
 	std::vector <std::string> outputTrafficList;
 	void checkMesh();
+	void checkMeshVerbose();
 };
 
 #endif /* SRC_CHECKER_H_ */

@@ -103,3 +103,61 @@ void Checker::checkMesh(){
 			std::cout << "Node" << i << " Passed" << std::endl;
 	}
 }
+
+
+void Checker::checkMeshVerbose(){
+
+	int dimX, dimY;
+	dimX = floor(sqrt(N));
+	dimY = dimX;
+
+	for(int i = 0; i < N; i++){
+		bool nodeFailed = false;
+		std::stringstream inputTrafficStream;
+		inputTrafficStream << inputTrafficList[i];
+		int flit;
+		//		std::cout << inputTrafficList[i] << std::endl;
+		while(!inputTrafficStream.eof()){
+			std::string flitString;
+			inputTrafficStream >> flitString;
+			if(flitString.size() != 10){
+				continue;
+			}
+//			std::cout << flitString << std::endl;
+			flit = std::stoul(flitString, nullptr, 16);
+			//			int srcX, srcY;
+
+			int destX, destY;
+			if(((flit >> 30) == 1) || (flit >> 30) == -1){//Head Flit or Tail Flit
+				destY = flit & 0xf;
+				destX = (flit >> 4) & 0xf;
+				//				srcX = (flit >> 8) & 0xf;
+				//				srcY = (flit >> 12) & 0xf;
+			} else{
+				destY = (flit >> 4) & 0xf;
+				destX = (flit >> 8) & 0xf;
+				//				srcX = (flit >> 12) & 0xf;
+				//				srcY = (flit >> 16) & 0xf;
+			}
+			int destinationNode = destX + destY * dimY;
+//			std::cout << destinationNode << std::endl;
+			int foundNode = -1;
+			for(int j = 0; j < N; j++)
+				if(outputTrafficList[j].find(flitString) != std::string::npos){
+					foundNode = j;
+					break;
+				}
+			if(foundNode != destinationNode){
+				if(foundNode == -1)
+					std::cout << "Flit: " << flitString << " did not reach it's destination" << std::endl;
+				else
+					std::cout << "Flit: " << flitString << " misrouted to Node" << foundNode << std::endl;
+				nodeFailed = true;
+			}
+		}
+		if(nodeFailed)
+			std::cout << "Node" << i << " Failed" << std::endl;
+		else
+			std::cout << "Node" << i << " Passed" << std::endl;
+	}
+}

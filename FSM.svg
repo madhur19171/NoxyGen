@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="false"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.56839371"
-     inkscape:cx="3730.6887"
-     inkscape:cy="674.70838"
+     inkscape:zoom="1.6076602"
+     inkscape:cx="5426.8309"
+     inkscape:cy="1156.6499"
      inkscape:window-width="1848"
      inkscape:window-height="1016"
      inkscape:window-x="72"
@@ -16815,5 +16815,94 @@
          x="663.69891"
          y="238.61087"
          id="tspan25347">In case HFBEmpty and headFlitValid both are high, headFlitValid is to be given higher priority.</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:0.277486;stroke:#020000;stroke-width:0.264999;paint-order:markers fill stroke"
+       id="rect4169"
+       width="38.085537"
+       height="26.792255"
+       x="1248.9811"
+       y="294.19821"
+       ry="0" />
+    <rect
+       style="fill:none;fill-opacity:0.277486;stroke:#020000;stroke-width:0.264999;paint-order:markers fill stroke"
+       id="rect4251"
+       width="38.085537"
+       height="26.792255"
+       x="1362.8325"
+       y="294.19821"
+       ry="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker29359)"
+       d="m 1287.0229,299.51925 h 75.6103"
+       id="path4286" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker29359)"
+       d="m 1287.0229,306.40342 h 75.6103"
+       id="path4369" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker29359)"
+       d="m 1362.6524,315.4085 h -75.1158"
+       id="path4371"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="1315.3252"
+       y="298.61954"
+       id="text5288"><tspan
+         sodipodi:role="line"
+         id="tspan5286"
+         style="font-size:3.88056px;stroke-width:0.264583"
+         x="1315.3252"
+         y="298.61954">data</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="1315.3252"
+       y="298.61954"
+       id="text8166"><tspan
+         sodipodi:role="line"
+         id="tspan8164"
+         style="font-size:3.88056px;stroke-width:0.264583"
+         x="1315.3252"
+         y="298.61954">data</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="1315.3252"
+       y="306.07086"
+       id="text8170"><tspan
+         sodipodi:role="line"
+         id="tspan8168"
+         style="font-size:3.88056px;stroke-width:0.264583"
+         x="1315.3252"
+         y="306.07086">valid</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="1315.3252"
+       y="314.79648"
+       id="text10002"><tspan
+         sodipodi:role="line"
+         id="tspan10000"
+         style="font-size:3.88056px;stroke-width:0.264583"
+         x="1315.3252"
+         y="314.79648">ready</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.58611px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+       x="1332.9854"
+       y="273.75815"
+       id="text12995"><tspan
+         sodipodi:role="line"
+         id="tspan12993"
+         style="font-size:4.58611px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="1332.9854"
+         y="273.75815">tw - Wire Delay!</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:4.58611px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="1332.9854"
+         y="279.49078"
+         id="tspan20846">what if it spans several clock cycles?</tspan></text>
   </g>
 </svg>
