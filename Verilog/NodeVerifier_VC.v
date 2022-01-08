@@ -26,7 +26,11 @@ module NodeVerifier
 	localparam DIM = $floor($sqrt(N));
 	
 	integer fd;
-	reg [31 : 0] ex_memory [0 : numberOfPackets * FlitsPerPacket - 1];
+	
+	reg [31 : 0] ex_memory_flat [0 : numberOfPackets * FlitsPerPacket - 1];
+	reg [31 : 0] delay_memory_flat [0 : numberOfPackets * FlitsPerPacket - 1];
+	
+	reg [31 : 0]  ex_memory  [0 : numberOfPackets * FlitsPerPacket - 1];
 	reg [31 : 0] delay_memory [0 : numberOfPackets * FlitsPerPacket - 1];
 	
 	reg [31 : 0] data_in_0 = 0, data_in_1 = 0, data_in_2 = 0, data_in_3 = 0;
@@ -66,7 +70,36 @@ module NodeVerifier
 			counter <= counter + 1;
 	end
 	
-	integer i0, j0, k0;
+	integer i, j, k, flag;
+	reg [31 : 0] VC_counter [0 : VC - 1];
+	initial begin
+		$readmemh(dataInputFilePath, ex_memory_flat); 
+		$readmemh(delayInputFilePath, delay_memory_flat);
+		fd=$fopen(outputFilePath,"w");
+	
+		i = 0;
+		k = 0;
+		flag = 0;
+		
+		for(j = 0; j < VC; j = j + 1)
+			VC_counter[j] = 0;
+		
+		for(j = 0; j < numberOfPackets; j = j + 1)begin
+			flag = 0;
+			k = j % VC;//VC selection
+			while(flag != 1)begin
+				ex_memory[k * numberOfPackets * FlitsPerPacket / VC + VC_counter[k]] = ex_memory_flat[i];
+				$write("%0d ", ex_memory[k * numberOfPackets * FlitsPerPacket / VC + VC_counter[k]]);
+				delay_memory[k * numberOfPackets * FlitsPerPacket / VC + VC_counter[k]] = delay_memory_flat[i];
+				if(ex_memory_flat[i][31 : 30] == 2'b11)//If tail is seen
+					flag = 1;
+				VC_counter[k] = VC_counter[k] + 1;
+				i = i + 1;
+			end
+		end
+	end
+	
+	integer i0, j0, k0, flag0;
 	
 	reg t0 = 0;
 	wire tw0;
@@ -77,15 +110,20 @@ module NodeVerifier
 			t0 <= 1;
 	end
 	
-	 // initial begin starts
 	initial begin
 		#85;
+		i0 = 0;
 		for(j0 = 0; j0 < numberOfPackets; j0 = j0 + 4)begin
+			flag0 = 0;
 			#1 valid_in_0 = 1;
-			for(i0 = 0; i0 < FlitsPerPacket; i0 = i0 + 1)begin
-				#1 data_in_0 = ex_memory[j0 * FlitsPerPacket + i0];
+			while(flag0 != 1)begin
+				#1 data_in_0 = ex_memory[0 * numberOfPackets * FlitsPerPacket / VC + i0];
+				
+				if(data_in_0[31 : 30] == 2'b11)
+					flag0 = 1;//Flag is set when tail is sent
+				
 				valid_in_0 = 1;
-				if(i0 == 0) begin
+				if(data_in_0[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d", ID, (data_in_0[29 : 16] + 1), data_in_0[3:0] * DIM + data_in_0[7 : 4], timeCounter);
 				end
 				
@@ -93,17 +131,18 @@ module NodeVerifier
 				
 				wait(tw0);
 				
-				#1 valid_in_0 = 0;
+				#1 valid_in_0= 0;
 
-				for(k0 = 0; k0 < delay_memory[i0]; k0 = k0 + 1)begin
+				for(k0 = 0; k0 < delay_memory[0 * numberOfPackets * FlitsPerPacket / VC + i0]; k0 = k0 + 1)begin
 					#1;
 				end
 				@(negedge clk);
+				i0 = i0 + 1;
 			end
 		end
 	end
 	
-	integer i1, j1, k1;
+	integer i1, j1, k1, flag1;
 	reg t1 = 0;
 	wire tw1;
 	assign #1 tw1 = t1 & clk;
@@ -114,15 +153,20 @@ module NodeVerifier
 	end
 
 
-	 // initial begin starts
 	initial begin
 		#85;
+		i1 = 0;
 		for(j1 = 1; j1 < numberOfPackets; j1 = j1 + 4)begin
+			flag1 = 0;
 			#1 valid_in_1 = 1;
-			for(i1 = 0; i1 < FlitsPerPacket; i1 = i1 + 1)begin
-				#1 data_in_1 = ex_memory[j1 * FlitsPerPacket + i1];
+			while(flag1 != 1)begin
+				#1 data_in_1 = ex_memory[1 * numberOfPackets * FlitsPerPacket / VC + i1];
+				
+				if(data_in_1[31 : 30] == 2'b11)
+					flag1 = 1;//Flag is set when tail is sent
+				
 				valid_in_1 = 1;
-				if(i1 == 0) begin
+				if(data_in_1[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d", ID, (data_in_1[29 : 16] + 1), data_in_1[3:0] * DIM + data_in_1[7 : 4], timeCounter);
 				end
 				
@@ -132,15 +176,16 @@ module NodeVerifier
 				
 				#1 valid_in_1 = 0;
 
-				for(k1 = 0; k1 < delay_memory[i1]; k1 = k1 + 1)begin
+				for(k1 = 0; k1 < delay_memory[1 * numberOfPackets * FlitsPerPacket / VC + i1]; k1 = k1 + 1)begin
 					#1;
 				end
 				@(negedge clk);
+				i1 = i1 + 1;
 			end
 		end
 	end
 	
-	integer i2, j2, k2;
+	integer i2, j2, k2, flag2;
 	reg t2 = 0;
 	wire tw2;
 	assign #1 tw2 = t2 & clk;
@@ -150,15 +195,20 @@ module NodeVerifier
 			t2 <= 1;
 	end
 	
-	 // initial begin starts
 	initial begin
 		#85;
+		i2 = 0;
 		for(j2 = 2; j2 < numberOfPackets; j2 = j2 + 4)begin
+			flag2 = 0;
 			#1 valid_in_2 = 1;
-			for(i2 = 0; i2 < FlitsPerPacket; i2 = i2 + 1)begin
-				#1 data_in_2 = ex_memory[j2 * FlitsPerPacket + i2];
+			while(flag2 != 1)begin
+				#1 data_in_2 = ex_memory[2 * numberOfPackets * FlitsPerPacket / VC + i2];
+				
+				if(data_in_2[31 : 30] == 2'b11)
+					flag2 = 1;//Flag is set when tail is sent
+				
 				valid_in_2 = 1;
-				if(i2 == 0) begin
+				if(data_in_2[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d", ID, (data_in_2[29 : 16] + 1), data_in_2[3:0] * DIM + data_in_2[7 : 4], timeCounter);
 				end
 				
@@ -168,15 +218,16 @@ module NodeVerifier
 				
 				#1 valid_in_2 = 0;
 
-				for(k2 = 0; k2 < delay_memory[i2]; k2 = k2 + 1)begin
+				for(k2 = 0; k2 < delay_memory[2 * numberOfPackets * FlitsPerPacket / VC + i2]; k2 = k2 + 1)begin
 					#1;
 				end
 				@(negedge clk);
+				i2 = i2 + 1;
 			end
 		end
 	end
 	
-	integer i3, j3, k3;
+	integer i3, j3, k3, flag3;
 	reg t3 = 0;
 	wire tw3;
 	assign #1 tw3 = t3 & clk;
@@ -186,15 +237,20 @@ module NodeVerifier
 			t3 <= 1;
 	end
 	
-	 // initial begin starts
 	initial begin
 		#85;
+		i3 = 0;
 		for(j3 = 3; j3 < numberOfPackets; j3 = j3 + 4)begin
+			flag3 = 0;
 			#1 valid_in_3 = 1;
-			for(i3 = 0; i3 < FlitsPerPacket; i3 = i3 + 1)begin
-				#1 data_in_3 = ex_memory[j3 * FlitsPerPacket + i3];
+			while(flag3 != 1)begin
+				#1 data_in_3 = ex_memory[3 * numberOfPackets * FlitsPerPacket / VC + i3];
+				
+				if(data_in_3[31 : 30] == 2'b11)
+					flag3 = 1;//Flag is set when tail is sent
+				
 				valid_in_3 = 1;
-				if(i3 == 0) begin
+				if(data_in_3[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d", ID, (data_in_3[29 : 16] + 1), data_in_3[3:0] * DIM + data_in_3[7 : 4], timeCounter);
 				end
 				
@@ -204,19 +260,15 @@ module NodeVerifier
 				
 				#1 valid_in_3 = 0;
 
-				for(k3 = 0; k3 < delay_memory[i3]; k3 = k3 + 1)begin
+				for(k3 = 0; k3 < delay_memory[3 * numberOfPackets * FlitsPerPacket / VC + i3]; k3 = k3 + 1)begin
 					#1;
 				end
 				@(negedge clk);
+				i3 = i3 + 1;
 			end
 		end
 	end
 	
-	initial begin
-		$readmemh(dataInputFilePath, ex_memory); 
-		$readmemh(delayInputFilePath, delay_memory);
-		fd=$fopen(outputFilePath,"w");
-	end
 	
 	always @(*)
 		ready_out = valid_out;
@@ -272,7 +324,7 @@ module NodeVerifier
 	end
 	
 	
-	integer i, j, k;
+	integer i, j, k, flag;
 	reg t = 0;
 	wire tw;
 	assign #1 tw = t & clk;
@@ -285,12 +337,18 @@ module NodeVerifier
 	 // initial begin starts
 	initial begin
 		#85;
+		i = 0;
 		for(j = 0; j < numberOfPackets; j = j + 1)begin
+			flag = 0;
 			#1 valid_in = 1;
-			for(i = 0; i < FlitsPerPacket; i = i + 1)begin
-				#1 data_in = ex_memory[j * FlitsPerPacket + i];
+			while(flag != 1)begin
+				#1 data_in = ex_memory[i];
+				
+				if(data_in[31 : 30] == 2'b11)
+					flag = 1;//Flag is set when tail is sent
+				
 				valid_in = 1;
-				if(i == 0) begin
+				if(data_in[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d", ID, (data_in[29 : 16] + 1), data_in[3:0] * DIM + data_in[7 : 4], timeCounter);
 				end
 				
@@ -304,6 +362,7 @@ module NodeVerifier
 					#1;
 				end
 				@(negedge clk);
+				i = i + 1;
 			end
 		end
 	end
