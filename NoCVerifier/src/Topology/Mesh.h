@@ -19,7 +19,7 @@ public:
 	virtual ~Mesh();
 private:
 	//TODO: different traffic types to be added
-	std::vector<std::string> generateTraffic(int numberOfPacketsPerNode, TrafficType trafficType);
+	std::vector<std::vector<std::vector<std::string>>> generateTraffic(int numberOfPacketsPerNode, TrafficType trafficType);
 };
 
 #endif /* SRC_TOPOLOGY_MESH_H_ */

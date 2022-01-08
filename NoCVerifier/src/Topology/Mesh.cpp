@@ -34,8 +34,8 @@ Mesh::~Mesh() {
 	// TODO Auto-generated destructor stub
 }
 
-std::vector<std::string> Mesh::generateTraffic(int numberOfPacketsPerNode, TrafficType trafficType){
-	std::vector<std::string> ret;
+std::vector<std::vector<std::vector<std::string>>> Mesh::generateTraffic(int numberOfPacketsPerNode, TrafficType trafficType){
+	std::vector<std::vector<std::vector<std::string>>> ret;
 
 	srand(time(0));
 
@@ -44,17 +44,25 @@ std::vector<std::string> Mesh::generateTraffic(int numberOfPacketsPerNode, Traff
 	int flit = 0;
 
 	for(int i = 0; i < N; i++){
-		std::stringstream nodePackets;//A list that appends all the packets sent by the current node
+		std::vector<std::vector<std::string>> nodeTraffic;//Stores the traffic of a particular Node
 		source = i;
 		destination = -1;
 
+		//Creating a generating function
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 		std::default_random_engine generator (seed);
 		//		std::uniform_int_distribution<int> distribution(0,N - 1);
-		std::normal_distribution<double> distribution(N / 2.0 , 1.0);
-		auto randomDestinationGenerator = std::bind ( distribution, generator );
+
+		//Creating Random Destination Generator for each Node
+		std::normal_distribution<double> destinationDistribution(N / 2.0 , 1.0);
+		auto randomDestinationGenerator = std::bind ( destinationDistribution, generator );
+
+		//Creating Random "Number of Flits per Packet" Generator for each Node
+		std::uniform_int_distribution<int> flitsPerPacketDistribution(3 , this->flitsPerPacket);//Generating atleast one body flit and at max flitsPerPacket
+		auto randomNumberOfFlitsPerPacketGenerator = std::bind ( flitsPerPacketDistribution, generator );
 
 		for(int j = 0; j < numberOfPacketsPerNode; j++){
+			std::vector<std::string> packetTraffic;//Stores the traffic of a particular Packet. Stores the flits in a packet.
 			do{
 				destination = int(randomDestinationGenerator());//Find a random destination
 			} while (destination == source || (destination < 0 || destination >= N));//Destination should not be same as the source
@@ -74,8 +82,10 @@ std::vector<std::string> Mesh::generateTraffic(int numberOfPacketsPerNode, Traff
 			 * At max, 256 messages can be sent per node
 			 */
 
+			int numberOfFlits = randomNumberOfFlitsPerPacketGenerator();
+
 			//Packet Generation
-			for(int k = 0; k < flitsPerPacket; k++){
+			for(int k = 0; k < numberOfFlits; k++){
 				flit = 0;//Empty flit
 
 				if(k == 0){//Head Flit Generation
@@ -85,7 +95,7 @@ std::vector<std::string> Mesh::generateTraffic(int numberOfPacketsPerNode, Traff
 					flit |= srcX << 12;
 					flit |= j << 16;//Message Number
 					flit |= 1 << 30;//Head Flit Identifier
-				} else if(k == flitsPerPacket - 1){//Tail Flit Generation
+				} else if(k == numberOfFlits - 1){//Tail Flit Generation
 					flit |= destY;
 					flit |= destX << 4;
 					flit |= srcY << 8;
@@ -101,11 +111,13 @@ std::vector<std::string> Mesh::generateTraffic(int numberOfPacketsPerNode, Traff
 					flit |= j << 20;//Message Number
 					flit |= 2 << 30;//Body Flit Identifier
 				}
-
-				nodePackets << "0x" << std::hex << flit << std::endl;
+				std::stringstream flitString;
+				flitString << "0x" << std::hex << flit;
+				packetTraffic.push_back(flitString.str());
 			}
+			nodeTraffic.push_back(packetTraffic);
 		}
-		ret.push_back(nodePackets.str());
+		ret.push_back(nodeTraffic);
 	}
 
 	return ret;
