@@ -12,10 +12,10 @@
 
 int main(){
 
-	int N = 9;
-	int flitsPerPacket = 16;
+	int N = 16;
+	int flitsPerPacket = 8;
 	int phitsPerFlit = 1;
-	int numberOfPacketsPerNode = 128;
+	int numberOfPacketsPerNode = 64;
 	int maxDelay = 1;
 
 	std::vector<std::string> nodeList;
@@ -27,10 +27,10 @@ int main(){
 
 	Mesh mesh(N, nodeList, flitsPerPacket, phitsPerFlit);
 
-	mesh.generateTrafficFiles(numberOfPacketsPerNode, UNIFORM_RANDOM, maxDelay);
+//	mesh.generateTrafficFiles(numberOfPacketsPerNode, UNIFORM_RANDOM, maxDelay);
 
-	std::string outputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh33_deadlock_test_160_VC/";
-	std::string inputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh33_deadlock_test_160_VC/sim/sim/INPUT_VECTORS/";
+	std::string outputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh_44_Priority/sim/OUTPUT_VECTORS/";
+	std::string inputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh_44_Priority/sim/INPUT_VECTORS/";
 
 	Checker checker(N, mesh.topologyType, inputDir, outputDir);
 	checker.check();

@@ -83,6 +83,8 @@ std::vector<std::vector<std::vector<std::string>>> Mesh::generateTraffic(int num
 			 */
 
 			int numberOfFlits = randomNumberOfFlitsPerPacketGenerator();
+			//Priority will be stored only in the head flit in 29 and 28th bits of the flit(starting from 0)
+			int priority = numberOfFlits <= 5 ? 1 : 0;//Higher number means a higher priority
 
 			//Packet Generation
 			for(int k = 0; k < numberOfFlits; k++){
@@ -94,6 +96,7 @@ std::vector<std::vector<std::vector<std::string>>> Mesh::generateTraffic(int num
 					flit |= srcY << 8;
 					flit |= srcX << 12;
 					flit |= j << 16;//Message Number
+					flit |= priority << 28;
 					flit |= 1 << 30;//Head Flit Identifier
 				} else if(k == numberOfFlits - 1){//Tail Flit Generation
 					flit |= destY;

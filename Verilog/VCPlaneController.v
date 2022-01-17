@@ -11,10 +11,14 @@ module VCPlaneController
 		output [VC : 0] VCPlaneSelectorCFSM,//Selects the currently active VC Plane
 		output [VC : 0] VCPlaneSelectorHFB,//Selects the currently active VC Plane
 		output [VC : 0] VCPlaneSelectorVCG,//Selects the currently active VC Plane
-		output [VC : 0] VCPlaneSelectorSwitchControl//Selects the currently active VC Plane
+		output [VC : 0] VCPlaneSelectorSwitchControl,//Selects the currently active VC Plane
+		output [VC : 0] VCPlaneSelectorVerifier
 	);
+	//0, 1, 2, 3, 4, 5
+	//3 Clock Cycles to Plane 0: Critical and 1 clock cycle each to other VCs
+	integer counter = 0, counterNext = 0;
 	
-	reg [VC - 1 : 0] counter = 0, counterNext = 0;
+	reg [VC : 0] state = 0;
 	
 	always @(posedge clk, posedge rst)begin
 		if(rst)begin
@@ -27,15 +31,28 @@ module VCPlaneController
 	end
 	
 	always @(*)begin
-		if(counter == VC - 1)
+		if(counter == 5)
 			counterNext = 0;
 		else
 			counterNext = counter + 1;
 	end
 	
-	assign VCPlaneSelectorCFSM = {32'b0, counter};
-	assign VCPlaneSelectorHFB = {32'b0, counter};
-	assign VCPlaneSelectorVCG = {32'b0, counter};
-	assign VCPlaneSelectorSwitchControl = {32'b0, counter};
+	always @(*)begin
+		case(counter)
+			0 : state = 0;
+			1 : state = 0;
+			2 : state = 0;
+			3 : state = 1;
+			4 : state = 2;
+			5 : state = 3;
+			default : state = 0;
+		endcase
+	end
+	
+	assign VCPlaneSelectorCFSM = {32'b0, state};
+	assign VCPlaneSelectorHFB = {32'b0, state};
+	assign VCPlaneSelectorVCG = {32'b0, state};
+	assign VCPlaneSelectorSwitchControl = {32'b0, state};
+	assign VCPlaneSelectorVerifier = {32'b0, state};
 	
 endmodule
