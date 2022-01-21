@@ -15,11 +15,14 @@ public:
 	int dimX, dimY;
 	Mesh();
 	Mesh(int N);
-	Mesh(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit);
+	Mesh(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC);
 	virtual ~Mesh();
 private:
 	//TODO: different traffic types to be added
-	std::vector<std::vector<std::vector<std::string>>> generateTraffic(int numberOfPacketsPerNode, TrafficType trafficType);
+	//4D vector: VECTOR[NODE][VC][PACKET][FLIT]
+	//flag is used for extra information about the type of traffic like Mixed Critical or Hybrid-Switched
+	std::vector<std::vector<std::vector<std::vector<std::string>>>> generateTraffic(int numberOfPacketsPerNode, TrafficType trafficType, int flag);
+	std::vector<std::vector<std::vector<std::vector<std::string>>>> generateVCSeparatedMixedCriticalTraffic(int numberOfPacketsPerNode, TrafficType trafficType);
 };
 
 #endif /* SRC_TOPOLOGY_MESH_H_ */

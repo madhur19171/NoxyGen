@@ -26,13 +26,16 @@ module NodeVerifier
 	
 	localparam DIM = $floor($sqrt(N));
 	
-	integer fd;
+	reg[31 : 0] fdOut [0 : VC - 1];
+	reg[31 : 0] fdInData [0 : VC - 1];
+	reg[31 : 0] fdInDelay [0 : VC - 1];
+	integer fd_temp;
 	
-	reg [31 : 0] ex_memory_flat [0 : numberOfPackets * FlitsPerPacket - 1];
-	reg [31 : 0] delay_memory_flat [0 : numberOfPackets * FlitsPerPacket - 1];
-	
-	reg [31 : 0]  ex_memory[VC - 1 : 0][0 : numberOfPackets * FlitsPerPacket - 1];
-	reg [31 : 0] delay_memory[VC - 1 : 0][0 : numberOfPackets * FlitsPerPacket - 1];
+	//reg [31 : 0] ex_memory_flat [0 : numberOfPackets * FlitsPerPacket - 1];
+	//reg [31 : 0] delay_memory_flat [0 : numberOfPackets * FlitsPerPacket - 1];
+	reg [31 : 0] readData = 0;
+	reg [31 : 0]  ex_memory[0 : VC - 1][0 : numberOfPackets * FlitsPerPacket - 1];
+	reg [31 : 0] delay_memory[0 : VC - 1][0 : numberOfPackets * FlitsPerPacket - 1];
 	
 	reg [31 : 0] data_in_0 = 0, data_in_1 = 0, data_in_2 = 0, data_in_3 = 0;
 	reg valid_in_0 = 0, valid_in_1 = 0, valid_in_2 = 0, valid_in_3 = 0;
@@ -78,22 +81,30 @@ module NodeVerifier
 	
 	integer i, j, k, flag;
 	reg [31 : 0] VC_counter [0 : VC - 1];
+	
+	reg [8 * 255 - 1 : 0] dataInputFilePathString = 0, delayInputFilePathString = 0;
+	reg [8 * 255 - 1 : 0] outputFilePathString = 0;
 	initial begin
-		
-		for(i = 0; i < numberOfPackets * FlitsPerPacket; i = i + 1)begin
-			ex_memory_flat[i] = 0;
-			delay_memory_flat[i] = 0;
-		end
-		
 		for(j = 0; j < VC; j = j + 1)
 			for(i = 0; i < numberOfPackets * FlitsPerPacket; i = i + 1)begin
 				ex_memory[j][i] = 0;
 				delay_memory[j][i] = 0;
 		end
 		
-		$readmemh(dataInputFilePath, ex_memory_flat); 
-		$readmemh(delayInputFilePath, delay_memory_flat);
-		fd=$fopen(outputFilePath,"w");
+		for(i = 0; i < VC ; i = i + 1)begin
+			$sformat(dataInputFilePathString, "%0s_%0d", dataInputFilePath, i);
+			fdInData[i]=$fopen(dataInputFilePathString,"r");
+		end
+		
+		for(i = 0; i < VC ; i = i + 1)begin
+			$sformat(delayInputFilePathString, "%0s_%0d", delayInputFilePath, i);
+			fdInDelay[i]=$fopen(delayInputFilePathString,"r");
+		end
+		
+		for(i = 0; i < VC ; i = i + 1)begin
+			$sformat(outputFilePathString, "%0s_%0d", outputFilePath, i);
+			fdOut[i]=$fopen(outputFilePathString,"w");
+		end
 	
 		i = 0;
 		k = 0;
@@ -102,20 +113,21 @@ module NodeVerifier
 		for(j = 0; j < VC; j = j + 1)
 			VC_counter[j] = 0;
 		
-		for(j = 0; j < numberOfPackets; j = j + 1)begin
-			flag = 0;
-			if(ex_memory_flat[i][31 : 28] == 4'b0101)//Flit with High Priority
-				k = 0;
-			else
-				k = j % (VC - 1) + 1;//VC selection
-			while(flag != 1)begin
-				ex_memory[k][VC_counter[k]] = ex_memory_flat[i];
-				//$write("%0d ", ex_memory[k][VC_counter[k]]);
-				delay_memory[k][VC_counter[k]] = delay_memory_flat[i];
-				if(ex_memory_flat[i][31 : 30] == 2'b11)//If tail is seen
-					flag = 1;
-				VC_counter[k] = VC_counter[k] + 1;
-				i = i + 1;
+		for(i = 0; i < VC; i = i + 1)begin
+			j = 0;
+			while(!$feof(fdInData[i]))begin
+				fd_temp = $fscanf(fdInData[i], "0x%x\n", readData);
+				ex_memory[i][j] = readData;
+				j = j + 1;
+			end
+		end
+		
+		for(i = 0; i < VC; i = i + 1)begin
+			j = 0;
+			while(!$feof(fdInDelay[i]))begin
+				fd_temp = $fscanf(fdInDelay[i], "%d\n", readData);
+				delay_memory[i][j] = readData;
+				j = j + 1;
 			end
 		end
 	end
@@ -145,7 +157,8 @@ module NodeVerifier
 				
 				valid_in_0 = 1;
 				if(data_in_0[31 : 30] == 2'b01) begin
-					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d Priority: %0d", ID, (data_in_0[27 : 16] + 1), data_in_0[3:0] * DIM + data_in_0[7 : 4], timeCounter, data_in_0[29 : 28]);
+					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
+						ID, (data_in_0[27 : 16] + 1), data_in_0[3:0] * DIM + data_in_0[7 : 4], timeCounter, VCPlaneSelector, data_in_0[29 : 28]);
 				end
 				
 				#1;
@@ -188,7 +201,8 @@ module NodeVerifier
 				
 				valid_in_1 = 1;
 				if(data_in_1[31 : 30] == 2'b01) begin
-					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d Priority: %0d", ID, (data_in_1[27 : 16] + 1), data_in_1[3:0] * DIM + data_in_1[7 : 4], timeCounter, data_in_1[29 : 28]);
+					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
+						ID, (data_in_1[27 : 16] + 1), data_in_1[3:0] * DIM + data_in_1[7 : 4], timeCounter, VCPlaneSelector, data_in_1[29 : 28]);
 				end
 				
 				#1;
@@ -230,7 +244,8 @@ module NodeVerifier
 				
 				valid_in_2 = 1;
 				if(data_in_2[31 : 30] == 2'b01) begin
-					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d Priority: %0d", ID, (data_in_2[27 : 16] + 1), data_in_2[3:0] * DIM + data_in_2[7 : 4], timeCounter, data_in_2[29 : 28]);
+					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
+						ID, (data_in_2[27 : 16] + 1), data_in_2[3:0] * DIM + data_in_2[7 : 4], timeCounter, VCPlaneSelector, data_in_2[29 : 28]);
 				end
 				
 				#1;
@@ -272,7 +287,8 @@ module NodeVerifier
 				
 				valid_in_3 = 1;
 				if(data_in_3[31 : 30] == 2'b01) begin
-					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d Priority: %0d", ID, (data_in_3[27 : 16] + 1), data_in_3[3:0] * DIM + data_in_3[7 : 4], timeCounter, data_in_3[29 : 28]);
+					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
+						ID, (data_in_3[27 : 16] + 1), data_in_3[3:0] * DIM + data_in_3[7 : 4], timeCounter, VCPlaneSelector, data_in_3[29 : 28]);
 				end
 				
 				#1;
@@ -297,9 +313,10 @@ module NodeVerifier
 	always @(posedge clk) begin
 		if(valid_out & ready_out)begin
 			if(data_out[31 : 30] == 2'b11)
-				$display("Node%0d: Message: %0d Source: %0d Arrival_Time: %0d", ID, (data_out[27 : 16] + 1), data_out[11:8] * DIM + data_out[15 : 12], timeCounter);
-			$fwrite(fd, "0x%h", data_out);
-			$fwrite(fd,"\n");
+				$display("Node%0d: Message: %0d Source: %0d Arrival_Time: %0d VC: %0d", 
+					ID, (data_out[27 : 16] + 1), data_out[11:8] * DIM + data_out[15 : 12], timeCounter, VCPlaneSelector);
+			$fwrite(fdOut[VCPlaneSelector], "0x%h", data_out);
+			$fwrite(fdOut[VCPlaneSelector],"\n");
 		end
 	end
 endmodule
