@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include<math.h>
 using namespace std;
 struct dep_packets {
     int message_dep; // It is Considered as Default Arguments and no Error is Raised
@@ -158,14 +159,27 @@ int main(int argc, char *argv[])
 
         //
         cout<<" Negative time => packets not routed to destination\n\n\n";
+        int AMAT = 0; //Average Message Arrival Time
+		int AMAT_HP = 0;
+		int AMAT_LP = 0;
+		int count = 0;
+		int count_HP = 0;
+		int count_LP = 0;
+		int weightedAMAT = 0;
         for(int i=0;i<d_terminal.size();i++)
         {    
+            int N = 9;//Number of Nodes
+			int DIM = floor(sqrt(N));
+
             int source;
             int dest;
             int dept;
             int arrv;
             int messg;
             int vc;
+            int priority;
+
+            
 
             for(int j=0;j < d_terminal[i].size();j++)
             {
@@ -174,8 +188,20 @@ int main(int argc, char *argv[])
              dept=d_terminal[i][j]->departure;
              messg=d_terminal[i][j]->message_dep;
              vc=d_terminal[i][j]->vc;
+             priority=d_terminal[i][j]->priority;
              arrv;
              int routed=0;
+
+             int manhattanDistance = 0;
+				int srcX, srcY;
+				int destX, destY;
+				
+				srcX = source % DIM;
+				srcY = source / DIM;
+				destX = dest % DIM;
+				destY = dest / DIM;
+				
+				manhattanDistance = floor(abs(srcX - destX) + abs(srcY - destY));
             for(int k=0;k<a_terminal[dest].size();k++)
             {
                 if(a_terminal[dest][k]->message_arr==messg && a_terminal[dest][k]->source==source) 
@@ -184,6 +210,19 @@ int main(int argc, char *argv[])
                     message_completed++;
                     per_vc_th[a_terminal[dest][k]->vc]++;
                     arrv=a_terminal[dest][k]->arrival;
+
+                    count++;
+						if(priority == 0){
+							AMAT_LP += arrv;
+							count_LP++;
+						}
+						else{
+							AMAT_HP += arrv;
+							count_HP++;
+						}
+							
+						AMAT += arrv;
+						weightedAMAT += arrv / manhattanDistance;
                     break;
                 }
             }
@@ -207,7 +246,12 @@ int main(int argc, char *argv[])
         cout<<"average latency: "<<double(per_vc_lat[i])/double(per_vc_th[i])<<"\n";
         cout<<"messages: "<<per_vc_th[i]<<"\n";
     }
-
+    cout << "AMAT:" << (AMAT/count) << endl;
+		cout << "AMAT High Priority: " << (AMAT_HP / count_HP) << endl;
+		cout << "High Priority Packets: " << count_HP << endl;
+		cout << "AMAT Low Priority: " << (AMAT_LP / count_LP) << endl;
+		cout << "Low Priority Packets: " << count_LP << endl;
+		cout << "Weighted AMAT:" << (weightedAMAT/count) << endl;
     /*
     cout<<"DEPARTURES\n";
     for (int i = 0; i < dep.size(); i++)
