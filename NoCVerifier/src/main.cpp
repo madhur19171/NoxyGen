@@ -13,11 +13,12 @@
 int main(){
 
 	int N = 16;
-	int flitsPerPacket = 8;
+	int flitsPerPacket = 16;
 	int phitsPerFlit = 1;
 	int numberOfPacketsPerNode = 64;
 	int maxDelay = 1;
 	int VC = 4;
+	TrafficType trafficType = UNIFORM_RANDOM;
 
 	std::vector<std::string> nodeList;
 
@@ -28,13 +29,13 @@ int main(){
 
 	Mesh mesh(N, nodeList, flitsPerPacket, phitsPerFlit, VC);
 
-//	mesh.generateTrafficFiles(numberOfPacketsPerNode, UNIFORM_RANDOM, maxDelay, 0);
+//	mesh.generateTrafficFiles(numberOfPacketsPerNode, trafficType, maxDelay, 0);
 
-		std::string outputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh_44_Priority/sim/OUTPUT_VECTORS/";
-		std::string inputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh_44_Priority/sim/INPUT_VECTORS/";
+		std::string outputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh_44_Optimization/sim/OUTPUT_VECTORS/";
+		std::string inputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh_44_Optimization/sim/INPUT_VECTORS/";
 
 		Checker checker(mesh, inputDir, outputDir);
-		checker.check(true);
+		checker.check(false);
 
 	return 0;
 }

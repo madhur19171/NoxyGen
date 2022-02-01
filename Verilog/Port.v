@@ -2,6 +2,7 @@ module Port #(
 	parameter N = 4,
 	parameter INDEX = 1,
 	parameter VC = 4,
+	parameter AssignedVC = 0,
 	parameter DATA_WIDTH = 8,
 	parameter TYPE_WIDTH = 2,
 	parameter REQUEST_WIDTH = 2,
@@ -45,6 +46,7 @@ module Port #(
 	#(.N(N),
 	.INDEX(INDEX),
 	.VC(VC),
+	.AssignedVC(AssignedVC),
 	.DATA_WIDTH(DATA_WIDTH),
 	.TYPE_WIDTH(TYPE_WIDTH),
 	.REQUEST_WIDTH(REQUEST_WIDTH),
@@ -72,13 +74,11 @@ module Port #(
 	.routeReserveStatus(routeReserveStatus)
 	);
 	
-	VCG 
-	#(.VC(VC),
-	.DATA_WIDTH(DATA_WIDTH),
-	.FIFO_DEPTH(FIFO_DEPTH)) vcg
+	FIFO 
+	#(.DATA_WIDTH(DATA_WIDTH),
+	.FIFO_DEPTH(FIFO_DEPTH)) fifo
 	(.clk(clk),
 	.rst(rst),
-	.VCPlaneSelector(VCPlaneSelectorVCG),
 	.empty(empty),
 	.rd_en(popBuffer),
 	.dout(data_out),

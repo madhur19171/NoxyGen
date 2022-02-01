@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="false"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.6076602"
-     inkscape:cx="5426.8309"
-     inkscape:cy="1156.6499"
+     inkscape:zoom="0.20095752"
+     inkscape:cx="7327.4193"
+     inkscape:cy="5665.3764"
      inkscape:window-width="1848"
      inkscape:window-height="1016"
      inkscape:window-x="72"
@@ -256,6 +256,398 @@
          d="M 0,0 5,-5 -12.5,0 5,5 Z"
          id="path39577" />
     </marker>
+    <marker
+       style="overflow:visible"
+       id="marker29359-5"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path29101-3" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5586"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5584" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5590"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5588" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5594"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5592" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5598"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5596" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5602"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5600" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5606"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5604" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5610"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5608" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5614"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5612" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5618"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5616" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5622"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5620" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5626"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5624" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5630"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5628" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5634"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5632" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5638"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5636" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5642"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5640" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5646"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5644" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5650"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5648" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5654"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5652" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5658"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5656" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5662"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5660" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5666"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5664" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5670"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5668" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5674"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5672" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5678"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5676" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5682"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5680" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5686"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5684" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker5690"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5688" />
+    </marker>
   </defs>
   <g
      inkscape:groupmode="layer"
@@ -268,10 +660,110 @@
        sodipodi:nodetypes="ccccccccccc" />
   </g>
   <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="Layer 0">
+    <g
+       id="g43330"
+       style="display:inline"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485">
+      <rect
+         style="display:inline;opacity:1;fill:#ffbef1;fill-opacity:1;stroke:#000000;stroke-width:0.612796;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         id="rect15336"
+         width="104.12257"
+         height="76.88942"
+         x="560.87518"
+         y="2005.0613"
+         transform="matrix(1,0,0.72899707,0.68451682,0,0)" />
+      <text
+         xml:space="preserve"
+         style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="2065.4695"
+         y="1406.1792"
+         id="text40370"><tspan
+           sodipodi:role="line"
+           id="tspan40368"
+           style="font-size:19.7556px;stroke-width:0.264583"
+           x="2065.4695"
+           y="1406.1792">VC Mux</tspan></text>
+    </g>
+    <g
+       id="g43338"
+       transform="translate(160.98088)"
+       style="display:inline"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485">
+      <rect
+         style="display:inline;opacity:1;fill:#ffbef1;fill-opacity:1;stroke:#000000;stroke-width:0.612796;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         id="rect43332"
+         width="104.12257"
+         height="76.88942"
+         x="560.87518"
+         y="2005.0613"
+         transform="matrix(1,0,0.72899707,0.68451682,0,0)" />
+      <text
+         xml:space="preserve"
+         style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="2065.4695"
+         y="1406.1792"
+         id="text43336"><tspan
+           sodipodi:role="line"
+           id="tspan43334"
+           style="font-size:19.7556px;stroke-width:0.264583"
+           x="2065.4695"
+           y="1406.1792">Switch</tspan></text>
+    </g>
+    <a
+       id="a45735"
+       style="display:inline"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485">
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker63447)"
+         d="m 2154.7076,1398.8142 h 56.8583"
+         id="path43362"
+         inkscape:connector-type="polyline"
+         inkscape:connector-curvature="0"
+         inkscape:connection-start="#g43330"
+         inkscape:connection-end="#g43338" />
+    </a>
+    <g
+       id="g53294"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485">
+      <rect
+         style="display:inline;fill:#ffbef1;fill-opacity:1;stroke:#000000;stroke-width:0.612842;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         id="rect45740"
+         width="104.13295"
+         height="76.893463"
+         x="51.105392"
+         y="2020.2101"
+         transform="matrix(1,0,0.7290315,0.68448015,0,0)" />
+      <text
+         xml:space="preserve"
+         style="font-size:17.6389px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264598"
+         x="1557.5242"
+         y="1415.6016"
+         id="text45744"
+         transform="scale(1.0000504,0.99994962)"><tspan
+           sodipodi:role="line"
+           id="tspan45742"
+           style="font-size:17.6389px;stroke-width:0.264598"
+           x="1557.5242"
+           y="1415.6016">VC Demux</tspan></text>
+    </g>
+  </g>
+  <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(108.97537,2.282069)">
+     transform="translate(108.97537,2.282069)"
+     style="display:inline">
     <g
        id="g17539"
        transform="translate(44.922327,-13.545533)" />
@@ -485,7 +977,7 @@
     </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker29359)"
-       d="m -61.464839,40.399687 0,-21.838296 H 49.574822 v 5.818484"
+       d="M -61.464839,40.399687 V 18.561391 H 49.574822 v 5.818484"
        id="path41837"
        sodipodi:nodetypes="cccc" />
     <g
@@ -532,7 +1024,7 @@
          id="g12555">
         <path
            style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker29359)"
-           d="M 3.5454677,82.501185 H 48.128721 l 0,-30.369342"
+           d="M 3.5454677,82.501185 H 48.128721 V 52.131843"
            id="path5555"
            sodipodi:nodetypes="ccc" />
         <text
@@ -629,9 +1121,10 @@
     </g>
     <g
        id="g98204"
-       transform="translate(22.757428,9.4607633)">
+       transform="translate(-172.06408,39.947503)">
       <g
-         id="g1063">
+         id="g1063"
+         transform="translate(-62.73396,-115.49681)">
         <text
            xml:space="preserve"
            style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
@@ -3846,7 +4339,7 @@
            x="36.083965"
            y="91.775482">Head Decoder</tspan></text>
       <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker29359);marker-start:url(#Arrow1Lstart)"
+         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart);marker-end:url(#marker29359)"
          d="M 53.117363,114.67088 V 103.88554"
          id="path81175" />
     </g>
@@ -3998,7 +4491,7 @@
          y="502.52667">Switch Control</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart);marker-end:url(#marker29359)"
-       d="m 1061.6163,537.25652 0,-22.61979"
+       d="M 1061.6163,537.25652 V 514.63673"
        id="path101445"
        sodipodi:nodetypes="cc" />
     <text
@@ -4438,7 +4931,7 @@
        d="m 1236.7661,962.93015 v 29.20802"
        id="path138211" />
     <rect
-       style="opacity:0.98;fill:none;stroke-width:0.565;stroke:#000000;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="opacity:0.98;fill:none;stroke:#000000;stroke-width:0.565;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1792"
        width="31.381508"
        height="15.093556"
@@ -4606,7 +5099,7 @@
          sodipodi:role="line"
          style="font-size:2.69274px;stroke-width:0.252444"
          x="-85.294106"
-         y="-64.606049"
+         y="-64.606041"
          id="tspan48222">of routers in the network)</tspan></text>
     <text
        xml:space="preserve"
@@ -4768,14 +5261,14 @@
          y="-84.426064">Destination X</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:2.11666667px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       style="font-size:2.11667px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
        x="68.573273"
        y="6.1649208"
        id="text67325"
        transform="rotate(-90)"><tspan
          sodipodi:role="line"
          id="tspan67323"
-         style="stroke-width:0.264583;font-size:2.11666667px"
+         style="font-size:2.11667px;stroke-width:0.264583"
          x="68.573273"
          y="6.1649208">Destination Y</tspan></text>
     <text
@@ -5578,7 +6071,7 @@
          sodipodi:role="line">empty</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M -36.925773,51.848611 V 75.06025 H 7.9081128 l 0,12.673334"
+       d="M -36.925773,51.848611 V 75.06025 H 7.9081128 v 12.673334"
        id="path2218"
        sodipodi:nodetypes="cccc" />
     <path
@@ -7823,12 +8316,12 @@
          sodipodi:role="line"
          style="stroke-width:0.267121"
          x="17.596571"
-         y="1434.7959"
+         y="1434.796"
          id="tspan15691">A</tspan><tspan
          sodipodi:role="line"
          style="stroke-width:0.267121"
          x="17.596571"
-         y="1439.6931"
+         y="1439.6932"
          id="tspan15693">0</tspan></text>
     <text
        xml:space="preserve"
@@ -13111,7 +13604,7 @@
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-108.97537,-2.282069)"
        id="text21536"
-       style="font-family:sans-serif;font-size:13.33333333px;line-height:1.25;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect21538)" />
+       style="font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect21538)" />
     <text
        xml:space="preserve"
        style="font-size:11.2889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
@@ -15658,7 +16151,7 @@
          sodipodi:role="line"
          style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
          x="714.59149"
-         y="125.30002"
+         y="125.30001"
          id="tspan71935">Head</tspan><tspan
          sodipodi:role="line"
          style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
@@ -16754,12 +17247,12 @@
        inkscape:connection-start="#g30856"
        inkscape:connection-end="#g30846" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:0.865, 1.73;stroke-dashoffset:0;marker-end:url(#Arrow1Mend)"
+       style="fill:none;stroke:#000000;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.865, 1.73;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
        d="M 769.0818,78.742647 C 859.79283,13.382482 929.96497,42.911787 988.03532,128.35123"
        id="path138711"
        sodipodi:nodetypes="cc" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.86500002;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:0.86500002,1.73000003;stroke-dashoffset:0"
+       style="fill:none;stroke:#000000;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.865, 1.73;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
        d="M 997.83962,88.646768 C 940.37246,20.005411 875.78513,8.2053237 798.21329,100.06228"
        id="path139187"
        sodipodi:nodetypes="cc" />
@@ -16904,5 +17397,448 @@
          x="1332.9854"
          y="279.49078"
          id="tspan20846">what if it spans several clock cycles?</tspan></text>
+    <rect
+       style="opacity:0.82008;fill:#d9ff9c;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="rect7223"
+       width="154.81458"
+       height="30.962917"
+       x="1626.5944"
+       y="1312.6893"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+    <text
+       xml:space="preserve"
+       style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="1674.6818"
+       y="1335.3621"
+       id="text21857"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485"><tspan
+         sodipodi:role="line"
+         id="tspan21855"
+         style="font-size:19.7556px;stroke-width:0.264583"
+         x="1674.6818"
+         y="1335.3621">Port 0</tspan></text>
+    <rect
+       style="opacity:0.82008;fill:#d9ff9c;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="rect7305"
+       width="154.81458"
+       height="30.962917"
+       x="1626.5944"
+       y="1343.6522"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+    <text
+       xml:space="preserve"
+       style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="1674.9374"
+       y="1366.1948"
+       id="text26651"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485"><tspan
+         sodipodi:role="line"
+         id="tspan26649"
+         style="font-size:19.7556px;stroke-width:0.264583"
+         x="1674.9374"
+         y="1366.1948">Port 1</tspan></text>
+    <rect
+       style="opacity:0.82008;fill:#d9ff9c;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="rect7307"
+       width="154.81458"
+       height="30.962917"
+       x="1626.5944"
+       y="1374.6151"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+    <text
+       xml:space="preserve"
+       style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="1675.0145"
+       y="1397.2878"
+       id="text26655"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485"><tspan
+         sodipodi:role="line"
+         id="tspan26653"
+         style="font-size:19.7556px;stroke-width:0.264583"
+         x="1675.0145"
+         y="1397.2878">Port 2</tspan></text>
+    <rect
+       style="opacity:0.82008;fill:#d9ff9c;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="rect7309"
+       width="154.81458"
+       height="30.962917"
+       x="1626.5944"
+       y="1405.578"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+    <text
+       xml:space="preserve"
+       style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="1674.8168"
+       y="1428.2507"
+       id="text26659"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485"><tspan
+         sodipodi:role="line"
+         id="tspan26657"
+         style="font-size:19.7556px;stroke-width:0.264583"
+         x="1674.8168"
+         y="1428.2507">Port 3</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 1781.4089,1374.6151 1937.088,1392.83"
+       id="path32913"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.325;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 1626.5943,1374.6151 -84.8214,28.4521"
+       id="path45895"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.325;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 1651.3664,1396.129 -109.5935,6.9382"
+       id="path46010"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Layer 2"
+     style="display:inline">
+    <g
+       id="g34262"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485">
+      <g
+         id="g34244">
+        <rect
+           style="opacity:0.82008;fill:#ff839a;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32407"
+           width="154.81458"
+           height="30.962917"
+           x="1760.3418"
+           y="1336.4854" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1808.4292"
+           y="1359.1581"
+           id="text32411"><tspan
+             sodipodi:role="line"
+             id="tspan32409"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1808.4292"
+             y="1359.1581">Port 0</tspan></text>
+      </g>
+      <g
+         id="g34239">
+        <rect
+           style="opacity:0.82008;fill:#ff839a;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32415"
+           width="154.81458"
+           height="30.962917"
+           x="1760.3418"
+           y="1367.4482" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1808.6848"
+           y="1389.9908"
+           id="text32419"><tspan
+             sodipodi:role="line"
+             id="tspan32417"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1808.6848"
+             y="1389.9908">Port 1</tspan></text>
+      </g>
+      <g
+         id="g34234">
+        <rect
+           style="opacity:0.82008;fill:#ff839a;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32423"
+           width="154.81458"
+           height="30.962917"
+           x="1760.3418"
+           y="1398.4111" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1808.762"
+           y="1421.0839"
+           id="text32427"><tspan
+             sodipodi:role="line"
+             id="tspan32425"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1808.762"
+             y="1421.0839">Port 2</tspan></text>
+      </g>
+      <g
+         id="g34229">
+        <rect
+           style="opacity:0.82008;fill:#ff839a;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32431"
+           width="154.81458"
+           height="30.962917"
+           x="1760.3418"
+           y="1429.374" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1808.5642"
+           y="1452.0468"
+           id="text32435"><tspan
+             sodipodi:role="line"
+             id="tspan32433"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1808.5642"
+             y="1452.0468">Port 3</tspan></text>
+      </g>
+    </g>
+    <path
+       style="display:inline;fill:none;stroke:#000000;stroke-width:1.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1806.181,1396.129 130.907,-3.299"
+       id="path38379"
+       transform="translate(108.97537,2.282069)"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Layer 3"
+     style="display:inline">
+    <g
+       id="g33836"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485">
+      <g
+         id="g33818">
+        <rect
+           style="opacity:0.82008;fill:#a8a5ff;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32441"
+           width="154.81458"
+           height="30.962917"
+           x="1785.7974"
+           y="1358.1708" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1833.8848"
+           y="1380.8435"
+           id="text32445"><tspan
+             sodipodi:role="line"
+             id="tspan32443"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1833.8848"
+             y="1380.8435">Port 0</tspan></text>
+      </g>
+      <g
+         id="g33813">
+        <rect
+           style="opacity:0.82008;fill:#a8a5ff;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32449"
+           width="154.81458"
+           height="30.962917"
+           x="1785.7974"
+           y="1389.1337" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1834.1404"
+           y="1411.6763"
+           id="text32453"><tspan
+             sodipodi:role="line"
+             id="tspan32451"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1834.1404"
+             y="1411.6763">Port 1</tspan></text>
+      </g>
+      <g
+         id="g33808">
+        <rect
+           style="opacity:0.82008;fill:#a8a5ff;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32457"
+           width="154.81458"
+           height="30.962917"
+           x="1785.7974"
+           y="1420.0966" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1834.2175"
+           y="1442.7693"
+           id="text32461"><tspan
+             sodipodi:role="line"
+             id="tspan32459"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1834.2175"
+             y="1442.7693">Port 2</tspan></text>
+      </g>
+      <g
+         id="g33803">
+        <rect
+           style="opacity:0.82008;fill:#a8a5ff;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32465"
+           width="154.81458"
+           height="30.962917"
+           x="1785.7974"
+           y="1451.0594" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1834.0198"
+           y="1473.7322"
+           id="text32469"><tspan
+             sodipodi:role="line"
+             id="tspan32467"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1834.0198"
+             y="1473.7322">Port 3</tspan></text>
+      </g>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1940.6119,1420.0966 105.4514,-24.9846 v 0"
+       id="path33030"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.325;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 1785.7973,1420.0965 -135.049,-14.7472"
+       id="path46012"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Layer 4"
+     style="display:inline">
+    <g
+       id="g32507"
+       transform="translate(185.57736,72.713387)"
+       style="display:inline"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485">
+      <g
+         id="g32481">
+        <rect
+           style="opacity:0.82008;fill:#ffbef1;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32475"
+           width="154.81458"
+           height="30.962917"
+           x="1626.5944"
+           y="1312.6893" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1674.6818"
+           y="1335.3621"
+           id="text32479"><tspan
+             sodipodi:role="line"
+             id="tspan32477"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1674.6818"
+             y="1335.3621">Port 0</tspan></text>
+      </g>
+      <g
+         id="g32489">
+        <rect
+           style="opacity:0.82008;fill:#ffbef1;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32483"
+           width="154.81458"
+           height="30.962917"
+           x="1626.5944"
+           y="1343.6522" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1674.9374"
+           y="1366.1948"
+           id="text32487"><tspan
+             sodipodi:role="line"
+             id="tspan32485"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1674.9374"
+             y="1366.1948">Port 1</tspan></text>
+      </g>
+      <g
+         id="g32497">
+        <rect
+           style="opacity:0.82008;fill:#ffbef1;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32491"
+           width="154.81458"
+           height="30.962917"
+           x="1626.5944"
+           y="1374.6151" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1675.0145"
+           y="1397.2878"
+           id="text32495"><tspan
+             sodipodi:role="line"
+             id="tspan32493"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1675.0145"
+             y="1397.2878">Port 2</tspan></text>
+      </g>
+      <g
+         id="g32505">
+        <rect
+           style="opacity:0.82008;fill:#ffbef1;fill-opacity:1;stroke:#000000;stroke-width:0.507;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+           id="rect32499"
+           width="154.81458"
+           height="30.962917"
+           x="1626.5944"
+           y="1405.578" />
+        <text
+           xml:space="preserve"
+           style="font-size:19.7556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+           x="1674.8168"
+           y="1428.2507"
+           id="text32503"><tspan
+             sodipodi:role="line"
+             id="tspan32501"
+             style="font-size:19.7556px;stroke-width:0.264583"
+             x="1674.8168"
+             y="1428.2507">Port 3</tspan></text>
+      </g>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1966.9863,1447.3285 79.077,-52.2165"
+       id="path33032"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.325;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 1812.1717,1447.3285 -161.4234,-41.9792"
+       id="path46014"
+       inkscape:export-filename="/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/VCPlane.png"
+       inkscape:export-xdpi="254.485"
+       inkscape:export-ydpi="254.485" />
   </g>
 </svg>

@@ -6,6 +6,7 @@ module HeadFlitBuffer #(
 			parameter DATA_WIDTH = 8,
 			parameter PhitPerFlit = 2,
 			parameter VC = 4,
+			parameter AssignedVC = 0,
 			parameter HFBDepth = 4,
 			parameter REQUEST_WIDTH = 2
 			)
@@ -42,31 +43,27 @@ module HeadFlitBuffer #(
 	localparam Idle = 0, Decode = 1, SendRequest = 2, Buffered = 3;
 
 
-	reg [VC * STATE_WIDTH - 1 : 0] stateVC = Idle;
+	reg [STATE_WIDTH - 1 : 0] state = Idle;
 	
 	wire push, pop;//Push and Pop Signals for the Head Flit FIFO
-	wire [VC * DATA_WIDTH * PhitPerFlit - 1 : 0] headBufferVC;
-	wire [VC - 1 : 0] full, empty;
+	wire [DATA_WIDTH * PhitPerFlit - 1 : 0] headBuffer;
+	wire full, empty;
 	
 
 //--------------------------------------headFlitFIFOVC Begins------------------------------
 
 
-	genvar i;
-	generate
-		for(i = 0; i < VC; i = i + 1)
-			FIFO #(.DATA_WIDTH(DATA_WIDTH), .FIFO_DEPTH(HFBDepth)) headFlitFIFO
-				(.clk(clk), .rst(rst),
-				.rd_en(pop & VCPlaneSelector == i), .wr_en(push & VCPlaneSelector == i),
-				.full(full[i]), .empty(empty[i]),
-				.din(Head_Phit), .dout(headBufferVC[i * DATA_WIDTH * PhitPerFlit +: DATA_WIDTH * PhitPerFlit]));
-	endgenerate
+	FIFO #(.DATA_WIDTH(DATA_WIDTH), .FIFO_DEPTH(HFBDepth)) headFlitFIFO
+		(.clk(clk), .rst(rst),
+		.rd_en(pop), .wr_en(push),
+		.full(full), .empty(empty),
+		.din(Head_Phit), .dout(headBuffer));
 		
 	assign push = headFlitValid;
-	assign pop = stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] == SendRequest & routeReserveStatus_Switch;//Mealy
+	assign pop = state == SendRequest & routeReserveStatus_Switch;//Mealy
 	
-	assign HFBFull = full[VCPlaneSelector];
-	assign HFBEmpty = empty[VCPlaneSelector];
+	assign HFBFull = full;
+	assign HFBEmpty = empty;
 
 //--------------------------------------headFlitFIFOVC Ends------------------------------
 
@@ -74,14 +71,14 @@ module HeadFlitBuffer #(
 //headFlitStatus 0 means that the head flit buffer is empty and new head flit can be stored in it.
 	always @(posedge clk)begin
 		if(rst)
-			stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 0;
+			state <= #0.75 0;
 		else
-			case(stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH])
-				Idle: stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 reserveRoute ? SendRequest : decodeHeadFlit ? Decode : Idle;
-				Decode: stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 ~empty[VCPlaneSelector] & reserveRoute ? SendRequest : Decode;//The fact that reserveRoute is high means that the decoding was done
-				SendRequest: stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 routeReserveStatus_Switch ? Buffered : SendRequest;
-				Buffered: stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 routeRelieve ? Idle : Buffered;
-				default: stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] <= #0.75 Idle;
+			case(state)
+				Idle: state <= #0.75 reserveRoute ? SendRequest : decodeHeadFlit ? Decode : Idle;
+				Decode: state <= #0.75 ~empty & reserveRoute ? SendRequest : Decode;//The fact that reserveRoute is high means that the decoding was done
+				SendRequest: state <= #0.75 routeReserveStatus_Switch ? Buffered : SendRequest;
+				Buffered: state <= #0.75 routeRelieve ? Idle : Buffered;
+				default: state <= #0.75 Idle;
 			endcase
 	end
 //--------------------------------------HeadBuffer FSM Ends------------------------------
@@ -94,14 +91,14 @@ module HeadFlitBuffer #(
 	HeadFlitDecoder #(.N(N), .INDEX(INDEX), .DATA_WIDTH(DATA_WIDTH), .PhitPerFlit(PhitPerFlit), .REQUEST_WIDTH(REQUEST_WIDTH)) headFlitDecoder
 		(
 		.decodeHeadFlit(decodeHeadFlit),
-		.HeadFlit(headBufferVC[VCPlaneSelector * DATA_WIDTH * PhitPerFlit +: DATA_WIDTH * PhitPerFlit]),
+		.HeadFlit(headBuffer),
 		.RequestMessage(routeReserveRequest),
 		.headFlitDecoded(headFlitDecoded)
 		);
 
 	//As soon as valid head flit is received, a request will be sent
 	//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
-	assign #0.5 routeReserveRequestValid = stateVC[VCPlaneSelector * STATE_WIDTH +: STATE_WIDTH] == SendRequest & reserveRoute;
+	assign #0.5 routeReserveRequestValid = state == SendRequest & reserveRoute;
 
 	//A simple forwarding of this signal to the CFSM
 	assign routeReserveStatus_CFSM = routeReserveStatus_Switch;

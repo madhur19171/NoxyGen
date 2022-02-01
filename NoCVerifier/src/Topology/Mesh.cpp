@@ -23,7 +23,7 @@ Mesh::Mesh(int N) : Topology(N){
 }
 
 Mesh::Mesh(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC) :
-																								Topology(N, nodeList, flitsPerPacket, phitsPerFlit, VC){
+																										Topology(N, nodeList, flitsPerPacket, phitsPerFlit, VC){
 	this->dimX = floor(sqrt(N));
 	this->dimY = floor(sqrt(N));
 	this->topologyType = MESH;
@@ -62,9 +62,8 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 		std::default_random_engine generator (seed);
 
 		//Creating Random Destination Generator for each Node
-		//		std::uniform_int_distribution<int> destinationDistribution(0, N - 1);
-		std::normal_distribution<double> destinationDistribution(N / 2.0 , 1.0);
-		auto randomDestinationGenerator = std::bind ( destinationDistribution, generator );
+		std::uniform_int_distribution<int> uniformDestinationDistribution(0, N - 1);
+		std::normal_distribution<double> normalDestinationDistribution(N / 2.0 , 1.0);
 
 		for(int vc = 0; vc < this->VC; vc++){
 			std::vector<std::vector<std::string>> VCTraffic;
@@ -85,7 +84,11 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 			for(int j = 0; j < numberOfPacketsPerNode / this->VC; j++){
 				std::vector<std::string> packetTraffic;//Stores the traffic of a particular Packet. Stores the flits in a packet.
 				do{
-					destination = int(randomDestinationGenerator());//Find a random destination
+					switch(topologyType){
+					case UNIFORM_RANDOM: destination = int(uniformDestinationDistribution(generator));break;//Find a random destination
+					case HOTSPOT: destination = int(normalDestinationDistribution(generator));break;//Find a random destination
+					default: destination = int(uniformDestinationDistribution(generator));break;//Find a random destination
+					}
 				} while (destination == source || (destination < 0 || destination >= N));//Destination should not be same as the source
 
 				//Find X and Y cordinates of Source and Destination Nodes
@@ -96,7 +99,7 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 
 				/*
 				 * Packet Format:
-				 * Head: <01>.......<Message Number> <Source X, Source Y> <Destination X, Destination Y>
+				 * Head: <01><Priority>.......<Message Number> <Source X, Source Y> <Destination X, Destination Y>
 				 * Body: <10>.......<Message Number> <Source X, Source Y> <Destination X, Destination Y> <Flit Number>
 				 * Tail: <11>.......<Message Number> <Source X, Source Y> <Destination X, Destination Y>
 				 * At max, 16 flits can be sent per message
@@ -105,7 +108,7 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 
 				int numberOfFlits = randomNumberOfFlitsPerPacketGenerator();
 				//Priority will be stored only in the head flit in 29 and 28th bits of the flit(starting from 0)
-				int priority = numberOfFlits <= 5 ? 1 : 0;//Higher number means a higher priority
+				int priority = numberOfFlits <= 4 ? 1 : 0;//Higher number means a higher priority
 
 				//Packet Generation
 				for(int k = 0; k < numberOfFlits; k++){

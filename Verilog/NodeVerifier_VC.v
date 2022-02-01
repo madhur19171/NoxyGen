@@ -139,8 +139,13 @@ module NodeVerifier
 	assign #1 tw0 = t0 & clk;
 	always @(posedge clk)begin
 		t0 <= 0;
-		if(valid_in_0 & ready_in_0)
+		if(valid_in_0 & ready_in_0)begin
 			t0 <= 1;
+			if(data_in_0[31 : 30] == 2'b01) begin
+					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
+						ID, (data_in_0[27 : 16] + 1), data_in_0[3:0] * DIM + data_in_0[7 : 4], timeCounter, VCPlaneSelector, data_in_0[29 : 28]);
+				end
+		end
 	end
 	
 	initial begin
@@ -156,10 +161,10 @@ module NodeVerifier
 					flag0 = 1;//Flag is set when tail is sent
 				
 				valid_in_0 = 1;
-				if(data_in_0[31 : 30] == 2'b01) begin
+				/*if(data_in_0[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
 						ID, (data_in_0[27 : 16] + 1), data_in_0[3:0] * DIM + data_in_0[7 : 4], timeCounter, VCPlaneSelector, data_in_0[29 : 28]);
-				end
+				end*/
 				
 				#1;
 				
@@ -182,8 +187,13 @@ module NodeVerifier
 	assign #1 tw1 = t1 & clk;
 	always @(posedge clk)begin
 		t1 <= 0;
-		if(valid_in_1 & ready_in_1)
+		if(valid_in_1 & ready_in_1)begin
 			t1 <= 1;
+			if(data_in_1[31 : 30] == 2'b01) begin
+					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
+						ID, (data_in_1[27 : 16] + 1), data_in_1[3:0] * DIM + data_in_1[7 : 4], timeCounter, VCPlaneSelector, data_in_1[29 : 28]);
+				end
+		end
 	end
 
 
@@ -200,10 +210,10 @@ module NodeVerifier
 					flag1 = 1;//Flag is set when tail is sent
 				
 				valid_in_1 = 1;
-				if(data_in_1[31 : 30] == 2'b01) begin
+				/*if(data_in_1[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
 						ID, (data_in_1[27 : 16] + 1), data_in_1[3:0] * DIM + data_in_1[7 : 4], timeCounter, VCPlaneSelector, data_in_1[29 : 28]);
-				end
+				end*/
 				
 				#1;
 				
@@ -226,8 +236,13 @@ module NodeVerifier
 	assign #1 tw2 = t2 & clk;
 	always @(posedge clk)begin
 		t2 <= 0;
-		if(valid_in_2 & ready_in_2)
+		if(valid_in_2 & ready_in_2)begin
 			t2 <= 1;
+			if(data_in_2[31 : 30] == 2'b01) begin
+					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
+						ID, (data_in_2[27 : 16] + 1), data_in_2[3:0] * DIM + data_in_2[7 : 4], timeCounter, VCPlaneSelector, data_in_2[29 : 28]);
+				end
+		end
 	end
 	
 	initial begin
@@ -243,10 +258,10 @@ module NodeVerifier
 					flag2 = 1;//Flag is set when tail is sent
 				
 				valid_in_2 = 1;
-				if(data_in_2[31 : 30] == 2'b01) begin
+				/*if(data_in_2[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
 						ID, (data_in_2[27 : 16] + 1), data_in_2[3:0] * DIM + data_in_2[7 : 4], timeCounter, VCPlaneSelector, data_in_2[29 : 28]);
-				end
+				end*/
 				
 				#1;
 				
@@ -269,8 +284,13 @@ module NodeVerifier
 	assign #1 tw3 = t3 & clk;
 	always @(posedge clk)begin
 		t3 <= 0;
-		if(valid_in_3 & ready_in_3)
+		if(valid_in_3 & ready_in_3)begin
 			t3 <= 1;
+			if(data_in_3[31 : 30] == 2'b01) begin
+					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
+						ID, (data_in_3[27 : 16] + 1), data_in_3[3:0] * DIM + data_in_3[7 : 4], timeCounter, VCPlaneSelector, data_in_3[29 : 28]);
+				end
+		end
 	end
 	
 	initial begin
@@ -286,10 +306,10 @@ module NodeVerifier
 					flag3 = 1;//Flag is set when tail is sent
 				
 				valid_in_3 = 1;
-				if(data_in_3[31 : 30] == 2'b01) begin
+				/*if(data_in_3[31 : 30] == 2'b01) begin
 					$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d Priority: %0d", 
 						ID, (data_in_3[27 : 16] + 1), data_in_3[3:0] * DIM + data_in_3[7 : 4], timeCounter, VCPlaneSelector, data_in_3[29 : 28]);
-				end
+				end*/
 				
 				#1;
 				

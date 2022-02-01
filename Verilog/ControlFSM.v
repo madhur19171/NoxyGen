@@ -62,13 +62,11 @@ module ControlFSM
 
 	//Only Control Path and FIFO signals have to be in compliance with VC
 	
-	reg[VC * 3 - 1 : 0] stateVC = 0, nextStateVC = 0;
+	reg[2 : 0] state = 0, nextState = 0;
 	
-	reg [VC * ($clog2(FlitPerPacket) + 1) - 1 : 0] flitCounterVC = 0;
+	reg [$clog2(FlitPerPacket) : 0] flitCounter = 0;
 	
-	reg [VC - 1 : 0]flitValidVC = 0;
-	
-	reg [VC * ($clog2(PhitPerFlit) + 1) - 1 : 0] phitCounterVC = 0;
+	reg flitValid = 0;
 	
 
 //====================================member declarations for all VC plane elements ends=====================================
@@ -99,32 +97,32 @@ module ControlFSM
 //--------------------------------------FSM Begins------------------------------
 	always @(posedge clk)begin
 			if(rst)
-				stateVC[(VCPlaneSelector) * 3 +: 3] <= #0.75 ReceiveHeadFlit;
-			else stateVC[(VCPlaneSelector) * 3 +: 3] <= #1.25 nextStateVC[(VCPlaneSelector) * 3 +: 3];//Sequential + Combinational delay
+				state <= #0.75 ReceiveHeadFlit;
+			else state <= #1.25 nextState;//Sequential + Combinational delay
 	end
 	
 	always @(*)begin
-		nextStateVC = 0;
-		case(stateVC[(VCPlaneSelector) * 3 +: 3])
-			ReceiveHeadFlit: nextStateVC[(VCPlaneSelector) * 3 +: 3] = headFlitValid ? DecodeHeadFlit : ReceiveHeadFlit;
+		nextState = 0;
+		case(state)
+			ReceiveHeadFlit: nextState = headFlitValid ? DecodeHeadFlit : ReceiveHeadFlit;
 			//After the first flit is received, ready must go down until the route is 
 			//reserved for this request.
-			DecodeHeadFlit: nextStateVC[(VCPlaneSelector) * 3 +: 3] = headFlitDecoded ? ReservePath : DecodeHeadFlit;
-			ReservePath: nextStateVC[(VCPlaneSelector) * 3 +: 3] = routeReserveStatus ? Route : ReservePath;
-			//Route: nextStateVC[(VCPlaneSelector) * 3 +: 3] = TailReceived ? TearDown : Route;
-			Route: nextStateVC[(VCPlaneSelector) * 3 +: 3] = routeRelieve ? TearDown : Route;
-			TearDown: nextStateVC[(VCPlaneSelector) * 3 +: 3] = ~HFBEmpty | headFlitValid ? DecodeHeadFlit : HFBEmpty ? ReceiveHeadFlit : TearDown;
-			default: nextStateVC[(VCPlaneSelector) * 3 +: 3] = ReceiveHeadFlit;
+			DecodeHeadFlit: nextState = headFlitDecoded ? ReservePath : DecodeHeadFlit;
+			ReservePath: nextState = routeReserveStatus ? Route : ReservePath;
+			//Route: nextState = TailReceived ? TearDown : Route;
+			Route: nextState = routeRelieve ? TearDown : Route;
+			TearDown: nextState = ~HFBEmpty | headFlitValid ? DecodeHeadFlit : HFBEmpty ? ReceiveHeadFlit : TearDown;
+			default: nextState = ReceiveHeadFlit;
 		endcase
 	end
 	
-	assign decodeHeadFlit = stateVC[(VCPlaneSelector) * 3 +: 3] == DecodeHeadFlit;
+	assign decodeHeadFlit = state == DecodeHeadFlit;
 	
 //--------------------------------------FSM Ends------------------------------
 
 //-----------------------------------------Route Reserving Logic begins------------------------
 
-	assign #0.5 reserveRoute = stateVC[(VCPlaneSelector) * 3 +: 3] == ReservePath;//the flit to be sent is a tail flit and it is going to be popped.
+	assign #0.5 reserveRoute = state == ReservePath;//the flit to be sent is a tail flit and it is going to be popped.
 
 //-----------------------------------------Route Reserving Logic ends------------------------
 
@@ -161,15 +159,14 @@ module ControlFSM
 /* verilator lint_off WIDTH */
     always @(*)begin
     	//#0.1;
-    	flitValidVC = 0;
-        if((phitCounterVC[VCPlaneSelector * ($clog2(PhitPerFlit) + 1) +: ($clog2(PhitPerFlit) + 1)] == (PhitPerFlit - 1) & Handshake))//if(phitCounter == PhitPerFlit | (phitCounter == (PhitPerFlit - 1) & Handshake))
-            flitValidVC[VCPlaneSelector] = #0.5 1;
+    	flitValid = 0;
+        if((phitCounter == (PhitPerFlit - 1) & Handshake))//if(phitCounter == PhitPerFlit | (phitCounter == (PhitPerFlit - 1) & Handshake))
+            flitValid = #0.5 1;
         else 
-            flitValidVC[VCPlaneSelector] = #0.5 0;
+            flitValid = #0.5 0;
     end
     
-    
-    assign phitCounter = phitCounterVC[VCPlaneSelector * ($clog2(PhitPerFlit) + 1) +: ($clog2(PhitPerFlit) + 1)];
+    assign phitCounter = 0;
     	
 //--------------------------------------PhitCounter Ends------------------------------
 
@@ -191,23 +188,23 @@ module ControlFSM
 	//Not Needed Any more
 	always @(posedge clk)begin
 		if(rst)
-			flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)]  <= #0.75 0;
+			flitCounter  <= #0.75 0;
 		else
-		if(flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == FlitPerPacket)
-			flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] <= #0.75 0;//This is just to reset the Counter after all the Flits in the packet are received.
+		if(flitCounter == FlitPerPacket)
+			flitCounter <= #0.75 0;//This is just to reset the Counter after all the Flits in the packet are received.
 					//Not doing this will probably have no impact on the functionality.
 		else
-		if(stateVC[(VCPlaneSelector) * 3 +: 3] == ReceiveHeadFlit & Handshake)//Changed for VIVADO
-			flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] <= #0.75 1;
+		if(state == ReceiveHeadFlit & Handshake)//Changed for VIVADO
+			flitCounter <= #0.75 1;
 		else
-		if(Handshake & stateVC[(VCPlaneSelector) * 3 +: 3] == Route)
-			flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] <= #0.75 flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] + 1;
+		if(Handshake & state == Route)
+			flitCounter <= #0.75 flitCounter + 1;
 	end
 	
 	/*This can be made by reading off the FlitType signal*/
 	//Either all FlitPerPacket packets have been received or the last flit of the packet is about to be received in the Route state
-	//assign #1 TailReceived = (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket)) 
-	//			| (flitCounterVC[VCPlaneSelector * ($clog2(FlitPerPacket) + 1) +: ($clog2(FlitPerPacket) + 1)] == (FlitPerPacket - 1) & Handshake & stateVC[(VCPlaneSelector) * 3 +: 3] == Route);//As head is received
+	//assign #1 TailReceived = (flitCounter == (FlitPerPacket)) 
+	//			| (flitCounter == (FlitPerPacket - 1) & Handshake & state == Route);//As head is received
 	//assign #0.5 TailReceived = routeRelieve;//Using this signal, the CMSM and HFB become non-pipelined
 	
 	assign #1 TailReceived = data_in[31:30] == 2'b11 & Handshake;
@@ -278,10 +275,10 @@ module ControlFSM
 				//If we try to decode head of next packet before the current packet has actually received a route reserve status,
 				//the new packet may overwrite the request. This is why the new packets are not even received until the current packet
 				//has successfully reserved a path in the switch.
-	//assign #1 ready_in = ~full & ~headFlitFIFOFull & valid_in & ((stateVC[(VCPlaneSelector) * 3 +: 3] == UnRouted & data_in[31 : 30] == 1) //If we are receiving Head Flit
-	//			| (stateVC[(VCPlaneSelector) * 3 +: 3] == Route & (data_in[31 : 30] == 2 | data_in[31 : 30] == 3)));//If we are receiving Body/Tail flit when the router is routing
+	//assign #1 ready_in = ~full & ~headFlitFIFOFull & valid_in & ((state == UnRouted & data_in[31 : 30] == 1) //If we are receiving Head Flit
+	//			| (state == Route & (data_in[31 : 30] == 2 | data_in[31 : 30] == 3)));//If we are receiving Body/Tail flit when the router is routing
 				
-				//| full & valid_in & (stateVC[(VCPlaneSelector) * 3 +: 3] == Route) & valid_out & ready_out | ready_in_temp;//Comment out if setup violation happens. This line will 
+				//| full & valid_in & (state == Route) & valid_out & ready_out | ready_in_temp;//Comment out if setup violation happens. This line will 
 				//make the ready go high if the next link is available and fifo is full. It is like a simulataneous read and write.
 				//But it will lead to setup time viloations because now, the entire ready path is combinatonal without any buffers
 				//ready is anded in all paths.

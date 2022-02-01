@@ -65,7 +65,12 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Topology::genera
 			for(unsigned int k = 0; k < this->traffic[i][j].size(); k++){
 				std::vector<std::string> packetDelay;
 				for(unsigned int l = 0; l < this->traffic[i][j][k].size(); l++){
-					packetDelay.push_back(std::to_string((rand() % maxDelay)));
+					if(l == 0){
+						//					packetDelay.push_back(std::to_string((rand() % maxDelay)));
+						packetDelay.push_back(std::to_string(maxDelay));
+					} else {
+						packetDelay.push_back(std::to_string(0));
+					}
 				}
 				VCDelay.push_back(packetDelay);
 			}
