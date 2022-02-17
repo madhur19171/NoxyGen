@@ -1,5 +1,5 @@
 // reading a text file
-// Modify the num_of_nodes befere running to appropriate values;
+// Modify the num_of_nodes and filts per message befere running to appropriate values;
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -25,6 +25,8 @@ struct arr_packets {
 int main(int argc, char *argv[])
 {
     int num_of_nodes = 225;
+    //unit is flits
+    int standard_message_length=8;
     string line;
     ifstream myfile(argv[1]);
     /*
@@ -35,11 +37,15 @@ int main(int argc, char *argv[])
    int per_vc_th[4];
    int per_vc_lat[4];
    int per_vc_injection[4];
-   for(int i=-0;i<4;i++)
+   int per_vc_starttime[4];
+   int per_vc_endtime[4];
+  for(int i=-0;i<4;i++)
    {
        per_vc_th[i]=0;
        per_vc_lat[i]=0;
        per_vc_injection[i]=0;
+       per_vc_endtime[i]=0;
+       per_vc_starttime[i]=0;
    }
    int initial_time=0;
    int final_time=0;
@@ -47,8 +53,7 @@ int main(int argc, char *argv[])
    int mesg_wait=0;
    int load=-1;
    int prev=0;
-   //unit is flits
-   int standard_message_length=8;
+   int first_time_check=0;
     vector<vector<dep_packets*>> d_terminal;
     vector<vector< arr_packets*>> a_terminal;
     
@@ -100,6 +105,16 @@ int main(int argc, char *argv[])
                 string priority_s=line.substr(line.find("ty")+4,line.length()-line.find("ty"));
                 //cout<<priority_s<<"\n";
                 int priority=stoi(priority_s);
+
+                for(int i=0;i<4;i++)
+                {
+                    if(per_vc_starttime[i]==0 && first_time_check<4 && source_vc==i)
+                    {
+                        per_vc_starttime[i]=departure_d;
+                        first_time_check++;
+                    }
+                }
+                
                 dep_packets* outgoing=new  dep_packets;
                 outgoing->message_dep=message_d;
                 outgoing->destination=destination_d;
@@ -154,6 +169,14 @@ int main(int argc, char *argv[])
                 string arrival_vc_s=line.substr(line.find("VC:")+4,line.length()-line.find("VC:")-4);
                 //cout<<arrival_vc<<"sss\n";
                 int arrival_vc=stoi(arrival_vc_s);
+
+                for(int i=0;i<4;i++)
+                {
+                    if(arrival_vc==i)
+                    {
+                        per_vc_endtime[i]=arrival_a;
+                    }
+                }
                 arr_packets* incoming=new arr_packets;
                 incoming->message_arr=message_a;
                 incoming->source=source_a;
@@ -249,14 +272,14 @@ int main(int argc, char *argv[])
             }
         }
     cout<<"Debug output\n\n";
-    cout<<"Overall System Load: "<<load/255<<"\n";
+    cout<<"Overall System Load: "<<load/num_of_nodes<<"\n";
     cout<<"Overall Average Latency: "<<double(total_latency)/double(message_completed)<<"\n";
     cout<<"Overall Throughput: "<<double(message_completed*standard_message_length)/double(final_time-initial_time)<<" filts/cycle\n";
     cout<<"Overall message wait latency:"<<double(mesg_wait)/double(message_completed)<<"\n\n";
     cout<<"Per VC Throughput and latency and messages :"<<"\n";
     for(int i=0;i<4;i++)
     {
-        cout<<"VC"<<i<<": "<<double((per_vc_th[i]*standard_message_length))/double(final_time-initial_time)<<" filts/cycle\n";
+        cout<<"VC"<<i<<": "<<double((per_vc_th[i]*standard_message_length))/double(per_vc_endtime[i]-per_vc_starttime[i])<<" filts/cycle\n";
         cout<<"average latency: "<<double(per_vc_lat[i])/double(per_vc_th[i])<<"\n";
         cout<<"average message wait latency: "<<double(per_vc_injection[i]/double(per_vc_th[i]))<<"\n";
         cout<<"messages: "<<per_vc_th[i]<<"\n";
@@ -273,7 +296,7 @@ int main(int argc, char *argv[])
 //for generating csv output
     fstream fout;
     fout.open("data.csv",ios::out|ios::app);
-    fout<<load/16<<", ";
+    fout<<load/num_of_nodes<<", ";
     fout<<double(total_latency)/double(message_completed)<<", ";
     fout<<double(message_completed*standard_message_length)/double(final_time-initial_time)<<", ";
     //cout<<"Per VC Throughput and latency and messages :"<<" ";
@@ -283,7 +306,7 @@ int main(int argc, char *argv[])
     
     for(int i=0;i<4;i++)
     {
-        fout<<double((per_vc_th[i]*standard_message_length))/double(final_time-initial_time)<<", ";
+        fout<<double((per_vc_th[i]*standard_message_length))/double(per_vc_endtime[i]-per_vc_starttime[i])<<", ";
         fout<<double(per_vc_lat[i])/double(per_vc_th[i])<<", ";
         fout<<per_vc_th[i]<<", ";
     }
