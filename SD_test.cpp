@@ -9,6 +9,7 @@ struct dep_packets {
     int message_dep; // It is Considered as Default Arguments and no Error is Raised
     int destination;
     int departure;
+    int injection;
     int vc;
     int priority;
 };
@@ -31,21 +32,24 @@ int main(int argc, char *argv[])
    int message_completed=0;
    int per_vc_th[4];
    int per_vc_lat[4];
+   int per_vc_injection[4];
    for(int i=-0;i<4;i++)
    {
        per_vc_th[i]=0;
        per_vc_lat[i]=0;
+       per_vc_injection[i]=0;
    }
    int initial_time=0;
    int final_time=0;
    int total_latency=0;
+   int mesg_wait=0;
    int load=-1;
    int prev=0;
    //unit is flits
    int standard_message_length=8;
     vector<vector<dep_packets*>> d_terminal;
     vector<vector< arr_packets*>> a_terminal;
-    int num_of_nodes = 16;
+    int num_of_nodes = 225;
     for (int id = 0; id < num_of_nodes; id++)
     {
         vector<int> vald;
@@ -66,18 +70,22 @@ int main(int argc, char *argv[])
             if (line.find("Departure") != string::npos)
             {
                 //means it is sender
-               string source=line.substr(line.find("de:") + 5, line.find("Mes") - line.find("de:") -5);
+               string source=line.substr(line.find("de:") + 5, line.find("Mes") - line.find("de:") -7);
                 //cout<<source<<"ssss\n";
                 int source_i=stoi(source);
                 //cout<<"source"<<source_i<<"\n";
                 //cout << line.substr(line.find("e: ") + 2, line.find("Des") - line.find("e: ") - 3) << "\n";
-                string message_ds = line.substr(line.find("ge: ") + 4, line.find("Des") - line.find("ge: ") - 3); //<<"\n";
+                string message_ds = line.substr(line.find("ge: ") + 4, line.find("Des") - line.find("ge: ") - 5); //<<"\n";
                 int message_d = stoi(message_ds);
                 //cout<<message_ds<<"sssssssssssssss\n";
-                string destination_ds = line.substr(line.find("n: ") + 2, line.find("Dep") - line.find("n: ") - 3);
+                string destination_ds = line.substr(line.find("n: ") + 3, line.find("Dep") - line.find("n: ") - 3);
                 int destination_d=stoi(destination_ds);
                 //cout<<destination_d<<"sdsd\n";
-                string departure_ds = line.substr(line.find("me: ")+4, line.length() - line.find("me: "));
+                string destination_inj_src = line.substr(line.find("Injection_Time: ") + 16, line.find("VC:") - line.find("Injection_Time: ") - 17);
+                //cout<<destination_inj_src<<"sdsdsd\n";
+                int destination_inj=stoi(destination_inj_src);
+
+                string departure_ds = line.substr(line.find("Time: ")+6, line.find("Inj") - line.find("Time: ")-7);
                 //cout<<departure_ds<<"sddsd\n";
                 int departure_d=stoi(departure_ds);
                 //vector<int> curr_data={message_d,destination_d,departure_d};
@@ -94,6 +102,7 @@ int main(int argc, char *argv[])
                 outgoing->message_dep=message_d;
                 outgoing->destination=destination_d;
                 outgoing->departure=departure_d ;
+                outgoing->injection=destination_inj;
                 outgoing->vc=source_vc;
                 outgoing->priority=priority;
                 if(check==1)
@@ -126,8 +135,6 @@ int main(int argc, char *argv[])
                 //cout<<destination<<"ssss\n";
                 int destination_i=stoi(destination);
                 //cout<<"source"<<destination_i<<"\n";//cprrect
-
-
                 //cout << line.substr(line.find("ge: ") + 2, line.find("Sour") - line.find("ge: ") - 3) << "\n";
                 string message_as = line.substr(line.find("ge: ") + 4, line.find("Sour") - line.find("ge: ") - 5); //<<"\n";
                 int message_a = stoi(message_as);
@@ -168,7 +175,7 @@ int main(int argc, char *argv[])
 		int weightedAMAT = 0;
         for(int i=0;i<d_terminal.size();i++)
         {    
-            int N = 9;//Number of Nodes
+            int N = num_of_nodes;//Number of Nodes
 			int DIM = floor(sqrt(N));
 
             int source;
@@ -178,6 +185,7 @@ int main(int argc, char *argv[])
             int messg;
             int vc;
             int priority;
+            int inj;
 
             
 
@@ -187,6 +195,7 @@ int main(int argc, char *argv[])
              dest=d_terminal[i][j]->destination;
              dept=d_terminal[i][j]->departure;
              messg=d_terminal[i][j]->message_dep;
+             inj=d_terminal[i][j]->injection;
              vc=d_terminal[i][j]->vc;
              priority=d_terminal[i][j]->priority;
              arrv;
@@ -230,22 +239,27 @@ int main(int argc, char *argv[])
             {
                 arrv=0;
             }
-            cout<<"Message "<<messg<<" from "<<source<<" to "<<dest<<" in time "<<arrv-dept<<"\n";
-            total_latency+=arrv-dept;
-            per_vc_lat[d_terminal[i][j]->vc]+=arrv-dept;
+            cout<<"Message "<<messg<<" from "<<source<<" to "<<dest<<" in time "<<arrv-inj<<"\n";
+            total_latency+=arrv-inj;
+            mesg_wait+=dept-inj;
+            per_vc_lat[d_terminal[i][j]->vc]+=arrv-inj;
+            per_vc_injection[d_terminal[i][j]->vc]+=dept-inj;
             }
         }
     cout<<"Debug output\n\n";
-    cout<<"Overall System Load: "<<load/16<<"\n";
+    cout<<"Overall System Load: "<<load/255<<"\n";
     cout<<"Overall Average Latency: "<<double(total_latency)/double(message_completed)<<"\n";
-    cout<<"Overall Throughput: "<<double(message_completed*standard_message_length)/double(final_time-initial_time)<<" filts/cycle\n\n";
+    cout<<"Overall Throughput: "<<double(message_completed*standard_message_length)/double(final_time-initial_time)<<" filts/cycle\n";
+    cout<<"Overall message wait latency:"<<double(mesg_wait)/double(message_completed)<<"\n\n";
     cout<<"Per VC Throughput and latency and messages :"<<"\n";
     for(int i=0;i<4;i++)
     {
         cout<<"VC"<<i<<": "<<double((per_vc_th[i]*standard_message_length))/double(final_time-initial_time)<<" filts/cycle\n";
         cout<<"average latency: "<<double(per_vc_lat[i])/double(per_vc_th[i])<<"\n";
+        cout<<"average message wait latency: "<<double(per_vc_injection[i]/double(per_vc_th[i]))<<"\n";
         cout<<"messages: "<<per_vc_th[i]<<"\n";
     }
+    cout<<"\n\n";
     cout << "AMAT:" << (AMAT/count) << endl;
 		cout << "AMAT High Priority: " << (AMAT_HP / count_HP) << endl;
 		cout << "High Priority Packets: " << count_HP << endl;
