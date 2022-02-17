@@ -1,4 +1,5 @@
 // reading a text file
+// Modify the num_of_nodes befere running to appropriate values;
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -23,6 +24,7 @@ struct arr_packets {
 
 int main(int argc, char *argv[])
 {
+    int num_of_nodes = 225;
     string line;
     ifstream myfile(argv[1]);
     /*
@@ -49,7 +51,7 @@ int main(int argc, char *argv[])
    int standard_message_length=8;
     vector<vector<dep_packets*>> d_terminal;
     vector<vector< arr_packets*>> a_terminal;
-    int num_of_nodes = 225;
+    
     for (int id = 0; id < num_of_nodes; id++)
     {
         vector<int> vald;
@@ -266,6 +268,26 @@ int main(int argc, char *argv[])
 		cout << "AMAT Low Priority: " << (AMAT_LP / count_LP) << endl;
 		cout << "Low Priority Packets: " << count_LP << endl;
 		cout << "Weighted AMAT:" << (weightedAMAT/count) << endl;
+
+
+//for generating csv output
+    fstream fout;
+    fout.open("data.csv",ios::out|ios::app);
+    fout<<load/16<<", ";
+    fout<<double(total_latency)/double(message_completed)<<", ";
+    fout<<double(message_completed*standard_message_length)/double(final_time-initial_time)<<", ";
+    //cout<<"Per VC Throughput and latency and messages :"<<" ";
+    fout<< (AMAT/count) <<", ";
+    fout<< (AMAT_LP / count_LP) <<", ";
+    fout<< (AMAT_HP / count_HP) <<", ";
+    
+    for(int i=0;i<4;i++)
+    {
+        fout<<double((per_vc_th[i]*standard_message_length))/double(final_time-initial_time)<<", ";
+        fout<<double(per_vc_lat[i])/double(per_vc_th[i])<<", ";
+        fout<<per_vc_th[i]<<", ";
+    }
+    fout<<"\n";    
     /*
     cout<<"DEPARTURES\n";
     for (int i = 0; i < dep.size(); i++)
