@@ -90,6 +90,8 @@ module HeadFlitBuffer #(
     //HFD will share the same VC plane as the HFB
 	HeadFlitDecoder #(.N(N), .INDEX(INDEX), .DATA_WIDTH(DATA_WIDTH), .PhitPerFlit(PhitPerFlit), .REQUEST_WIDTH(REQUEST_WIDTH)) headFlitDecoder
 		(
+		.clk(clk),
+		.rst(rst),
 		.decodeHeadFlit(decodeHeadFlit),
 		.HeadFlit(headBuffer),
 		.RequestMessage(routeReserveRequest),
