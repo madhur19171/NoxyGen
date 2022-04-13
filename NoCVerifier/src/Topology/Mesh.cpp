@@ -12,18 +12,17 @@ Mesh::Mesh() {
 	this->dimX = floor(sqrt(N));
 	this->dimY = floor(sqrt(N));
 	this->topologyType = MESH;
-	this->connected = true;//A rigular Mesh will always be connected
+	this->connected = true;//A regular Mesh will always be connected
 }
 
 Mesh::Mesh(int N) : Topology(N){
 	this->dimX = floor(sqrt(N));
 	this->dimY = floor(sqrt(N));
 	this->topologyType = MESH;
-	this->connected = true;//A rigular Mesh will always be connected
+	this->connected = true;//A regular Mesh will always be connected
 }
 
-Mesh::Mesh(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC) :
-																										Topology(N, nodeList, flitsPerPacket, phitsPerFlit, VC){
+Mesh::Mesh(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC) : Topology(N, nodeList, flitsPerPacket, phitsPerFlit, VC){
 	this->dimX = floor(sqrt(N));
 	this->dimY = floor(sqrt(N));
 	this->topologyType = MESH;
@@ -63,7 +62,8 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 
 		//Creating Random Destination Generator for each Node
 		std::uniform_int_distribution<int> uniformDestinationDistribution(0, N - 1);
-		std::normal_distribution<double> normalDestinationDistribution(N / 2.0 , 1.0);
+		//Mean of N/2 and Standard deviation of 5
+		std::normal_distribution<double> normalDestinationDistribution(N / 2.0 , 10);
 
 		for(int vc = 0; vc < this->VC; vc++){
 			std::vector<std::vector<std::string>> VCTraffic;
@@ -84,9 +84,9 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 			for(int j = 0; j < numberOfPacketsPerNode / this->VC; j++){
 				std::vector<std::string> packetTraffic;//Stores the traffic of a particular Packet. Stores the flits in a packet.
 				do{
-					switch(topologyType){
-					case UNIFORM_RANDOM: destination = int(uniformDestinationDistribution(generator));break;//Find a random destination
-					case HOTSPOT: destination = int(normalDestinationDistribution(generator));break;//Find a random destination
+					switch(trafficType){
+					case UNIFORM_RANDOM: destination = int(uniformDestinationDistribution(generator)); break;//Find a random destination
+					case HOTSPOT: destination = int(normalDestinationDistribution(generator)); break;//Find a random destination
 					default: destination = int(uniformDestinationDistribution(generator));break;//Find a random destination
 					}
 				} while (destination == source || (destination < 0 || destination >= N));//Destination should not be same as the source

@@ -43,6 +43,9 @@ private:
 	std::vector<std::vector<std::string>> outputTrafficList;//2D Vector of Output Traffic[Node][VC]
 	void checkMesh();
 	void checkMeshVerbose();
+
+	void checkStar();
+	void checkStarVerbose();
 };
 
 #endif /* SRC_CHECKER_H_ */
