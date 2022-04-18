@@ -12,7 +12,9 @@ module FIFO #(parameter DATA_WIDTH = 32,
 		
 		output full,
 		input wr_en,//pushBuffer
-		input [DATA_WIDTH - 1 : 0]din
+		input [DATA_WIDTH - 1 : 0]din,
+		
+		output [$clog2(FIFO_DEPTH) - 1 : 0] FIFOoccupancy
 	);
 	
 	localparam ADDRESS_WIDTH = $clog2(FIFO_DEPTH);
@@ -23,6 +25,8 @@ module FIFO #(parameter DATA_WIDTH = 32,
 	
 	assign #0.5 empty = head == tail;
 	assign #0.5 full = ((head + 1) % FIFO_DEPTH == tail);
+	//assign #0.5 FIFOoccupancy = head - tail + 1;
+	assign #0.5 FIFOoccupancy = head - tail;
 	
 	//To be implemented as Xilinx Distributed RAM
 	reg [DATA_WIDTH - 1 : 0] RAM [0 : FIFO_DEPTH - 1];
@@ -38,7 +42,7 @@ module FIFO #(parameter DATA_WIDTH = 32,
 		if(rst)begin
 			head <= #0.75 0;
 		end
-		else if(wr_en & ~full | wr_en & rd_en & full)
+		else if(wr_en & ~full)
 			head <= #0.75 ((head + 1) % FIFO_DEPTH);
 	end
 	
@@ -46,12 +50,12 @@ module FIFO #(parameter DATA_WIDTH = 32,
 		if(rst)begin
 			tail <= #0.75 0;
 		end
-		else if(rd_en & ~empty | rd_en & wr_en & empty)
+		else if(rd_en & ~empty)
 			tail <= #0.75 ((tail + 1) % FIFO_DEPTH);
 	end
 	
 	always @(posedge clk)begin
-		if(wr_en & ~full | wr_en & rd_en & full)
+		if(wr_en & ~full)
 			RAM[head] <= #0.75 din;
 			
 			
@@ -67,11 +71,12 @@ module FIFO #(parameter DATA_WIDTH = 32,
 
 	//To be implemented as Xilinx Distributed RAM, Asynchronous Read and Synchronous Write
 	always @(*)begin
-		if(rst)begin
-			dout <= #0.75 0;
+		/*if(rst)begin
+			dout = #0.75 0;
 		end
-		else if(~empty)
-			dout <= #0.75 RAM[tail];
+		else*/ 
+		if(~empty)
+			dout = #0.75 RAM[tail];
 	end
 	
 endmodule

@@ -22,3 +22,18 @@ Buffer Management needs to be changed. Currently, the system is Handshake based 
 to traverse the entire link and consequently, Ready signal also has to travel the entire link before even
 a single flit is sent. This will mess up the critical path. Better would be to use Credit based and On/Off.
 These 3 types of Buffer Management systems can be provided in the library.
+
+
+17/01/2022
+Saturation: Down stream router free?
+Change size of Buffer: 4, 8, 16 flits
+How frequently nack is sent?
+
+Number of packets of each size
+Variable system Size
+
+How many VC for Critical??
+
+Limit output Handshake
+
+Limit the frequency of input handshake.
