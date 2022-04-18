@@ -2,13 +2,15 @@ module Port #(
 	parameter N = 4,
 	parameter INDEX = 1,
 	parameter VC = 4,
+	parameter AssignedVC = 0,
 	parameter DATA_WIDTH = 8,
 	parameter TYPE_WIDTH = 2,
 	parameter REQUEST_WIDTH = 2,
 	parameter FlitPerPacket = 6,
 	parameter PhitPerFlit = 1,
 	parameter HFBDepth = 4,
-	parameter FIFO_DEPTH = 32
+	parameter FIFO_DEPTH = 32,
+	parameter FLOW_CONTROL = 0
 	) 
 	
 	(
@@ -36,49 +38,196 @@ module Port #(
 	input routeReserveStatus
 	);
 	
+	//The protocol will be:
+	//The Sender will send a valid signal as soon as its data is ready w/o waiting for ready signal.
+	//The receiver will be waiting for the valid signal to become 1. After the valid is 1, sender sends a ready 1.
+	//This way the handshake happens and when both valid and ready are 1.
+	
 	wire popBuffer;
 	wire pushBuffer;
 	wire full;
 	wire empty;
+	wire [$clog2(FIFO_DEPTH) - 1 : 0] FIFOoccupancy;
+
 	
-	PortControlLogic 
+	wire [TYPE_WIDTH - 1 : 0]FlitType;
+	wire reserveRoute;
+	wire routeReserveStatus_CFSM;
+	wire headFlitValid;
+	wire [$clog2(PhitPerFlit) : 0] phitCounter;
+	
+	wire HFBFull;
+	wire HFBEmpty;
+	wire decodeHeadFlit;
+	wire headFlitDecoded;
+	
+	generate
+		case(FLOW_CONTROL)
+			0 : 
+				ControlFSM_WH
+				#(.DATA_WIDTH(DATA_WIDTH),
+				.VC(VC),
+				.FlitPerPacket(FlitPerPacket),
+				.PhitPerFlit(PhitPerFlit),
+				.REQUEST_WIDTH(REQUEST_WIDTH),
+				.TYPE_WIDTH(TYPE_WIDTH),
+				.FIFO_DEPTH(FIFO_DEPTH)) controlFSM
+				(.clk(clk),
+				.rst(rst),
+				.data_in(data_in),
+				.VCPlaneSelector(VCPlaneSelectorCFSM),
+				.valid_in(valid_in),
+				.ready_in(ready_in),
+				.valid_out(valid_out),
+				.ready_out(ready_out),
+				
+				.FlitType(FlitType),
+				.reserveRoute(reserveRoute),
+				.routeReserveStatus(routeReserveStatus_CFSM),
+				.headFlitValid(headFlitValid),
+				.phitCounter(phitCounter),
+				
+				.HFBFull(HFBFull),
+				.HFBEmpty(HFBEmpty),
+				.decodeHeadFlit(decodeHeadFlit),
+				.headFlitDecoded(headFlitDecoded),
+				
+				.popBuffer(popBuffer),
+				.pushBuffer(pushBuffer),
+				.Handshake(Handshake),
+				.full(full),
+				.empty(empty),
+				.FIFOoccupancy(FIFOoccupancy),
+				.routeRelieve(routeRelieve)
+				);
+			1 : 
+				ControlFSM_VCT
+				#(.DATA_WIDTH(DATA_WIDTH),
+				.VC(VC),
+				.FlitPerPacket(FlitPerPacket),
+				.PhitPerFlit(PhitPerFlit),
+				.REQUEST_WIDTH(REQUEST_WIDTH),
+				.TYPE_WIDTH(TYPE_WIDTH),
+				.FIFO_DEPTH(FIFO_DEPTH)) controlFSM
+				(.clk(clk),
+				.rst(rst),
+				.data_in(data_in),
+				.VCPlaneSelector(VCPlaneSelectorCFSM),
+				.valid_in(valid_in),
+				.ready_in(ready_in),
+				.valid_out(valid_out),
+				.ready_out(ready_out),
+				
+				.FlitType(FlitType),
+				.reserveRoute(reserveRoute),
+				.routeReserveStatus(routeReserveStatus_CFSM),
+				.headFlitValid(headFlitValid),
+				.phitCounter(phitCounter),
+				
+				.HFBFull(HFBFull),
+				.HFBEmpty(HFBEmpty),
+				.decodeHeadFlit(decodeHeadFlit),
+				.headFlitDecoded(headFlitDecoded),
+				
+				.popBuffer(popBuffer),
+				.pushBuffer(pushBuffer),
+				.Handshake(Handshake),
+				.full(full),
+				.empty(empty),
+				.FIFOoccupancy(FIFOoccupancy),
+				.routeRelieve(routeRelieve)
+				);
+			default : 
+				ControlFSM_WH
+				#(.DATA_WIDTH(DATA_WIDTH),
+				.VC(VC),
+				.FlitPerPacket(FlitPerPacket),
+				.PhitPerFlit(PhitPerFlit),
+				.REQUEST_WIDTH(REQUEST_WIDTH),
+				.TYPE_WIDTH(TYPE_WIDTH),
+				.FIFO_DEPTH(FIFO_DEPTH)) controlFSM
+				(.clk(clk),
+				.rst(rst),
+				.data_in(data_in),
+				.VCPlaneSelector(VCPlaneSelectorCFSM),
+				.valid_in(valid_in),
+				.ready_in(ready_in),
+				.valid_out(valid_out),
+				.ready_out(ready_out),
+				
+				.FlitType(FlitType),
+				.reserveRoute(reserveRoute),
+				.routeReserveStatus(routeReserveStatus_CFSM),
+				.headFlitValid(headFlitValid),
+				.phitCounter(phitCounter),
+				
+				.HFBFull(HFBFull),
+				.HFBEmpty(HFBEmpty),
+				.decodeHeadFlit(decodeHeadFlit),
+				.headFlitDecoded(headFlitDecoded),
+				
+				.popBuffer(popBuffer),
+				.pushBuffer(pushBuffer),
+				.Handshake(Handshake),
+				.full(full),
+				.empty(empty),
+				.FIFOoccupancy(FIFOoccupancy),
+				.routeRelieve(routeRelieve)
+				);
+		endcase
+	endgenerate
+	
+	
+	HeadFlitBuffer
 	#(.N(N),
 	.INDEX(INDEX),
 	.VC(VC),
+	.AssignedVC(AssignedVC),
 	.DATA_WIDTH(DATA_WIDTH),
-	.TYPE_WIDTH(TYPE_WIDTH),
-	.REQUEST_WIDTH(REQUEST_WIDTH),
-	.FlitPerPacket(FlitPerPacket),
+	.PhitPerFlit(PhitPerFlit),
 	.HFBDepth(HFBDepth),
-	.PhitPerFlit(PhitPerFlit)
-	) portControlLogic
+	.REQUEST_WIDTH(REQUEST_WIDTH)
+	) headFlitBuffer
 	(.clk(clk),
 	.rst(rst),
-	.VCPlaneSelectorCFSM(VCPlaneSelectorCFSM),
-	.VCPlaneSelectorHFB(VCPlaneSelectorHFB),
-	.data_in(data_in),
-	.valid_in(valid_in),
-	.ready_in(ready_in),
-	.valid_out(valid_out),
-	.ready_out(ready_out),
-	.Flit(data_out),//We assume that PhitPerFlit = 1 so data_out of FIFO will actually be the Flit
-	.popBuffer(popBuffer),
-	.pushBuffer(pushBuffer),
-	.full(full),
-	.empty(empty),
+	.VCPlaneSelector(VCPlaneSelectorHFB),
+	.Handshake(Handshake),
+	.Head_Phit(data_in),//From FIFO
+	.headFlitValid(headFlitValid),
+	.phitCounter(phitCounter),
 	.routeRelieve(routeRelieve),
+	.reserveRoute(reserveRoute),
+	.routeReserveStatus_CFSM(routeReserveStatus_CFSM),
+	
+	.HFBFull(HFBFull),
+	.HFBEmpty(HFBEmpty),
+	.decodeHeadFlit(decodeHeadFlit),
+	.headFlitDecoded(headFlitDecoded),
+	
 	.routeReserveRequestValid(routeReserveRequestValid),
 	.routeReserveRequest(routeReserveRequest),
-	.routeReserveStatus(routeReserveStatus)
+	.routeReserveStatus_Switch(routeReserveStatus)
 	);
 	
-	VCG 
-	#(.VC(VC),
-	.DATA_WIDTH(DATA_WIDTH),
-	.FIFO_DEPTH(FIFO_DEPTH)) vcg
+	
+	FlitIdentifier
+	#(
+	 .DATA_WIDTH(DATA_WIDTH),
+	 .TYPE_WIDTH(TYPE_WIDTH),
+	 .PhitPerFlit(PhitPerFlit)
+	) flitIdentifier
+	(
+	.Flit(data_out),//We assume that PhitPerFlit = 1 so data_out of FIFO will actually be the Flit
+	.FlitType(FlitType)
+	);
+	
+	
+	FIFO 
+	#(.DATA_WIDTH(DATA_WIDTH),
+	.FIFO_DEPTH(FIFO_DEPTH)) fifo
 	(.clk(clk),
 	.rst(rst),
-	.VCPlaneSelector(VCPlaneSelectorVCG),
+	.FIFOoccupancy(FIFOoccupancy),
 	.empty(empty),
 	.rd_en(popBuffer),
 	.dout(data_out),

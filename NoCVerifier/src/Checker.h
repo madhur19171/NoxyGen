@@ -22,26 +22,30 @@
 #include <math.h>
 #include <time.h>
 #include "definitions.h"
+#include "Topology/Topology.h"
 
 class Checker {
 public:
-	int N;
 	std::string inputDirectoryPath;
 	std::string outputDirectoryPath;
 
-	TopologyType topologyType;
+	//Topology will encapsulate all the data necessary to do verification for the given input and output traffic
+	Topology topology;
 
 	Checker();
-	Checker(int N, TopologyType topologyType, std::string inputDirectoryPath, std::string outputDirectoryPath);
+	Checker(Topology topology, std::string inputDirectoryPath, std::string outputDirectoryPath);
 	virtual ~Checker();
 
-	void check();
+	void check(bool verbose);
 
 private:
-	std::vector <std::string> inputTrafficList;
-	std::vector <std::string> outputTrafficList;
+	std::vector<std::vector<std::string>> inputTrafficList;//2D Vector of Input Traffic[Node][VC]
+	std::vector<std::vector<std::string>> outputTrafficList;//2D Vector of Output Traffic[Node][VC]
 	void checkMesh();
 	void checkMeshVerbose();
+
+	void checkStar();
+	void checkStarVerbose();
 };
 
 #endif /* SRC_CHECKER_H_ */

@@ -55,6 +55,7 @@ module HeadFlitDecoder #(
 			parameter REQUEST_WIDTH = 2
 			)
 	(
+	input clk, input rst,
 	input decodeHeadFlit,
 	input [PhitPerFlit * DATA_WIDTH - 1 : 0] HeadFlit,
 	output reg [REQUEST_WIDTH - 1 : 0] RequestMessage = 0,
@@ -63,6 +64,14 @@ module HeadFlitDecoder #(
 	
 	assign #0.5 headFlitDecoded = decodeHeadFlit;	//Since this decoder is combinational, 
 							//we send decoded signal as we receive decode instruction
+	
+	//Use this block if decoding takes certain number of clock cycles.
+	/*reg [3 : 0] shiftReg = 0;						
+	always @(posedge clk) begin
+		shiftReg <= {shiftReg[2 : 0], decodeHeadFlit};
+	end
+	assign #0.5 headFlitDecoded = shiftReg[3];
+	*/
 	
 	localparam DIM = $floor($sqrt(N));//Dimension is SQRT(N) X SQRT(N)
 	
