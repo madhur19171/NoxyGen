@@ -20,6 +20,7 @@ struct arr_packets {
     long int source;
     long int arrival;
     long int vc;
+    int checked;
 };
 
 int main(int argc, char *argv[])
@@ -182,6 +183,7 @@ int main(int argc, char *argv[])
                 incoming->source=source_a;
                 incoming->arrival=arrival_a;
                 incoming->vc=arrival_vc;
+                incoming->checked=0;
                 final_time=arrival_a;
                 a_terminal[destination_i].push_back(incoming);  ////core fault segmentation here
                 //a_terminal.insert(a_terminal.begin()+destination_i,incoming);
@@ -238,8 +240,9 @@ int main(int argc, char *argv[])
 				manhattanDistance = floor(abs(srcX - destX) + abs(srcY - destY));
             for(int k=0;k<a_terminal[dest].size();k++)
             {
-                if(a_terminal[dest][k]->message_arr==messg && a_terminal[dest][k]->source==source) 
+                if(a_terminal[dest][k]->message_arr==messg && a_terminal[dest][k]->source==source && a_terminal[dest][k]->checked==0) 
                 {
+                    a_terminal[dest][k]->checked=1;
                     routed=1;
                     message_completed++;
                     per_vc_th[a_terminal[dest][k]->vc]++;
