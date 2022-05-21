@@ -7,25 +7,25 @@
 #include<math.h>
 using namespace std;
 struct dep_packets {
-    long int message_dep; // It is Considered as Default Arguments and no Error is Raised
-    long int destination;
-    long int departure;
-    long int injection;
-    long int vc;
-    long int priority;
+    int64_t message_dep; // It is Considered as Default Arguments and no Error is Raised
+    int64_t destination;
+    int64_t departure;
+    int64_t injection;
+    int64_t vc;
+    int64_t priority;
 };
 
 struct arr_packets {
-    long int message_arr; // It is Considered as Default Arguments and no Error is Raised
-    long int source;
-    long int arrival;
-    long int vc;
+    int64_t message_arr; // It is Considered as Default Arguments and no Error is Raised
+    int64_t source;
+    int64_t arrival;
+    int64_t vc;
     int checked;
 };
 
 int main(int argc, char *argv[])
 {
-    int num_of_nodes = 225;
+    int num_of_nodes = 16;
     //unit is flits
     //int standard_message_length=10;
     string line;
@@ -34,12 +34,12 @@ int main(int argc, char *argv[])
     vector<vector<int>> dep;
     vector<vector<int>> arr;
     */
-   long int message_completed=0;
-   long int per_vc_th[4];
-   long int per_vc_lat[4];
-   long int per_vc_injection[4];
-   long int per_vc_starttime[4];
-   long int per_vc_endtime[4];
+   int64_t message_completed=0;
+   int64_t per_vc_th[4];
+   int64_t per_vc_lat[4];
+   int64_t per_vc_injection[4];
+   int64_t per_vc_starttime[4];
+   int64_t per_vc_endtime[4];
   for(int i=-0;i<4;i++)
    {
        per_vc_th[i]=0;
@@ -48,13 +48,13 @@ int main(int argc, char *argv[])
        per_vc_endtime[i]=0;
        per_vc_starttime[i]=0;
    }
-   long int initial_time=0;
-   long int final_time=0;
-   long int total_latency=0;
-   long int mesg_wait=0;
-   long int load=-1;
-   long int prev=0;
-   long int first_time_check=0;
+   int64_t initial_time=0;
+   int64_t final_time=0;
+   int64_t total_latency=0;
+   int64_t mesg_wait=0;
+   int64_t load=-1;
+   int64_t prev=0;
+   int64_t first_time_check=0;
     vector<vector<dep_packets*>> d_terminal;
     vector<vector< arr_packets*>> a_terminal;
     
@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
 
     if (myfile.is_open())
     {   int check=0;
+    cout << "file opened" << endl;
         while (getline(myfile, line))
         {
             check++;
@@ -80,32 +81,32 @@ int main(int argc, char *argv[])
                 //means it is sender
                string source=line.substr(line.find("de:") + 5, line.find("Mes") - line.find("de:") -7);
                 //cout<<source<<"ssss\n";
-                long int source_i=stol(source);
+                int64_t source_i=stol(source);
                 //cout<<"source"<<source_i<<"\n";
                 //cout << line.substr(line.find("e: ") + 2, line.find("Des") - line.find("e: ") - 3) << "\n";
                 string message_ds = line.substr(line.find("ge: ") + 4, line.find("Des") - line.find("ge: ") - 5); //<<"\n";
-                long int message_d = stol(message_ds);
+                int64_t message_d = stol(message_ds);
                 //cout<<message_ds<<"sssssssssssssss\n";
                 string destination_ds = line.substr(line.find("n: ") + 3, line.find("Dep") - line.find("n: ") - 3);
-                long int destination_d=stol(destination_ds);
+                int64_t destination_d=stol(destination_ds);
                 //cout<<destination_d<<"sdsd\n";
                 string destination_inj_src = line.substr(line.find("Injection_Time: ") + 16, line.find("VC:") - line.find("Injection_Time: ") - 17);
                 //cout<<destination_inj_src<<"sdsdsd\n";
-                long int destination_inj=stol(destination_inj_src);
+                int64_t destination_inj=stol(destination_inj_src);
 
                 string departure_ds = line.substr(line.find("Time: ")+6, line.find("Inj") - line.find("Time: ")-7);
                 //cout<<departure_ds<<"sddsd\n";
-                long int departure_d=stol(departure_ds);
+                int64_t departure_d=stol(departure_ds);
                 //vector<int> curr_data={message_d,destination_d,departure_d};
                 //dep[source_i].push_back(message_d);
                 //dep[source_i].push_back(destination_d);
                 //dep[source_i].push_back(departure_d);
                 string source_vc_s=line.substr(line.find("VC:")+4,line.find("Pri")-line.find("VC:")-4);
                 //cout<<source_vc_s<<"\n";
-                long int source_vc=stol(source_vc_s);
+                int64_t source_vc=stol(source_vc_s);
                 string priority_s=line.substr(line.find("ty")+4,line.length()-line.find("ty"));
                 //cout<<priority_s<<"\n";
-                long int priority=stol(priority_s);
+                int64_t priority=stol(priority_s);
 
                 for(int i=0;i<4;i++)
                 {
@@ -151,25 +152,25 @@ int main(int argc, char *argv[])
                 //cout<<"aaa";
                 string destination=line.substr(line.find("de:") + 5, line.find("Mes") - line.find("de:") -7);
                 //cout<<destination<<"ssss\n";
-                long int destination_i=stol(destination);
+                int64_t destination_i=stol(destination);
                 //cout<<"source"<<destination_i<<"\n";//cprrect
                 //cout << line.substr(line.find("ge: ") + 2, line.find("Sour") - line.find("ge: ") - 3) << "\n";
                 string message_as = line.substr(line.find("ge: ") + 4, line.find("Sour") - line.find("ge: ") - 5); //<<"\n";
-                long int message_a = stol(message_as);
+                int64_t message_a = stol(message_as);
                 //cout<<message_a<<"mess\n";
                 string source_as = line.substr(line.find("ce: ") + 4, line.find("Arr") - line.find("ce: ") - 5);
-                long int source_a=stol(source_as);
+                int64_t source_a=stol(source_as);
                 //cout<<source_as<<"sdsd\n";
                 string arrival_as = line.substr(line.find("me: ")+4, line.length() - line.find("me: "));
                 //cout<<arrival_as<<"sddsd\n";
-                long int arrival_a=stol(arrival_as);
+                int64_t arrival_a=stol(arrival_as);
                 //vector<int> curr_data={message_a,source_a,arrival_a};
                 //arr[destination_i].push_back(message_a);
                 //arr[destination_i].push_back(source_a);
                 //arr[destination_i].push_back(arrival_a);
                 string arrival_vc_s=line.substr(line.find("VC:")+4,line.length()-line.find("VC:")-4);
                 //cout<<arrival_vc<<"sss\n";
-                long int arrival_vc=stol(arrival_vc_s);
+                int64_t arrival_vc=stol(arrival_vc_s);
 
                 for(int i=0;i<4;i++)
                 {
@@ -205,14 +206,14 @@ int main(int argc, char *argv[])
             int N = num_of_nodes;//Number of Nodes
 			int DIM = floor(sqrt(N));
 
-            long int source;
-            long int dest;
-            long int dept;
-            long int arrv;
-            long int messg;
-            long int vc;
-            long int priority;
-            long int inj;
+            int64_t source;
+            int64_t dest;
+            int64_t dept;
+            int64_t arrv;
+            int64_t messg;
+            int64_t vc;
+            int64_t priority;
+            int64_t inj;
 
             
 
@@ -267,25 +268,39 @@ int main(int argc, char *argv[])
             {
                 arrv=0;
             }
-            cout<<"arriv"<<arrv<<" "<<"inj"<<inj<<"\n";
-            cout<<"Message "<<messg<<" from "<<source<<" to "<<dest<<" in time "<<arrv-inj<<"\n";
-            total_latency+=arrv-inj;
+            //cout<<"arriv"<<arrv<<" "<<"inj"<<inj<<"\n";
+            //cout<<"Message "<<messg<<" from "<<source<<" to "<<dest<<" in time "<<arrv-inj<<"\n";
+	    if(arrv-inj>0)
+	    {
+              total_latency+=arrv-inj;
+	      per_vc_lat[d_terminal[i][j]->vc]+=arrv-inj;
+	    }
+	    cout<<"total"<<total_latency<<"\n";
+	    if(total_latency>372661)
+		   {
+			   cout<<"arriv  "<<arrv<<" "<<"inj  "<<inj<<"\n";
+			   cout<<"message"<<messg<<"from"<<source<<" to " <<dest<<"in time"<<arrv<<" "<<inj<<" t "<<arrv-inj<<"\n";
+			   
+		   }
+
             mesg_wait+=dept-inj;
-            per_vc_lat[d_terminal[i][j]->vc]+=arrv-inj;
             per_vc_injection[d_terminal[i][j]->vc]+=dept-inj;
             }
         }
     cout<<"Debug output\n\n";
     cout<<"Overall System Load: "<<load/num_of_nodes<<"\n";
-    cout<<"Overall Average Latency: "<<double(total_latency)/double(message_completed)<<"\n";
-    cout<<"Overall Throughput: "<<double(message_completed)/double(final_time-initial_time)<<" messages/cycle\n";
-    cout<<"Overall message wait latency:"<<double(mesg_wait)/double(message_completed)<<"\n\n";
+    cout<<"Overall Average Latency: "<<total_latency/message_completed<<"\n";
+    cout<<"check latency"<<total_latency<<"\n";
+    cout << "Messages Completed: " << message_completed << endl;
+    cout<<"Overall Throughput: "<<double(message_completed)/(final_time-initial_time)<<" messages/cycle\n";
+    cout<<"Overall message wait latency:"<<(mesg_wait)/message_completed<<"\n\n";
     cout<<"Per VC Throughput and latency and messages :"<<"\n";
     for(int i=0;i<4;i++)
     {
-        cout<<"VC"<<i<<": "<<double((per_vc_th[i]))/double(per_vc_endtime[i]-per_vc_starttime[i])<<" messages/cycle\n";
-        cout<<"average latency: "<<double(per_vc_lat[i])/double(per_vc_th[i])<<"\n";
-        cout<<"average message wait latency: "<<double(per_vc_injection[i]/double(per_vc_th[i]))<<"\n";
+        cout<<"VC"<<i<<": "<<(double(per_vc_th[i]))/(per_vc_endtime[i]-per_vc_starttime[i])<<" messages/cycle\n";
+        cout<<"average latency: "<<(per_vc_lat[i])/(per_vc_th[i])<<"\n";
+	cout<<"check latency:"<<per_vc_lat[i]<<"\n";
+        cout<<"average message wait latency: "<<(per_vc_injection[i]/(per_vc_th[i]))<<"\n";
         cout<<"messages: "<<per_vc_th[i]<<"\n";
     }
     cout<<"\n\n";
@@ -296,7 +311,7 @@ int main(int argc, char *argv[])
 		cout << "Low Priority Packets: " << count_LP << endl;
 		cout << "Weighted AMAT:" << (weightedAMAT/count) << endl;
 
-
+/*
 //for generating csv output
     fstream fout;
     fout.open("data.csv",ios::out|ios::app);
@@ -340,6 +355,7 @@ int main(int argc, char *argv[])
         }   
         cout << endl;
     }
+    */
     
    /*
     cout<<"DEPARTURES\n";
@@ -348,11 +364,7 @@ int main(int argc, char *argv[])
         for(int j=0;j<d_terminal[i].size();j++){
                 cout<<d_terminal[i][j]->message_dep<<" "<<d_terminal[i][j]->destination<<" "<<d_terminal[i][j]->departure;
                 cout<<"\n";
-
         }
-
-
-
     }
     cout<<"ARRIVAL\n";
     for(int i=0;i<9;i++){
@@ -360,13 +372,8 @@ int main(int argc, char *argv[])
         for(int j=0;j<a_terminal[i].size();j++){
                 cout<<a_terminal[i][j]->message_arr<<" "<<a_terminal[i][j]->source<<" "<<a_terminal[i][j]->arrival;
                 cout<<"\n";
-
         }
-
-
-
     }
-
 */
     }
     else
