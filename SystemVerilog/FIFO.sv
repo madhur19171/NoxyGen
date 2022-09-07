@@ -37,7 +37,7 @@ module FIFO #(parameter DATA_WIDTH = 32,
 		end
 	end
 	
-	always @(posedge clk)begin
+	always_ff @(posedge clk)begin
 		if(rst)begin
 			head <= #0.75 0;
 		end
@@ -45,7 +45,7 @@ module FIFO #(parameter DATA_WIDTH = 32,
 			head <= #0.75 ((head + 1) % FIFO_DEPTH);
 	end
 	
-	always @(posedge clk)begin
+	always_ff @(posedge clk)begin
 		if(rst)begin
 			tail <= #0.75 0;
 		end
@@ -53,7 +53,7 @@ module FIFO #(parameter DATA_WIDTH = 32,
 			tail <= #0.75 ((tail + 1) % FIFO_DEPTH);
 	end
 	
-	always @(posedge clk)begin
+	always_ff @(posedge clk)begin
 		if(wr_en & ~full | wr_en & rd_en & full)
 			RAM[head] <= #0.75 din;
 			
@@ -69,12 +69,20 @@ module FIFO #(parameter DATA_WIDTH = 32,
 //	end
 
 	//To be implemented as Xilinx Distributed RAM, Asynchronous Read and Synchronous Write
-	always @(*)begin
+	/*always_comb begin
 		if(rst)begin
 			dout = #0.75 0;
 		end
 		else if(~empty)
 			dout = #0.75 RAM[tail];
+	end*/
+	
+	always @(*) begin
+		if(rst)begin
+			dout = 0;
+		end
+		else if(~empty)
+			dout = RAM[tail];
 	end
 	
 endmodule

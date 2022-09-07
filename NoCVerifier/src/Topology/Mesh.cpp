@@ -22,7 +22,8 @@ Mesh::Mesh(int N) : Topology(N){
 	this->connected = true;//A regular Mesh will always be connected
 }
 
-Mesh::Mesh(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC) : Topology(N, nodeList, flitsPerPacket, phitsPerFlit, VC){
+Mesh::Mesh(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC, bool fixedSizePackets)
+		: Topology(N, DATA_WIDTH, nodeList, flitsPerPacket, phitsPerFlit, VC, fixedSizePackets){
 	this->dimX = floor(sqrt(N));
 	this->dimY = floor(sqrt(N));
 	this->topologyType = MESH;
@@ -49,7 +50,10 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 
 	int source, srcX, srcY;
 	int destination, destX, destY;
-	int flit = 0;
+
+	int REPRESENTATION_BITS = (int)ceil(log2(dimX));
+
+	uint64_t flit = 0;
 
 	for(int i = 0; i < N; i++){
 		std::vector<std::vector<std::vector<std::string>>> nodeTraffic;//Stores the traffic of a particular Node
@@ -81,19 +85,32 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 			std::uniform_int_distribution<int> flitsPerPacketDistribution(minimumNumberOfFlits , maximumNumberOfFlits);//Generating atleast one body flit and at max flitsPerPacket
 			auto randomNumberOfFlitsPerPacketGenerator = std::bind ( flitsPerPacketDistribution, generator );
 
+			//Find X and Y cordinates of Source Nodes
+			srcX = source % dimX;
+			srcY = source / dimY;
+
 			for(int j = 0; j < numberOfPacketsPerNode / this->VC; j++){
 				std::vector<std::string> packetTraffic;//Stores the traffic of a particular Packet. Stores the flits in a packet.
 				do{
 					switch(trafficType){
 					case UNIFORM_RANDOM: destination = int(uniformDestinationDistribution(generator)); break;//Find a random destination
-					case HOTSPOT: destination = int(normalDestinationDistribution(generator)); break;//Find a random destination
+					case HOTSPOT: destination = int(normalDestinationDistribution(generator)); break;//Find a random destination with Gaussian probability
+					case TRANSPOSE://(i, j) to (j, i) cordinates.
+						if(srcX == srcY)
+						{
+							destX = 1;
+							destY = 0;
+						} else{
+							destX = srcY;
+							destY = srcX;
+						}
+						destination = destY * dimX + destX;
+						break;
 					default: destination = int(uniformDestinationDistribution(generator));break;//Find a random destination
 					}
 				} while (destination == source || (destination < 0 || destination >= N));//Destination should not be same as the source
 
-				//Find X and Y cordinates of Source and Destination Nodes
-				srcX = source % dimX;
-				srcY = source / dimY;
+				//Find X and Y cordinates of Destination Nodes
 				destX = destination % dimX;
 				destY = destination / dimY;
 
@@ -106,7 +123,7 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 				 * At max, 256 messages can be sent per node
 				 */
 
-				int numberOfFlits = randomNumberOfFlitsPerPacketGenerator();
+				int numberOfFlits = this->fixedSizePackets ? this->flitsPerPacket : randomNumberOfFlitsPerPacketGenerator();
 				//Priority will be stored only in the head flit in 29 and 28th bits of the flit(starting from 0)
 				int priority = numberOfFlits <= 4 ? 1 : 0;//Higher number means a higher priority
 
@@ -114,29 +131,34 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 				for(int k = 0; k < numberOfFlits; k++){
 					flit = 0;//Empty flit
 
+					uint64_t identifier;
+
 					if(k == 0){//Head Flit Generation
+						identifier = 1;
 						flit |= destY;
-						flit |= destX << 4;
-						flit |= srcY << 8;
-						flit |= srcX << 12;
-						flit |= (j + (vc * numberOfPacketsPerNode / this->VC)) << 16;//Message Number: It is not alloted on a per VC basis, rather on a Per Node basis
-						flit |= priority << 28;
-						flit |= 1 << 30;//Head Flit Identifier
+						flit |= destX << REPRESENTATION_BITS;
+						flit |= srcY << (2 * REPRESENTATION_BITS);
+						flit |= srcX << (3 * REPRESENTATION_BITS);
+						flit |= (j + (vc * numberOfPacketsPerNode / this->VC)) << (4 * REPRESENTATION_BITS);//Message Number: It is not alloted on a per VC basis, rather on a Per Node basis
+						flit |= priority << (this->DATA_WIDTH - 4);
+						flit |= identifier << (this->DATA_WIDTH - 2);//Head Flit Identifier
 					} else if(k == numberOfFlits - 1){//Tail Flit Generation
+						identifier = 3;
 						flit |= destY;
-						flit |= destX << 4;
-						flit |= srcY << 8;
-						flit |= srcX << 12;
-						flit |= (j + (vc * numberOfPacketsPerNode / this->VC)) << 16;//Message Number: It is not alloted on a per VC basis, rather on a Per Node basis
-						flit |= 3 << 30;//Tail Flit Identifier
+						flit |= destX << REPRESENTATION_BITS;
+						flit |= srcY << (2 * REPRESENTATION_BITS);
+						flit |= srcX << (3 * REPRESENTATION_BITS);
+						flit |= (j + (vc * numberOfPacketsPerNode / this->VC)) << (4 * REPRESENTATION_BITS);//Message Number: It is not alloted on a per VC basis, rather on a Per Node basis
+						flit |= identifier << (this->DATA_WIDTH - 2);//Tail Flit Identifier
 					} else{//Body Flit Generation
+						identifier = 2;
 						flit |= k;
 						flit |= destY << 4;
-						flit |= destX << 8;
-						flit |= srcY << 12;
-						flit |= srcX << 16;
-						flit |= (j + (vc * numberOfPacketsPerNode / this->VC)) << 20;//Message Number: It is not alloted on a per VC basis, rather on a Per Node basis
-						flit |= 2 << 30;//Body Flit Identifier
+						flit |= destX << (4 + REPRESENTATION_BITS);
+						flit |= srcY << (4 + 2 * REPRESENTATION_BITS);
+						flit |= srcX << (4 + 3 * REPRESENTATION_BITS);
+						flit |= (j + (vc * numberOfPacketsPerNode / this->VC)) << (4 + 4 * REPRESENTATION_BITS);//Message Number: It is not alloted on a per VC basis, rather on a Per Node basis
+						flit |= identifier << (this->DATA_WIDTH - 2);//Body Flit Identifier
 					}
 					std::stringstream flitString;
 					flitString << "0x" << std::hex << flit;

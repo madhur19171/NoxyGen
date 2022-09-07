@@ -15,7 +15,7 @@ public:
 	int dimX, dimY;
 	Mesh();
 	Mesh(int N);
-	Mesh(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC);
+	Mesh(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC, bool fixedSizePackets);
 	virtual ~Mesh();
 private:
 	//TODO: different traffic types to be added

@@ -20,7 +20,7 @@ Checker::Checker(Topology topology, std::string inputDirectoryPath, std::string 
 	for(int i = 0; i < topology.N; i++){
 		std::vector<std::string>VCTraffic;
 		for(int j = 0; j < topology.VC; j++){
-			std::ifstream inputFile(inputDirectoryPath + "input_" + std::to_string(i) + "_" + std::to_string(j));
+			std::ifstream inputFile(inputDirectoryPath + "input" + std::to_string(i) + "_" + std::to_string(j));
 			std::string inputTraffic;
 			std::ostringstream inputTrafficStream;
 
@@ -35,7 +35,7 @@ Checker::Checker(Topology topology, std::string inputDirectoryPath, std::string 
 	for(int i = 0; i < topology.N; i++){
 		std::vector<std::string>VCTraffic;
 		for(int j = 0; j < topology.VC; j++){
-			std::ifstream outputFile(outputDirectoryPath + "output_" + std::to_string(i) + "_" + std::to_string(j));
+			std::ifstream outputFile(outputDirectoryPath + "output" + std::to_string(i) + "_" + std::to_string(j));
 			std::string outputTraffic;
 			std::ostringstream outputTrafficStream;
 
@@ -69,6 +69,7 @@ void Checker::checkMesh(){
 	int dimX, dimY;
 	dimX = floor(sqrt(this->topology.N));
 	dimY = dimX;
+	int REPRESENTATION_BITS = ceil(log2(dimX));
 
 	for(int i = 0; i < this->topology.N; i++){
 		bool nodeFailed = false;
@@ -83,27 +84,28 @@ void Checker::checkMesh(){
 				if(flitString.size() != 10){
 					continue;
 				}
-				//			std::cout << flitString << std::endl;
+				//				std::cout << flitString << std::endl;
 				flit = std::stoul(flitString, nullptr, 16);
 				//			int srcX, srcY;
 
 				int destX, destY;
 				if(((flit >> 30) == 1) || (flit >> 30) == -1){//Head Flit or Tail Flit
-					destY = flit & 0xf;
-					destX = (flit >> 4) & 0xf;
+					destY = flit & ((1 << REPRESENTATION_BITS) - 1);
+					destX = (flit >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
 					//				srcX = (flit >> 8) & 0xf;
 					//				srcY = (flit >> 12) & 0xf;
 				} else{
-					destY = (flit >> 4) & 0xf;
-					destX = (flit >> 8) & 0xf;
+					destY = (flit >> 4) & ((1 << REPRESENTATION_BITS) - 1);
+					destX = (flit >> (4 + REPRESENTATION_BITS)) & ((1 << REPRESENTATION_BITS) - 1);
 					//				srcX = (flit >> 12) & 0xf;
 					//				srcY = (flit >> 16) & 0xf;
 				}
 				int destinationNode = destX + destY * dimX;
-				//			std::cout << destinationNode << std::endl;
+				//				std::cout << destinationNode << std::endl;
 				if(outputTrafficList[destinationNode][j].find(flitString) == std::string::npos){
 					std::cout << "Failed at Node " << i << "\tVC: " << j << "\tFlit:" << flitString << std::endl;
 					nodeFailed |= true;
+					return;
 				}
 			}
 		}
@@ -120,6 +122,7 @@ void Checker::checkMeshVerbose(){
 	int dimX, dimY;
 	dimX = floor(sqrt(this->topology.N));
 	dimY = dimX;
+	int REPRESENTATION_BITS = ceil(log2(dimX));
 
 	for(int i = 0; i < this->topology.N; i++){
 		bool nodeFailed = false;
@@ -140,13 +143,13 @@ void Checker::checkMeshVerbose(){
 
 				int destX, destY;
 				if(((flit >> 30) == 1) || (flit >> 30) == -1){//Head Flit or Tail Flit
-					destY = flit & 0xf;
-					destX = (flit >> 4) & 0xf;
+					destY = flit & ((1 << REPRESENTATION_BITS) - 1);
+					destX = (flit >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
 					//				srcX = (flit >> 8) & 0xf;
 					//				srcY = (flit >> 12) & 0xf;
 				} else{
-					destY = (flit >> 4) & 0xf;
-					destX = (flit >> 8) & 0xf;
+					destY = (flit >> 4) & ((1 << REPRESENTATION_BITS) - 1);
+					destX = (flit >> (4 + REPRESENTATION_BITS)) & ((1 << REPRESENTATION_BITS) - 1);
 					//				srcX = (flit >> 12) & 0xf;
 					//				srcY = (flit >> 16) & 0xf;
 				}

@@ -3,12 +3,11 @@ module HeadFlitDecoder #(
 			parameter N = 4,	//This is the number of nodes in the network
 			parameter INDEX = 1,
 			parameter DATA_WIDTH = 8,
-			parameter PhitPerFlit = 2,
 			parameter VC = 4,
 			parameter REQUEST_WIDTH = 2
 			)
 	(
-	input [PhitPerFlit * DATA_WIDTH - 1 : 0] HeadFlit,
+	input [DATA_WIDTH - 1 : 0] HeadFlit,
 	output [REQUEST_WIDTH - 1 : 0] RequestMessage
 	);
 
@@ -51,13 +50,12 @@ module HeadFlitDecoder #(
 			parameter N = 4,	//This is the number of nodes in the network
 			parameter INDEX = 1,
 			parameter DATA_WIDTH = 8,
-			parameter PhitPerFlit = 2,
 			parameter REQUEST_WIDTH = 2
 			)
 	(
 	input clk, input rst,
 	input decodeHeadFlit,
-	input [PhitPerFlit * DATA_WIDTH - 1 : 0] HeadFlit,
+	input [DATA_WIDTH - 1 : 0] HeadFlit,
 	output reg [REQUEST_WIDTH - 1 : 0] RequestMessage = 0,
 	output headFlitDecoded
 	);
@@ -82,8 +80,8 @@ module HeadFlitDecoder #(
 		integer Y = $floor(INDEX / DIM);
 		integer X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
 	`else
-		localparam Y = $floor(INDEX / DIM);
-		localparam X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
+		integer Y = $floor(INDEX / DIM);
+		integer X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
 	`endif
 
 	wire [REPRESENTATION_BITS - 1 : 0] DestinationX, DestinationY;
@@ -93,7 +91,7 @@ module HeadFlitDecoder #(
 	
 	//Right now, it is completely asynchronous, but when it is made using memory,
 	//it will have clock as well and arbitration unit too.
-	always @(*)begin
+	always_comb begin
 		if((X == 0 | X == (DIM - 1)) && (Y == 0 | Y == (DIM - 1)))//Corner Routers
 			if(DestinationX == X && DestinationY == Y)
 				RequestMessage = 0;//If DX = X and DY = Y, then we are at the destination.
