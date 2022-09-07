@@ -76,28 +76,28 @@ module VCPlaneController
 	);
 	//0, 1, 2, 3, 4, 5
 	//3 Clock Cycles to Plane 0: Critical and 1 clock cycle each to other VCs
-	integer counter = 0, counterNext = 0;
+	logic [31 : 0] counter = 0, counterNext = 0;
 	
 	reg [VC : 0] state = 0;
 	
-	always @(posedge clk, posedge rst)begin
+	always_ff @(posedge clk)begin
 		if(rst)begin
-			counter <= #0.75 0;
+			counter <= 0;
 		end
 		
 		else begin
-			counter <= #1.25 counterNext;
+			counter <= counterNext;
 		end
 	end
 	
-	always @(*)begin
+	always_comb begin
 		if(counter == 3)
 			counterNext = 0;
 		else
 			counterNext = counter + 1;
 	end
 	
-	always @(*)begin
+	always_comb begin
 		case(counter)
 			0 : state = 0;
 			1 : state = 1;

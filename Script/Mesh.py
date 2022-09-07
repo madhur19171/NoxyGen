@@ -297,7 +297,7 @@ class Mesh:
 
 
 
-mesh = Mesh(3)
+mesh = Mesh(10)
 
 # mesh.printNodeDefinitions()
 mesh.connectRouters()

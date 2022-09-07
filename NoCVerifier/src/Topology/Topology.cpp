@@ -10,32 +10,38 @@
 Topology::Topology() {
 	// TODO Auto-generated constructor stub
 	this->topologyType = UNDEFINED_TOPOLOGY;
+	this->DATA_WIDTH = 64;
 	this->N = 0;
 	this->flitsPerPacket = 0;//This is the maximum flits alowed in a packet
 	this->phitsPerFlit = 0;
 	this->VC = 0;
 	this->connected = false;
+	this->fixedSizePackets = false;
 }
 
 Topology::Topology(int N) {
 	// TODO Auto-generated constructor stub
 	this->topologyType = UNDEFINED_TOPOLOGY;
 	this->N = N;
+	this->DATA_WIDTH = 64;
 	this->flitsPerPacket = 0;//This is the maximum flits alowed in a packet
 	this->phitsPerFlit = 0;
 	this->VC = 0;
 	this->connected = false;
+	this->fixedSizePackets = false;
 }
 
-Topology::Topology(int N, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC) {
+Topology::Topology(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC, bool fixedSizePackets) {
 	// TODO Auto-generated constructor stub
 	this->topologyType = UNDEFINED_TOPOLOGY;
 	this->N = N;
+	this->DATA_WIDTH = DATA_WIDTH;
 	this->flitsPerPacket = flitsPerPacket;//This is the maximum flits alowed in a packet
 	this->phitsPerFlit = phitsPerFlit;
 	this->connected = false;
 	this->VC = VC;
 	this->nodeList = nodeList;
+	this->fixedSizePackets = fixedSizePackets;
 }
 
 Topology::~Topology() {
@@ -92,6 +98,29 @@ void Topology::generateTrafficFiles(int numberOfPacketsPerNode, TrafficType traf
 
 			std::ofstream flitTrafficFile("input" + std::to_string(i) + "_" + std::to_string(j));
 			std::ofstream delayTrafficFile("delay" + std::to_string(i) + "_" + std::to_string(j));
+
+			for(unsigned int k = 0; k < this->traffic[i][j].size(); k++){//Packet
+				for(unsigned int l = 0; l < this->traffic[i][j][k].size(); l++){
+					flitTrafficFile << this->traffic[i][j][k][l] << std::endl;
+					delayTrafficFile << this->delay[i][j][k][l] << std::endl;
+				}
+			}
+			flitTrafficFile.close();
+			delayTrafficFile.close();
+		}
+	}
+}
+
+void Topology::generateTrafficFiles(std::string path, int numberOfPacketsPerNode, TrafficType trafficType, int maxDelay, int flag){
+	//generateTraffic neds to be called before generateDelay
+	this->traffic = generateTraffic(numberOfPacketsPerNode, trafficType, flag);
+	this->delay = generateDelay(numberOfPacketsPerNode, maxDelay);
+
+	for(int i = 0; i < N; i++){//Node
+		for(unsigned int j = 0; j < this->traffic[i].size(); j++){//VC: Different Files will be created for Each Node and VC
+
+			std::ofstream flitTrafficFile(path + "input" + std::to_string(i) + "_" + std::to_string(j));
+			std::ofstream delayTrafficFile(path + "delay" + std::to_string(i) + "_" + std::to_string(j));
 
 			for(unsigned int k = 0; k < this->traffic[i][j].size(); k++){//Packet
 				for(unsigned int l = 0; l < this->traffic[i][j][k].size(); l++){
