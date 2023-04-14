@@ -27,9 +27,15 @@ module HeadFlitBuffer #(
 	output headFlitStatus,
 	input decodeHeadFlit,
 	//To ControlFSM
+	output dropPacket,			// Tells the Control FSM to drop the current Packet buffered in the FIFO
 	output HFBFull,//Indicates that the head flit ffo can't take any more head flit, so stop buffering
 	output HFBEmpty,
 	output headFlitDecoded,
+
+	// To HeadFlitUpdater
+	output updateHeadFlit,		// Tells the Head Flit Updater to update the head flit to newHeadFlit
+	output [DATA_WIDTH - 1 : 0] newHeadFlit,
+
 	//To Switch
 	output routeReserveRequestValid,
 	output[REQUEST_WIDTH - 1 : 0] routeReserveRequest,
@@ -69,14 +75,14 @@ module HeadFlitBuffer #(
 //headFlitStatus 0 means that the head flit buffer is empty and new head flit can be stored in it.
 	always_ff @(posedge clk)begin
 		if(rst)
-			state <= #0.75 0;
+			state <=  0;
 		else
 			case(state)
-				Idle: state <= #0.75 reserveRoute ? SendRequest : decodeHeadFlit ? Decode : Idle;
-				Decode: state <= #0.75 ~empty & reserveRoute ? SendRequest : Decode;//The fact that reserveRoute is high means that the decoding was done
-				SendRequest: state <= #0.75 routeReserveStatus_Switch ? Buffered : SendRequest;
-				Buffered: state <= #0.75 routeRelieve ? Idle : Buffered;
-				default: state <= #0.75 Idle;
+				Idle: state <=  reserveRoute ? SendRequest : decodeHeadFlit ? Decode : Idle;
+				Decode: state <=  ~empty & reserveRoute ? SendRequest : Decode;//The fact that reserveRoute is high means that the decoding was done
+				SendRequest: state <=  routeReserveStatus_Switch ? Buffered : SendRequest;
+				Buffered: state <=  routeRelieve ? Idle : Buffered;
+				default: state <=  Idle;
 			endcase
 	end
 //--------------------------------------HeadBuffer FSM Ends------------------------------
@@ -93,12 +99,16 @@ module HeadFlitBuffer #(
 		.decodeHeadFlit(decodeHeadFlit),
 		.HeadFlit(headBuffer),
 		.RequestMessage(routeReserveRequest),
-		.headFlitDecoded(headFlitDecoded)
+		.headFlitDecoded(headFlitDecoded),
+
+		.dropPacket(dropPacket),
+		.updateHeadFlit(updateHeadFlit),
+		.newHeadFlit(newHeadFlit)
 		);
 
 	//As soon as valid head flit is received, a request will be sent
 	//The request will be valid until it is accepted by the switch and routeReserveStatus is made high
-	assign #0.5 routeReserveRequestValid = state == SendRequest & reserveRoute;
+	assign routeReserveRequestValid = state == SendRequest & reserveRoute;
 
 	//A simple forwarding of this signal to the CFSM
 	assign routeReserveStatus_CFSM = routeReserveStatus_Switch;

@@ -58,6 +58,11 @@ module Port #(
 	wire HFBEmpty;
 	wire decodeHeadFlit;
 	wire headFlitDecoded;
+
+	wire dropPacket;
+	wire [DATA_WIDTH - 1 : 0] data_out_fifo;
+	wire updateHeadFlit;
+	wire [DATA_WIDTH - 1 : 0] newHeadFlit;
 	
 	generate
 		case(FLOW_CONTROL)
@@ -131,6 +136,43 @@ module Port #(
 				.FIFOoccupancy(FIFOoccupancy),
 				.routeRelieve(routeRelieve)
 				);
+
+			2 : 
+				ControlFSM_VCT_DROP
+				#(.DATA_WIDTH(DATA_WIDTH),
+				.VC(VC),
+				.FlitPerPacket(FlitPerPacket),
+				.REQUEST_WIDTH(REQUEST_WIDTH),
+				.TYPE_WIDTH(TYPE_WIDTH),
+				.FIFO_DEPTH(FIFO_DEPTH)) controlFSM
+				(.clk(clk),
+				.rst(rst),
+				.data_in(data_in),
+				.VCPlaneSelector(VCPlaneSelectorCFSM),
+				.valid_in(valid_in),
+				.ready_in(ready_in),
+				.valid_out(valid_out),
+				.ready_out(ready_out),
+				
+				.FlitType(FlitType),
+				.reserveRoute(reserveRoute),
+				.routeReserveStatus(routeReserveStatus_CFSM),
+				.headFlitValid(headFlitValid),
+				
+				.dropPacket(dropPacket),
+				.HFBFull(HFBFull),
+				.HFBEmpty(HFBEmpty),
+				.decodeHeadFlit(decodeHeadFlit),
+				.headFlitDecoded(headFlitDecoded),
+				
+				.popBuffer(popBuffer),
+				.pushBuffer(pushBuffer),
+				.Handshake(Handshake),
+				.full(full),
+				.empty(empty),
+				.FIFOoccupancy(FIFOoccupancy),
+				.routeRelieve(routeRelieve)
+				);
 			default : 
 				ControlFSM_WH
 				#(.DATA_WIDTH(DATA_WIDTH),
@@ -188,6 +230,10 @@ module Port #(
 	.routeRelieve(routeRelieve),
 	.reserveRoute(reserveRoute),
 	.routeReserveStatus_CFSM(routeReserveStatus_CFSM),
+
+	.dropPacket(dropPacket),
+	.updateHeadFlit(updateHeadFlit),
+	.newHeadFlit(newHeadFlit),
 	
 	.HFBFull(HFBFull),
 	.HFBEmpty(HFBEmpty),
@@ -206,7 +252,7 @@ module Port #(
 	 .TYPE_WIDTH(TYPE_WIDTH)
 	) flitIdentifier
 	(
-	.Flit(data_out),
+	.Flit(data_out_fifo),
 	.FlitType(FlitType)
 	);
 	
@@ -219,10 +265,20 @@ module Port #(
 	.FIFOoccupancy(FIFOoccupancy),
 	.empty(empty),
 	.rd_en(popBuffer),
-	.dout(data_out),
+	.dout(data_out_fifo),
 	.full(full),
 	.wr_en(pushBuffer),
 	.din(data_in)
+	);
+
+	HeadFlitUpdater #(.DATA_WIDTH(DATA_WIDTH), .TYPE_WIDTH(TYPE_WIDTH)) headFlitUpdater
+	(
+		.flit_in(data_out_fifo),
+		.flitType(FlitType),
+		.updateHeadFlit(updateHeadFlit),
+		.newHeadFlit(newHeadFlit),
+
+		.flit_out(data_out)
 	);
 	
 endmodule

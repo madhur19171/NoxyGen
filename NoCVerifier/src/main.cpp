@@ -17,7 +17,7 @@ int main(){
 	int DATA_WIDTH = 32;
 	int flitsPerPacket = 16;
 	int phitsPerFlit = 1;
-	int numberOfPacketsPerNode = 256;
+	int numberOfPacketsPerNode = 128;
 	int maxDelay = 1;
 	int VC = 4;
 	bool fixedSizePackets = true;
@@ -34,15 +34,15 @@ int main(){
 
 	Mesh mesh(N, DATA_WIDTH, nodeList, flitsPerPacket, phitsPerFlit, VC, fixedSizePackets);
 
-	//	mesh.generateTrafficFiles(numberOfPacketsPerNode, trafficType, maxDelay, 0);
-	//	mesh.generateTrafficFiles("/home/madhur/VECTORS/",
-	//			numberOfPacketsPerNode, trafficType, maxDelay, 0);
+	mesh.generateTrafficFiles(numberOfPacketsPerNode, trafficType, maxDelay, 0);
+	mesh.generateTrafficFiles("/home/madhur/VECTORS/",
+			numberOfPacketsPerNode, trafficType, maxDelay, 0);
 
-	std::string outputDir = "/run/user/1000/gvfs/sftp:host=192.168.1.235/home/madhur/Mesh44/sim/OUTPUT_VECTORS/";
-	std::string inputDir = "/run/user/1000/gvfs/sftp:host=192.168.1.235/home/madhur/Mesh44/sim/INPUT_VECTORS/";
-
-	Checker checker(mesh, inputDir, outputDir);
-	checker.check(true);
+//		std::string outputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh22_SV/sim/OUTPUT_VECTORS/";
+//		std::string inputDir = "/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/Mesh22_SV/sim/INPUT_VECTORS/";
+//
+//		Checker checker(mesh, inputDir, outputDir);
+//		checker.check(true);
 
 	return 0;
 }

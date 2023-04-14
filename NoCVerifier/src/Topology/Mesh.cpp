@@ -139,7 +139,8 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Mesh::generateVC
 						flit |= destX << REPRESENTATION_BITS;
 						flit |= srcY << (2 * REPRESENTATION_BITS);
 						flit |= srcX << (3 * REPRESENTATION_BITS);
-						flit |= (j + (vc * numberOfPacketsPerNode / this->VC)) << (4 * REPRESENTATION_BITS);//Message Number: It is not alloted on a per VC basis, rather on a Per Node basis
+						flit |= (0xffff) << (4 * REPRESENTATION_BITS);
+						flit |= (j + (vc * numberOfPacketsPerNode / this->VC)) << (4 * REPRESENTATION_BITS + 12);//Message Number: It is not alloted on a per VC basis, rather on a Per Node basis
 						flit |= priority << (this->DATA_WIDTH - 4);
 						flit |= identifier << (this->DATA_WIDTH - 2);//Head Flit Identifier
 					} else if(k == numberOfFlits - 1){//Tail Flit Generation

@@ -47,7 +47,6 @@ module RouterPipeline #(
 			#(.N(N),
 			.INDEX(INDEX),
 			.VC(VC),
-			.AssignedVC(AssignedVC),
 			.DATA_WIDTH(DATA_WIDTH),
 			.TYPE_WIDTH(TYPE_WIDTH),
 			.REQUEST_WIDTH(REQUEST_WIDTH),
@@ -83,16 +82,13 @@ module RouterPipeline #(
 
 	SwitchControl
 	#(.N(N),
-	.VC(VC),
 	.INPUTS(INPUTS),
 	.OUTPUTS(OUTPUTS),
 	.DATA_WIDTH(DATA_WIDTH),
-	.REQUEST_WIDTH(REQUEST_WIDTH),
-	.AssignedVC(AssignedVC)
+	.REQUEST_WIDTH(REQUEST_WIDTH)
 	) switchControl
 	(.clk(clk),
 	.rst(rst),
-	.VCPlaneSelector(VCPlaneSelector),
 	
 	.routeReserveRequestValid(routeReserveRequestValid),
 	.routeReserveRequest(routeReserveRequest),

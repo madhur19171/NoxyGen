@@ -23,9 +23,9 @@ module FIFO #(parameter DATA_WIDTH = 32,
 	
 	reg [ADDRESS_WIDTH - 1 : 0] head = 0, tail = 0;
 	
-	assign #0.5 empty = head == tail;
-	assign #0.5 full = ((head + 1) % FIFO_DEPTH == tail);
-	assign #0.5 FIFOoccupancy = head - tail + 1;
+	assign  empty = head == tail;
+	assign  full = ((head + 1) % FIFO_DEPTH == tail);
+	assign FIFOoccupancy = head - tail + 1;
 	
 	//To be implemented as Xilinx Distributed RAM
 	reg [DATA_WIDTH - 1 : 0] RAM [0 : FIFO_DEPTH - 1];
@@ -39,23 +39,23 @@ module FIFO #(parameter DATA_WIDTH = 32,
 	
 	always_ff @(posedge clk)begin
 		if(rst)begin
-			head <= #0.75 0;
+			head <=  0;
 		end
 		else if(wr_en & ~full | wr_en & rd_en & full)
-			head <= #0.75 ((head + 1) % FIFO_DEPTH);
+			head <=  ((head + 1) % FIFO_DEPTH);
 	end
 	
 	always_ff @(posedge clk)begin
 		if(rst)begin
-			tail <= #0.75 0;
+			tail <=  0;
 		end
 		else if(rd_en & ~empty | rd_en & wr_en & empty)
-			tail <= #0.75 ((tail + 1) % FIFO_DEPTH);
+			tail <=  ((tail + 1) % FIFO_DEPTH);
 	end
 	
 	always_ff @(posedge clk)begin
 		if(wr_en & ~full | wr_en & rd_en & full)
-			RAM[head] <= #0.75 din;
+			RAM[head] <=  din;
 			
 			
 	end

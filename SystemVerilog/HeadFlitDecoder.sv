@@ -142,4 +142,136 @@ module HeadFlitDecoder #(
 	
 endmodule
 
+
+`elsif XY_DROP
+module HeadFlitDecoder #(
+			parameter N = 4,	//This is the number of nodes in the network
+			parameter INDEX = 1,
+			parameter DATA_WIDTH = 8,
+			parameter REQUEST_WIDTH = 2
+			)
+	(
+	input clk, input rst,
+	input decodeHeadFlit,
+	input [DATA_WIDTH - 1 : 0] HeadFlit,
+	output reg [REQUEST_WIDTH - 1 : 0] RequestMessage = 0,
+	output headFlitDecoded,
+
+	output dropPacket,
+	output updateHeadFlit,
+	output [DATA_WIDTH - 1 : 0] newHeadFlit
+	);
+
+	int timer = 0;
+	
+	assign  headFlitDecoded = decodeHeadFlit;	//Since this decoder is combinational, 
+							//we send decoded signal as we receive decode instruction
+	
+	//Use this block if decoding takes certain number of clock cycles.
+	/*reg [3 : 0] shiftReg = 0;						
+	always @(posedge clk) begin
+		shiftReg <= {shiftReg[2 : 0], decodeHeadFlit};
+	end
+	assign #0.5 headFlitDecoded = shiftReg[3];
+	*/
+	
+	localparam DIM = $floor($sqrt(N));//Dimension is SQRT(N) X SQRT(N)
+	
+	localparam REPRESENTATION_BITS = $clog2(int'(DIM));
+	
+	//Finding X and Y cordinates of the current Node.
+	`ifdef VIVADO
+		integer Y = $floor(INDEX / DIM);
+		integer X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
+	`else
+		integer Y = $floor(INDEX / DIM);
+		integer X = INDEX - Y * DIM;//Vivado does not accept % in localparam probably
+	`endif
+
+	wire [REPRESENTATION_BITS - 1 : 0] DestinationX, DestinationY;
+	
+	assign DestinationX = HeadFlit[REPRESENTATION_BITS +: REPRESENTATION_BITS];
+	assign DestinationY = HeadFlit[0 +: REPRESENTATION_BITS];
+
+	always_ff @(posedge clk) begin
+		if(decodeHeadFlit | rst) begin
+			timer <= 0;
+		end
+
+		else begin
+			timer <= timer + 1;
+		end
+	end
+
+	// For a 3 X 3 Mesh with 12 bits reserved for TTL and rest 8 bits for Message ID
+	function logic [DATA_WIDTH - 1 : 0] updateHeadFlitTTL(input [DATA_WIDTH - 1 : 0] headFlit, input [31 : 0] timeElapsed);
+		logic [DATA_WIDTH - 1 : 0] newFlit;
+		int currentTime;
+		int TTL;
+		currentTime = headFlit[19 : 8];
+		TTL = currentTime - timeElapsed[11 : 0];
+		newFlit = headFlit;
+		newFlit[19 : 8] = TTL;
+		updateHeadFlitTTL = newFlit;
+	endfunction
+
+	assign dropPacket = HeadFlit[19 : 8] == timer;
+
+	assign newHeadFlit = updateHeadFlitTTL(HeadFlit, timer);
+	assign updateHeadFlit = 1;	// Hardcode to 1 since whenever we use this decoder, it is assumed that we want to update TTL
+	
+	//Right now, it is completely asynchronous, but when it is made using memory,
+	//it will have clock as well and arbitration unit too.
+	always_comb begin
+		if((X == 0 | X == (DIM - 1)) && (Y == 0 | Y == (DIM - 1)))//Corner Routers
+			if(DestinationX == X && DestinationY == Y)
+				RequestMessage = 0;//If DX = X and DY = Y, then we are at the destination.
+			else if(DestinationX == X)
+				RequestMessage = 2;
+			else if(DestinationY == Y)
+				RequestMessage = 1;
+			else RequestMessage = 1;//X first
+			
+		else if((X == 0 | X == (DIM - 1)))//Left or Right boundary Router
+			if(DestinationX == X && DestinationY == Y)
+				RequestMessage = 0;//If DX = X and DY = Y, then we are at the destination.
+			else if(DestinationX == X)
+				if(DestinationY > Y)
+					RequestMessage = 2;
+				else RequestMessage = 1;
+			else if(DestinationY == Y)
+				RequestMessage = 3;
+			else RequestMessage = 3;//X first
+		
+		else if((Y == 0 | Y == (DIM - 1)))//Top or Bottom boundary Router
+			if(DestinationX == X & DestinationY == Y)
+				RequestMessage = 0;//If DX = X and DY = Y, then we are at the destination.
+			else if(DestinationX == X)
+				RequestMessage = 3;
+			else if(DestinationY == Y)
+				if(DestinationX > X)
+					RequestMessage = 2;
+				else RequestMessage = 1;
+			else if(DestinationX > X)
+					RequestMessage = 2;
+				else RequestMessage = 1;//X first
+		else
+			if(DestinationX == X & DestinationY == Y)
+				RequestMessage = 0;//If DX = X and DY = Y, then we are at the destination.
+			else if(DestinationX == X)
+				if(DestinationY > Y)
+					RequestMessage = 2;
+				else RequestMessage = 4;
+			else if(DestinationY == Y)
+				if(DestinationX > X)
+					RequestMessage = 1;
+				else RequestMessage = 3;
+			else if(DestinationX > X)
+					RequestMessage = 1;
+				else RequestMessage = 3;//X first
+	end
+	
+endmodule
+
+
 `endif
