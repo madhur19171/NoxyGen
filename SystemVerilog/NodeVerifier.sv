@@ -158,6 +158,11 @@ module NodeVerifier #(	parameter N = 4,
 	
 	//Injection and Ejection Functions
 	function void injectTraffic();
+		int destinationX;
+		int destinationY;
+		int messageNumber;
+		int destination;
+		
 		if(flitsInjected[currentVC] != totalFlits[currentVC]) begin
 			if(injected[currentVC] == 0) begin
 				if(injecting[currentVC] == 0) begin
@@ -172,10 +177,10 @@ module NodeVerifier #(	parameter N = 4,
 						timeSinceInjection[currentVC] = 0;
 						flitsInjected[currentVC]++;
 						if(isHeadFlit(data_out)) begin
-							int destinationX = data_out & ((1 << REPRESENTATION_BITS) - 1);
-							int destinationY = (data_out >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
-							int messageNumber = (data_out >> 4 * REPRESENTATION_BITS) & messageNumberMask;
-							int destination = DIM * destinationY + destinationX;
+							destinationX = data_out & ((1 << REPRESENTATION_BITS) - 1);
+							destinationY = (data_out >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
+							messageNumber = (data_out >> 4 * REPRESENTATION_BITS) & messageNumberMask;
+							destination = DIM * destinationY + destinationX;
 							$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d", INDEX, flitsInjected[currentVC], destination, clockCycles, currentVC);
 							packetsInjected[currentVC]++;
 						end
@@ -196,13 +201,18 @@ module NodeVerifier #(	parameter N = 4,
 	endfunction
 	
 	function void ejectTraffic();
+		int sourceX;
+		int sourceY;
+		int messageNumber;
+		int source;
+		
 		if(valid_in & ready_in) begin
 			flitsEjected[currentVC]++;
 			if(isTailFlit(data_in)) begin
-				int sourceX = (data_in >> 3 * REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
-				int sourceY = (data_in >> 2 * REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
-				int messageNumber = (data_in >> 4 * REPRESENTATION_BITS) & messageNumberMask;
-				int source = DIM * sourceY + sourceX;
+				sourceX = (data_in >> 3 * REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
+				sourceY = (data_in >> 2 * REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
+				messageNumber = (data_in >> 4 * REPRESENTATION_BITS) & messageNumberMask;
+				source = DIM * sourceY + sourceX;
 				$display("Node%0d: Message: %0d Source: %0d Arrival_Time: %0d VC: %0d", INDEX, flitsEjected[currentVC], source, clockCycles, currentVC);
 				packetsEjected[currentVC]++;
 			end
