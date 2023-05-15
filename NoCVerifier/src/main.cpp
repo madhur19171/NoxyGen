@@ -11,24 +11,26 @@
 #include "TrafficGenerator.h"
 #include "Checker.h"
 #include "TestBenchGenerator.h"
+#include "Stats/StatsParser.h"
 
 int main(){
 
-	int N = 16;
+	int N = 64;
 	int DATA_WIDTH = 32;
 	int flitsPerPacket = 16;
 	int phitsPerFlit = 1;
 	int numberOfPacketsPerNode = 128;
 	int maxDelay = 1;
-	int VC = 1;
+	int VC = 4;
 	bool fixedSizePackets = true;
 	TrafficType trafficType = UNIFORM_RANDOM;
 	//	TrafficType trafficType = HOTSPOT;
 	//	TrafficType trafficType = TRANSPOSE;
 
-	bool generateTestBench = true;
+	bool generateTestBench = false;
 	bool generateTrafficFiles = false;
 	bool check = false;
+	bool parseStats = true;
 
 	std::vector<std::string> nodeList;
 	for(int i = 0; i < N; i++){
@@ -54,6 +56,12 @@ int main(){
 
 		Checker checker(mesh, inputDir, outputDir);
 		checker.check(true);
+	}
+
+	if(parseStats){
+		StatsParser statsParser("/media/madhur/CommonSpace/Work/SystemSimulators/NoC Simulator/NoC_Netlist_Generator/NoCVerifier/Mesh88.log", N, VC);
+		statsParser.parseLogFile();
+		statsParser.printStatistics();
 	}
 
 	return 0;

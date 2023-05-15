@@ -31,9 +31,9 @@ module NodeVerifier #(	parameter N = 4,
 	
 	int currentSize;
 	
-	int fileDescriptorInputTraffic [VC - 1 : 0];
-	int fileDescriptorInputDelay [VC - 1 : 0];
-	int fileDescriptorOutputTraffic [VC - 1 : 0];
+	int fileDescriptorInputTraffic;
+	int fileDescriptorInputDelay;
+	logic [31 : 0] fileDescriptorOutputTraffic [VC - 1 : 0] ;
 	
 	string inputTrafficFileName;
 	string inputDelayFileName;
@@ -49,6 +49,7 @@ module NodeVerifier #(	parameter N = 4,
 	
 	logic [VC - 1 : 0]injected;
 	logic [VC - 1 : 0]injecting;
+	int injectionTime [VC - 1 : 0];
 	int timeSinceInjection[VC - 1 : 0];
 	int flitsInjected[VC - 1 : 0];
 	int flitsEjected[VC - 1 : 0];
@@ -66,9 +67,20 @@ module NodeVerifier #(	parameter N = 4,
 	int DIM = $sqrt(N);
 	int REPRESENTATION_BITS = $clog2(DIM);
 	
+	int destinationX;
+	int destinationY;
+	int messageNumberInject;
+	int destination;
+	int sourceX;
+	int sourceY;
+	int messageNumberEject;
+	int source;
+	
 	VCPlaneController #(.VC(VC)) vcPlaneController (.clk(clk), .rst(rst), .VCPlaneSelectorCFSM(currentVC));
 	
 	initial begin: Initializer
+	
+		totalFlitsAllVC = 0;
 	
 		for(int i = 0; i < VC; i++) 
 			for(int j = 0; j < MAX_FLITS; j++)begin
@@ -82,6 +94,7 @@ module NodeVerifier #(	parameter N = 4,
 			injected[i] = 0;
 			injecting[i] = 0;
 			timeSinceInjection[i] = 0;
+			injectionTime[i] = 0;
 			flitsInjected[i] = 0;
 			flitsEjected[i] = 0;
 			packetsInjected[i] = 0;
@@ -89,19 +102,36 @@ module NodeVerifier #(	parameter N = 4,
 			
 			//Initializing File Descriptor for Input Traffic Files
 			$sformat(inputTrafficFileName, "%s_%0d", INPUT_TRAFFIC_FILE, i);
-			fileDescriptorInputTraffic[i] = $fopen(inputTrafficFileName, "r");
-			if(fileDescriptorInputTraffic[i])
+			fileDescriptorInputTraffic = $fopen(inputTrafficFileName, "r");
+			if(fileDescriptorInputTraffic)
 				$display("File %s was opened successfully.", inputTrafficFileName);
 			else
 				$display("Filed to open %s.", inputTrafficFileName);
+			
+			currentSize = 0;
+			while(!$feof(fileDescriptorInputTraffic)) begin
+				$fscanf(fileDescriptorInputTraffic, "0x%h\n", readData);
+				inputVectors[i][currentSize] = readData;
+				currentSize++;
+			end
+			totalFlits[i] = currentSize;
 				
 			//Initializing File Descriptor for Input Delay Files
 			$sformat(inputDelayFileName, "%s_%0d", INPUT_DELAY_FILE, i);
-			fileDescriptorInputDelay[i] = $fopen(inputDelayFileName, "r");
-			if(fileDescriptorInputDelay[i])
+			fileDescriptorInputDelay = $fopen(inputDelayFileName, "r");
+			if(fileDescriptorInputDelay)
 				$display("File %s was opened successfully.", inputDelayFileName);
 			else
 				$display("Filed to open %s.", inputDelayFileName);
+				
+			currentSize = 0;
+			while(!$feof(fileDescriptorInputDelay)) begin
+				$fscanf(fileDescriptorInputDelay, "%d\n", readData);
+				inputDelay[i][currentSize] = readData;
+				currentSize++;
+			end
+		
+			totalFlitsAllVC += totalFlits[i];
 			
 			//Initializing File Descriptor for Outtput Traffic Files
 			$sformat(outputTrafficFileName, "%s_%0d", OUTPUT_FILE, i);
@@ -111,32 +141,7 @@ module NodeVerifier #(	parameter N = 4,
 			else
 				$display("Filed to open %s.", outputTrafficFileName);
 		end
-		
-		//Storing Input Vectors into the Dynamic Array
-		for(int i = 0; i < VC; i++) begin
-			currentSize = 0;
-			while(!$feof(fileDescriptorInputTraffic[i])) begin
-				$fscanf(fileDescriptorInputTraffic[i], "0x%h\n", readData);
-				inputVectors[i][currentSize] = readData;
-				currentSize++;
-			end
-			totalFlits[i] = currentSize;
-		end
-		
-		//Storing Input Delays into the Dynamic Array
-		for(int i = 0; i < VC; i++) begin
-			currentSize = 0;
-			while(!$feof(fileDescriptorInputDelay[i])) begin
-				$fscanf(fileDescriptorInputDelay[i], "%d\n", readData);
-				inputDelay[i][currentSize] = readData;
-				currentSize++;
-			end
-		end
-		
-		totalFlitsAllVC = 0;
-		for(int i = 0; i < VC; i++) begin
-			totalFlitsAllVC += totalFlits[i];
-		end
+
 		
 		$display("Total flits to be routed for Node%0d: %0d", INDEX, totalFlitsAllVC);
 	end
@@ -164,6 +169,7 @@ module NodeVerifier #(	parameter N = 4,
 					data_out_VC[currentVC] = inputVectors[currentVC][flitsInjected[currentVC]];
 					valid_out_VC[currentVC] = 1;
 					injecting[currentVC] = 1;
+					injectionTime[currentVC] = clockCycles;
 				end else begin 
 					if(valid_out & ready_out) begin
 						valid_out_VC[currentVC] = 0;	//Flit is injected
@@ -172,11 +178,12 @@ module NodeVerifier #(	parameter N = 4,
 						timeSinceInjection[currentVC] = 0;
 						flitsInjected[currentVC]++;
 						if(isHeadFlit(data_out)) begin
-							int destinationX = data_out & ((1 << REPRESENTATION_BITS) - 1);
-							int destinationY = (data_out >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
-							int messageNumber = (data_out >> 4 * REPRESENTATION_BITS) & messageNumberMask;
-							int destination = DIM * destinationY + destinationX;
-							$display("Node%0d: Message: %0d Destination: %0d Departure_Time: %0d VC: %0d", INDEX, flitsInjected[currentVC], destination, clockCycles, currentVC);
+							destinationX = data_out & ((1 << REPRESENTATION_BITS) - 1);
+							destinationY = (data_out >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
+							messageNumberInject = (data_out >> 4 * REPRESENTATION_BITS) & messageNumberMask;
+							destination = DIM * destinationY + destinationX;
+							$display("Node%0d: Message: %0d Destination: %0d Injection_Time: %0d Departure_Time: %0d VC: %0d", INDEX, messageNumberInject, destination, injectionTime[currentVC], clockCycles, currentVC);
+							injectionTime[currentVC] = 0;
 							packetsInjected[currentVC]++;
 						end
 					end
@@ -199,11 +206,11 @@ module NodeVerifier #(	parameter N = 4,
 		if(valid_in & ready_in) begin
 			flitsEjected[currentVC]++;
 			if(isTailFlit(data_in)) begin
-				int sourceX = (data_in >> 3 * REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
-				int sourceY = (data_in >> 2 * REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
-				int messageNumber = (data_in >> 4 * REPRESENTATION_BITS) & messageNumberMask;
-				int source = DIM * sourceY + sourceX;
-				$display("Node%0d: Message: %0d Source: %0d Arrival_Time: %0d VC: %0d", INDEX, flitsEjected[currentVC], source, clockCycles, currentVC);
+				sourceX = (data_in >> 3 * REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
+				sourceY = (data_in >> 2 * REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
+				messageNumberEject = (data_in >> 4 * REPRESENTATION_BITS) & messageNumberMask;
+				source = DIM * sourceY + sourceX;
+				$display("Node%0d: Message: %0d Source: %0d Arrival_Time: %0d VC: %0d", INDEX, messageNumberEject, source, clockCycles, currentVC);
 				packetsEjected[currentVC]++;
 			end
 			$fwrite(fileDescriptorOutputTraffic[currentVC], "0x%0h\n", data_in);
