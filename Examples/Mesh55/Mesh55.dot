@@ -1,0 +1,153 @@
+Digraph G {
+	splines=spline;
+
+nodesep = 1
+node [ shape = square, width = 0.7 ];
+
+{ rank = same; Node0; Node1; Node2; Node3; Node4; }
+{ rank = same; Node5; Node6; Node7; Node8; Node9; }
+{ rank = same; Node10; Node11; Node12; Node13; Node14; }
+{ rank = same; Node15; Node16; Node17; Node18; Node19; }
+{ rank = same; Node20; Node21; Node22; Node23; Node24; }
+
+
+
+//DHLS version: 0.1.1" [shape = "none" pos = "20,20!"]
+"Node0" [type = "Router", bbID= 1, ID= 0, in = "in0:32 in1:32 in2:32 ", out = "out0:32 out1:32 out2:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node1" [type = "Router", bbID= 1, ID= 1, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node2" [type = "Router", bbID= 1, ID= 2, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node3" [type = "Router", bbID= 1, ID= 3, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node4" [type = "Router", bbID= 1, ID= 4, in = "in0:32 in1:32 in2:32 ", out = "out0:32 out1:32 out2:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node5" [type = "Router", bbID= 1, ID= 5, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node6" [type = "Router", bbID= 1, ID= 6, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node7" [type = "Router", bbID= 1, ID= 7, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node8" [type = "Router", bbID= 1, ID= 8, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node9" [type = "Router", bbID= 1, ID= 9, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node10" [type = "Router", bbID= 1, ID= 10, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node11" [type = "Router", bbID= 1, ID= 11, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node12" [type = "Router", bbID= 1, ID= 12, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node13" [type = "Router", bbID= 1, ID= 13, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node14" [type = "Router", bbID= 1, ID= 14, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node15" [type = "Router", bbID= 1, ID= 15, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node16" [type = "Router", bbID= 1, ID= 16, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node17" [type = "Router", bbID= 1, ID= 17, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node18" [type = "Router", bbID= 1, ID= 18, in = "in0:32 in1:32 in2:32 in3:32 in4:32 ", out = "out0:32 out1:32 out2:32 out3:32 out4:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node19" [type = "Router", bbID= 1, ID= 19, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node20" [type = "Router", bbID= 1, ID= 20, in = "in0:32 in1:32 in2:32 ", out = "out0:32 out1:32 out2:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node21" [type = "Router", bbID= 1, ID= 21, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node22" [type = "Router", bbID= 1, ID= 22, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node23" [type = "Router", bbID= 1, ID= 23, in = "in0:32 in1:32 in2:32 in3:32 ", out = "out0:32 out1:32 out2:32 out3:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+"Node24" [type = "Router", bbID= 1, ID= 24, in = "in0:32 in1:32 in2:32 ", out = "out0:32 out1:32 out2:32 ", NSA="VC=4 TYPE_WIDTH=2 FlitPerPacket=32 HFBDepth=4 FIFO_DEPTH=4"];
+
+
+
+subgraph cluster_0 {
+		label = "block1";
+"Node0" ->  "Node1" [color = "magenta", from = "out1", to = "in1", Router = true];
+"Node0" ->  "Node5" [color = "magenta", from = "out2", to = "in1", Router = true];
+
+"Node1" ->  "Node2" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node1" ->  "Node0" [color = "magenta", from = "out1", to = "in1", Router = true];
+"Node1" ->  "Node6" [color = "magenta", from = "out3", to = "in4", Router = true];
+
+"Node2" ->  "Node1" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node2" ->  "Node3" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node2" ->  "Node7" [color = "magenta", from = "out3", to = "in4", Router = true];
+
+"Node3" ->  "Node2" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node3" ->  "Node4" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node3" ->  "Node8" [color = "magenta", from = "out3", to = "in4", Router = true];
+
+"Node4" ->  "Node3" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node4" ->  "Node9" [color = "magenta", from = "out2", to = "in1", Router = true];
+
+"Node5" ->  "Node10" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node5" ->  "Node0" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node5" ->  "Node6" [color = "magenta", from = "out3", to = "in3", Router = true];
+
+"Node6" ->  "Node7" [color = "magenta", from = "out1", to = "in3", Router = true];
+"Node6" ->  "Node11" [color = "magenta", from = "out2", to = "in4", Router = true];
+"Node6" ->  "Node1" [color = "magenta", from = "out4", to = "in3", Router = true];
+"Node6" ->  "Node5" [color = "magenta", from = "out3", to = "in3", Router = true];
+
+"Node7" ->  "Node6" [color = "magenta", from = "out3", to = "in1", Router = true];
+"Node7" ->  "Node8" [color = "magenta", from = "out1", to = "in3", Router = true];
+"Node7" ->  "Node12" [color = "magenta", from = "out2", to = "in4", Router = true];
+"Node7" ->  "Node2" [color = "magenta", from = "out4", to = "in3", Router = true];
+
+"Node8" ->  "Node7" [color = "magenta", from = "out3", to = "in1", Router = true];
+"Node8" ->  "Node13" [color = "magenta", from = "out2", to = "in4", Router = true];
+"Node8" ->  "Node9" [color = "magenta", from = "out1", to = "in3", Router = true];
+"Node8" ->  "Node3" [color = "magenta", from = "out4", to = "in3", Router = true];
+
+"Node9" ->  "Node14" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node9" ->  "Node4" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node9" ->  "Node8" [color = "magenta", from = "out3", to = "in1", Router = true];
+
+"Node10" ->  "Node5" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node10" ->  "Node15" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node10" ->  "Node11" [color = "magenta", from = "out3", to = "in3", Router = true];
+
+"Node11" ->  "Node12" [color = "magenta", from = "out1", to = "in3", Router = true];
+"Node11" ->  "Node6" [color = "magenta", from = "out4", to = "in2", Router = true];
+"Node11" ->  "Node16" [color = "magenta", from = "out2", to = "in4", Router = true];
+"Node11" ->  "Node10" [color = "magenta", from = "out3", to = "in3", Router = true];
+
+"Node12" ->  "Node11" [color = "magenta", from = "out3", to = "in1", Router = true];
+"Node12" ->  "Node13" [color = "magenta", from = "out1", to = "in3", Router = true];
+"Node12" ->  "Node7" [color = "magenta", from = "out4", to = "in2", Router = true];
+"Node12" ->  "Node17" [color = "magenta", from = "out2", to = "in4", Router = true];
+
+"Node13" ->  "Node12" [color = "magenta", from = "out3", to = "in1", Router = true];
+"Node13" ->  "Node8" [color = "magenta", from = "out4", to = "in2", Router = true];
+"Node13" ->  "Node18" [color = "magenta", from = "out2", to = "in4", Router = true];
+"Node13" ->  "Node14" [color = "magenta", from = "out1", to = "in3", Router = true];
+
+"Node14" ->  "Node9" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node14" ->  "Node19" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node14" ->  "Node13" [color = "magenta", from = "out3", to = "in1", Router = true];
+
+"Node15" ->  "Node10" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node15" ->  "Node20" [color = "magenta", from = "out2", to = "in2", Router = true];
+"Node15" ->  "Node16" [color = "magenta", from = "out3", to = "in3", Router = true];
+
+"Node16" ->  "Node17" [color = "magenta", from = "out1", to = "in3", Router = true];
+"Node16" ->  "Node11" [color = "magenta", from = "out4", to = "in2", Router = true];
+"Node16" ->  "Node21" [color = "magenta", from = "out2", to = "in3", Router = true];
+"Node16" ->  "Node15" [color = "magenta", from = "out3", to = "in3", Router = true];
+
+"Node17" ->  "Node16" [color = "magenta", from = "out3", to = "in1", Router = true];
+"Node17" ->  "Node18" [color = "magenta", from = "out1", to = "in3", Router = true];
+"Node17" ->  "Node12" [color = "magenta", from = "out4", to = "in2", Router = true];
+"Node17" ->  "Node22" [color = "magenta", from = "out2", to = "in3", Router = true];
+
+"Node18" ->  "Node17" [color = "magenta", from = "out3", to = "in1", Router = true];
+"Node18" ->  "Node13" [color = "magenta", from = "out4", to = "in2", Router = true];
+"Node18" ->  "Node23" [color = "magenta", from = "out2", to = "in3", Router = true];
+"Node18" ->  "Node19" [color = "magenta", from = "out1", to = "in3", Router = true];
+
+"Node19" ->  "Node14" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node19" ->  "Node24" [color = "magenta", from = "out2", to = "in2", Router = true];
+"Node19" ->  "Node18" [color = "magenta", from = "out3", to = "in1", Router = true];
+
+"Node20" ->  "Node21" [color = "magenta", from = "out1", to = "in1", Router = true];
+"Node20" ->  "Node15" [color = "magenta", from = "out2", to = "in2", Router = true];
+
+"Node21" ->  "Node22" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node21" ->  "Node20" [color = "magenta", from = "out1", to = "in1", Router = true];
+"Node21" ->  "Node16" [color = "magenta", from = "out3", to = "in2", Router = true];
+
+"Node22" ->  "Node21" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node22" ->  "Node23" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node22" ->  "Node17" [color = "magenta", from = "out3", to = "in2", Router = true];
+
+"Node23" ->  "Node22" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node23" ->  "Node24" [color = "magenta", from = "out2", to = "in1", Router = true];
+"Node23" ->  "Node18" [color = "magenta", from = "out3", to = "in2", Router = true];
+
+"Node24" ->  "Node23" [color = "magenta", from = "out1", to = "in2", Router = true];
+"Node24" ->  "Node19" [color = "magenta", from = "out2", to = "in2", Router = true];
+
+
+	}
+}

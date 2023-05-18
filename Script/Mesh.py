@@ -1,10 +1,12 @@
 import sys
 
+DIM=5
+def_VC = 4
+def_TYPE_WIDTH = 2
 def_DATA_WIDTH = 32
-def_FIFO_DEPTH = 8
-def_VC = 1
-def_FlitPerPacket = 16
-def_PhitPerFlit = 1
+def_FIFO_DEPTH = 4
+def_HFBDepth = 4
+def_FlitPerPacket = 32
 
 class Node:
 	# connectivity will have the following structure:
@@ -13,7 +15,7 @@ class Node:
 	# using currentOutputPort of current node
 	# and nextNodeInputPort of the Next Node
 
-	def __init__(self, ID, name, DATA_WIDTH=def_DATA_WIDTH, inputs=-1, outputs=-1, FIFO_DEPTH=def_FIFO_DEPTH, VC=def_VC, FlitPerPacket=def_FlitPerPacket, PhitPerFlit=def_PhitPerFlit):
+	def __init__(self, ID, name, DATA_WIDTH=def_DATA_WIDTH, inputs=-1, outputs=-1, FIFO_DEPTH=def_FIFO_DEPTH, VC=def_VC, FlitPerPacket=def_FlitPerPacket, TYPE_WIDTH=def_TYPE_WIDTH, HFBDepth=def_HFBDepth):
 		self.ID = ID
 		self.name = name
 		self.DATA_WIDTH = DATA_WIDTH
@@ -22,7 +24,8 @@ class Node:
 		self.FIFO_DEPTH = FIFO_DEPTH
 		self.VC = VC
 		self.FlitPerPacket = FlitPerPacket
-		self.PhitPerFlit = PhitPerFlit
+		self.HFBDepth = HFBDepth
+		self.TYPE_WIDTH = TYPE_WIDTH
 		self.connectivity = {}
 
 	def connect(self, currentOutputPort, nextNode, nextNodeInputPort):
@@ -40,8 +43,8 @@ class Node:
 		for i in range(0, self.outputs):
 			out_str = out_str + "out" + str(i) + ":" + str(self.DATA_WIDTH) + " "
 
-		ret_str = "\"{name}\" [type = \"Router\", bbID= 1, ID= {ID}, in = \"{inp}\", out = \"{out}\", FIFO_DEPTH = {FIFO_DEPTH}, VC = {VC}];".format(
-					name=self.name, ID=self.ID, inp=in_str, out=out_str, FIFO_DEPTH=self.FIFO_DEPTH, VC=self.VC)
+		ret_str = "\"{name}\" [type = \"Router\", bbID= 1, ID= {ID}, in = \"{inp}\", out = \"{out}\", NSA=\"VC={VC} TYPE_WIDTH={TYPE_WIDTH} FlitPerPacket={FlitPerPacket} HFBDepth={HFBDepth} FIFO_DEPTH={FIFO_DEPTH}\"];".format(
+					name=self.name, ID=self.ID, inp=in_str, out=out_str, FIFO_DEPTH=self.FIFO_DEPTH, VC=self.VC, TYPE_WIDTH=self.TYPE_WIDTH, FlitPerPacket=self.FlitPerPacket, HFBDepth=self.HFBDepth)
 
 		return ret_str
 
@@ -297,7 +300,7 @@ class Mesh:
 
 
 
-mesh = Mesh(10)
+mesh = Mesh(DIM)
 
 # mesh.printNodeDefinitions()
 mesh.connectRouters()

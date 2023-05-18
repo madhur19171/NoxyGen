@@ -1,19 +1,24 @@
-# KnockGen
+# NoxyGen
 
-This is an Network On Chip netlist generator. The netlist generated is in verilog.
-This project is a part of Computer Architecture course project, IIITD, 2021.
+This is an Network On Chip netlist generator and Validation tool. The netlist generated is in SystemVerilog.
 
-## Installing and Running
+## Installing
 
-For "delay" branch
- 1. To install this program, clone this repository and it's submodules.
- 2. Make dot2hdl project and add the binary to your path. dot2hdl is a subset of Dynamatic that we have extended and use for our project.
- 3. Write a NoC description file in DOT. You can take hints from the dot files already present in the project.
- 4. In the command line, type "dot2hdl \<DotFile Name\>" . The NoC netlist along with Routing Tables will be generated.
- 5. Move the Routing tables in a folder named "RoutingTable"
- 6. Copy the library files from Verilog folder and change the routing table path in HeadFlitDecoder.v file
- 7. Use "generator" program from "tr" branch to generate a Testbench.
- 8. Write input stimuli in separate Nodes\<number>\.dat files and place them in sim/sim/INPUT_VECOTRS/ folder.
- 9. Run the testbench using iverilog/ModelSim/Vivado or any Verilog Simulator.
+ 1. Install Verilator 4.216 or later
+ 2. Run git submodule update --init --recursive
+ 3. Goto dot2hdl directory and run make
+ 4. Goto NoCVerifier Directory and run make
+
+## Running Mesh
+
+### Generating DOT File
+ 1. Goto Script folder
+ 2. Change the DIM and the other parameters to in the Mesh.py file
+ 3. Run python3 Mesh.py
+ 4. Mesh<DIM><DIM>.dot will be generated
+ 5. Move that file to the folder of your choice
+ 
+### Generating Test Vectors
+ 1. Run 
  
  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
