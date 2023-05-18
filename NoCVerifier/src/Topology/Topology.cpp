@@ -13,7 +13,6 @@ Topology::Topology() {
 	this->DATA_WIDTH = 64;
 	this->N = 0;
 	this->flitsPerPacket = 0;//This is the maximum flits alowed in a packet
-	this->phitsPerFlit = 0;
 	this->VC = 0;
 	this->connected = false;
 	this->fixedSizePackets = false;
@@ -25,19 +24,17 @@ Topology::Topology(int N) {
 	this->N = N;
 	this->DATA_WIDTH = 64;
 	this->flitsPerPacket = 0;//This is the maximum flits alowed in a packet
-	this->phitsPerFlit = 0;
 	this->VC = 0;
 	this->connected = false;
 	this->fixedSizePackets = false;
 }
 
-Topology::Topology(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC, bool fixedSizePackets) {
+Topology::Topology(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int VC, bool fixedSizePackets) {
 	// TODO Auto-generated constructor stub
 	this->topologyType = UNDEFINED_TOPOLOGY;
 	this->N = N;
 	this->DATA_WIDTH = DATA_WIDTH;
 	this->flitsPerPacket = flitsPerPacket;//This is the maximum flits alowed in a packet
-	this->phitsPerFlit = phitsPerFlit;
 	this->connected = false;
 	this->VC = VC;
 	this->nodeList = nodeList;
@@ -72,8 +69,8 @@ std::vector<std::vector<std::vector<std::vector<std::string>>>> Topology::genera
 				std::vector<std::string> packetDelay;
 				for(unsigned int l = 0; l < this->traffic[i][j][k].size(); l++){
 					if(l == 0){
-						//					packetDelay.push_back(std::to_string((rand() % maxDelay)));
-						packetDelay.push_back(std::to_string(maxDelay));
+						packetDelay.push_back(std::to_string((rand() % maxDelay)));
+						//packetDelay.push_back(std::to_string(maxDelay));
 					} else {
 						packetDelay.push_back(std::to_string(0));
 					}

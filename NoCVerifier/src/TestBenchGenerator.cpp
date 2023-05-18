@@ -12,18 +12,18 @@ TestBenchGenerator::TestBenchGenerator(){
 	this->N = 1;
 	this->DATA_WIDTH = 32;
 	this->flitsPerPacket = 16;
-	this->phitsPerFlit = 1;
 	this->VC = 1;
 	this->numberOfPacketsPerNode = 128;
+	this->simulator = "";
 }
 
-TestBenchGenerator::TestBenchGenerator(int N, int DATA_WIDTH, int flitsPerPacket, int phitsPerFlit, int VC, int numberOfPacketsPerNode){
+TestBenchGenerator::TestBenchGenerator(int N, int DATA_WIDTH, int flitsPerPacket, int VC, int numberOfPacketsPerNode, std::string simulator){
 	this->N = N;
 	this->DATA_WIDTH = DATA_WIDTH;
 	this->flitsPerPacket = flitsPerPacket;
-	this->phitsPerFlit = phitsPerFlit;
 	this->VC = VC;
 	this->numberOfPacketsPerNode = numberOfPacketsPerNode;
+	this->simulator = simulator;
 }
 
 TestBenchGenerator::~TestBenchGenerator(){
@@ -31,14 +31,19 @@ TestBenchGenerator::~TestBenchGenerator(){
 }
 
 std::string TestBenchGenerator::generateModuleName(std::string testBenchName){
-	return "module " + testBenchName + ";\n";
+	if(this->simulator != "verilator")
+		return "module " + testBenchName + ";\n";
+	else
+		return "module " + testBenchName + "(input clk, input rst);\n";
 }
 
 std::string TestBenchGenerator::generateClkRstBookKeepers(){
 	std::string ret = "";
-
-	ret += "\tlogic clk;\n";
-	ret += "\tlogic rst;\n";
+	
+	if(this->simulator != "verilator"){
+		ret += "\tlogic clk;\n";
+		ret += "\tlogic rst;\n";
+	}
 
 	ret += "\twire [" + std::to_string(this->N) + " - 1 : 0] allFlitsInjected;\n";
 	ret += "\tint totalPacketsInjected [" + std::to_string(this->N) + " - 1 : 0];\n" ;
@@ -73,7 +78,7 @@ std::string TestBenchGenerator::instantiateDUT(std::string DUTName){
 
 	ret += "\t" +  DUTName + " " + DUTName + "_tb (\n";
 
-	ret += "\t.clk(clk) .rst(rst),\n\n";
+	ret += "\t.clk(clk), .rst(rst),\n\n";
 
 	for(int i = 0; i < this->N; i++){
 		std::string nodeName = "Node" + std::to_string(i);
@@ -188,9 +193,12 @@ void TestBenchGenerator::generateTestBench(std::string testBenchName, std::strin
 	for(int i = 0; i < this->N; i++){
 		ret += instantiateNodeVerifier(i, inputVectorPath, outputVectorPath);
 	}
-
-	ret += generateAlwaysClock();
-	ret += generateInitial();
+	
+	if(this->simulator != "verilator"){	// Verilator doesn't need them
+		ret += generateAlwaysClock();
+		ret += generateInitial();
+	}
+	
 	ret += generateFinishBlock();
 	ret += generateEndmodule();
 

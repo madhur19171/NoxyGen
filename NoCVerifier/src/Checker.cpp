@@ -11,15 +11,15 @@ Checker::Checker() {
 	// TODO Auto-generated constructor stub
 }
 
-Checker::Checker(Topology topology, std::string inputDirectoryPath, std::string outputDirectoryPath) {
+Checker::Checker(Topology *topology, std::string inputDirectoryPath, std::string outputDirectoryPath) {
 	// TODO Auto-generated constructor stub
-	this->topology = topology;
+	this->topology = *topology;
 	this->inputDirectoryPath = inputDirectoryPath;
 	this->outputDirectoryPath = outputDirectoryPath;
 
-	for(int i = 0; i < topology.N; i++){
+	for(int i = 0; i < this->topology.N; i++){
 		std::vector<std::string>VCTraffic;
-		for(int j = 0; j < topology.VC; j++){
+		for(int j = 0; j < this->topology.VC; j++){
 			std::ifstream inputFile(inputDirectoryPath + "input" + std::to_string(i) + "_" + std::to_string(j));
 			std::string inputTraffic;
 			std::ostringstream inputTrafficStream;
@@ -32,9 +32,9 @@ Checker::Checker(Topology topology, std::string inputDirectoryPath, std::string 
 		inputTrafficList.push_back(VCTraffic);
 	}
 
-	for(int i = 0; i < topology.N; i++){
+	for(int i = 0; i < this->topology.N; i++){
 		std::vector<std::string>VCTraffic;
-		for(int j = 0; j < topology.VC; j++){
+		for(int j = 0; j < this->topology.VC; j++){
 			std::ifstream outputFile(outputDirectoryPath + "output" + std::to_string(i) + "_" + std::to_string(j));
 			std::string outputTraffic;
 			std::ostringstream outputTrafficStream;
@@ -53,7 +53,7 @@ Checker::~Checker() {
 }
 
 void Checker::check(bool verbose){
-	switch(topology.topologyType){
+	switch(this->topology.topologyType){
 	case MESH:
 		verbose ? checkMeshVerbose() : checkMesh();
 		break;

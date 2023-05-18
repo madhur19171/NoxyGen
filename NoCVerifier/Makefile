@@ -4,9 +4,11 @@ CFLAGS=
 CPPFLAGS=
 LDFLAGS=
 
-SRC_DIR	:=	src
-BIN_DIR	:=	bin
-BUILD_DIR	:=	build
+VERIFIER_DIR	:=	$(NOXYGEN_HOME)/NoCVerifier
+
+SRC_DIR	:=	$(VERIFIER_DIR)/src
+BIN_DIR	:=	$(VERIFIER_DIR)/bin
+BUILD_DIR	:=	$(VERIFIER_DIR)/build
 
 SOURCES	:=	$(shell find $(SRC_DIR) -name "*.cpp")	# Finds all C++ Sources
 OBJECTS	:=	$(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SOURCES))	# Gives a list of all the Object Files that will be created for sources

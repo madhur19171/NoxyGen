@@ -15,12 +15,12 @@ public:
 	int N;
 	int DATA_WIDTH;
 	int flitsPerPacket;
-	int phitsPerFlit;
 	int VC;
 	int numberOfPacketsPerNode;
+	std::string simulator;
 
 	TestBenchGenerator();
-	TestBenchGenerator(int N, int DATA_WIDTH, int flitsPerPacket, int phitsPerFlit, int VC, int numberOfPacketsPerNode);
+	TestBenchGenerator(int N, int DATA_WIDTH, int flitsPerPacket, int VC, int numberOfPacketsPerNode, std::string simulator);
 	virtual ~TestBenchGenerator();
 
 	void generateTestBench(std::string testBenchName, std::string DUTName, std::string inputVectorPath, std::string outputVectorPath);

@@ -33,7 +33,7 @@ public:
 	Topology topology;
 
 	Checker();
-	Checker(Topology topology, std::string inputDirectoryPath, std::string outputDirectoryPath);
+	Checker(Topology *topology, std::string inputDirectoryPath, std::string outputDirectoryPath);
 	virtual ~Checker();
 
 	void check(bool verbose);

@@ -1,12 +1,33 @@
 import sys
 
 DIM=5
-def_VC = 4
-def_TYPE_WIDTH = 2
-def_DATA_WIDTH = 32
-def_FIFO_DEPTH = 4
-def_HFBDepth = 4
-def_FlitPerPacket = 32
+VC = 4
+TYPE_WIDTH = 2
+DATA_WIDTH = 32
+FIFO_DEPTH = 4
+HFBDepth = 4
+FlitsPerPacket = 32
+
+for i in range(1, len(sys.argv)):
+	key = sys.argv[i][0 : sys.argv[i].find('=')]
+	value = sys.argv[i][sys.argv[i].find('=') + 1 : ]
+	if value == '':
+		continue
+	value = int(value)
+	if key == "DIM":
+		DIM = value
+	if key == "VC":
+		VC = value
+	if key == "TYPE_WIDTH":
+		TYPE_WIDTH = value
+	if key == "DATA_WIDTH":
+		DATA_WIDTH = value
+	if key == "FIFO_DEPTH":
+		FIFO_DEPTH = value
+	if key == "HFBDepth":
+		HFBDepth = value
+	if key == "FlitsPerPacket":
+		FlitsPerPacket = value
 
 class Node:
 	# connectivity will have the following structure:
@@ -15,7 +36,7 @@ class Node:
 	# using currentOutputPort of current node
 	# and nextNodeInputPort of the Next Node
 
-	def __init__(self, ID, name, DATA_WIDTH=def_DATA_WIDTH, inputs=-1, outputs=-1, FIFO_DEPTH=def_FIFO_DEPTH, VC=def_VC, FlitPerPacket=def_FlitPerPacket, TYPE_WIDTH=def_TYPE_WIDTH, HFBDepth=def_HFBDepth):
+	def __init__(self, ID, name, DATA_WIDTH=DATA_WIDTH, inputs=-1, outputs=-1, FIFO_DEPTH=FIFO_DEPTH, VC=VC, FlitsPerPacket=FlitsPerPacket, TYPE_WIDTH=TYPE_WIDTH, HFBDepth=HFBDepth):
 		self.ID = ID
 		self.name = name
 		self.DATA_WIDTH = DATA_WIDTH
@@ -23,7 +44,7 @@ class Node:
 		self.outputs = outputs
 		self.FIFO_DEPTH = FIFO_DEPTH
 		self.VC = VC
-		self.FlitPerPacket = FlitPerPacket
+		self.FlitsPerPacket = FlitsPerPacket
 		self.HFBDepth = HFBDepth
 		self.TYPE_WIDTH = TYPE_WIDTH
 		self.connectivity = {}
@@ -43,8 +64,8 @@ class Node:
 		for i in range(0, self.outputs):
 			out_str = out_str + "out" + str(i) + ":" + str(self.DATA_WIDTH) + " "
 
-		ret_str = "\"{name}\" [type = \"Router\", bbID= 1, ID= {ID}, in = \"{inp}\", out = \"{out}\", NSA=\"VC={VC} TYPE_WIDTH={TYPE_WIDTH} FlitPerPacket={FlitPerPacket} HFBDepth={HFBDepth} FIFO_DEPTH={FIFO_DEPTH}\"];".format(
-					name=self.name, ID=self.ID, inp=in_str, out=out_str, FIFO_DEPTH=self.FIFO_DEPTH, VC=self.VC, TYPE_WIDTH=self.TYPE_WIDTH, FlitPerPacket=self.FlitPerPacket, HFBDepth=self.HFBDepth)
+		ret_str = "\"{name}\" [type = \"Router\", bbID= 1, ID= {ID}, in = \"{inp}\", out = \"{out}\", NSA=\"VC:{VC} TYPE_WIDTH:{TYPE_WIDTH} FlitsPerPacket:{FlitsPerPacket} HFBDepth:{HFBDepth} FIFO_DEPTH:{FIFO_DEPTH}\"];".format(
+					name=self.name, ID=self.ID, inp=in_str, out=out_str, FIFO_DEPTH=self.FIFO_DEPTH, VC=self.VC, TYPE_WIDTH=self.TYPE_WIDTH, FlitsPerPacket=self.FlitsPerPacket, HFBDepth=self.HFBDepth)
 
 		return ret_str
 

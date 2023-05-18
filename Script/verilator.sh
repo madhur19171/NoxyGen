@@ -21,5 +21,5 @@ VCPlaneController \
 NodeVerifier \
 ${2} \
 ${3} \
---top-module ${2} --threads ${4} --trace
+--no-timing --top-module ${2} --threads ${4} --trace
 

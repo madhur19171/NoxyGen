@@ -22,8 +22,8 @@ Mesh::Mesh(int N) : Topology(N){
 	this->connected = true;//A regular Mesh will always be connected
 }
 
-Mesh::Mesh(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC, bool fixedSizePackets)
-		: Topology(N, DATA_WIDTH, nodeList, flitsPerPacket, phitsPerFlit, VC, fixedSizePackets){
+Mesh::Mesh(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int VC, bool fixedSizePackets)
+		: Topology(N, DATA_WIDTH, nodeList, flitsPerPacket, VC, fixedSizePackets){
 	this->dimX = floor(sqrt(N));
 	this->dimY = floor(sqrt(N));
 	this->topologyType = MESH;

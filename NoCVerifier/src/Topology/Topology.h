@@ -28,7 +28,6 @@ public:
 	int N;
 	int DATA_WIDTH;
 	int flitsPerPacket;
-	int phitsPerFlit;
 	int VC;
 	bool fixedSizePackets;
 	bool connected;
@@ -37,7 +36,7 @@ public:
 	std::vector<std::vector<std::vector<std::vector<std::string>>>> delay;//4D vector: VECTOR[NODE][VC][PACKET][FLIT]
 	Topology();
 	Topology(int N);
-	Topology(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int phitsPerFlit, int VC, bool fixedSizePackets);
+	Topology(int N, int DATA_WIDTH, std::vector<std::string> nodeList, int flitsPerPacket, int VC, bool fixedSizePackets);
 	virtual ~Topology();
 
 	//flag is used for extra information about the type of traffic like Mixed Critical or Hybrid-Switched
