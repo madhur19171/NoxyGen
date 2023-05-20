@@ -17,8 +17,11 @@ Checker::Checker(Topology *topology, std::string inputDirectoryPath, std::string
 	this->inputDirectoryPath = inputDirectoryPath;
 	this->outputDirectoryPath = outputDirectoryPath;
 
+	this->nodeStatus = new bool[this->topology.N];
+
 	for(int i = 0; i < this->topology.N; i++){
 		std::vector<std::string>VCTraffic;
+		this->nodeStatus[i] = true;		// Pass By Default
 		for(int j = 0; j < this->topology.VC; j++){
 			std::ifstream inputFile(inputDirectoryPath + "input" + std::to_string(i) + "_" + std::to_string(j));
 			std::string inputTraffic;
@@ -55,7 +58,7 @@ Checker::~Checker() {
 void Checker::check(bool verbose){
 	switch(this->topology.topologyType){
 	case MESH:
-		verbose ? checkMeshVerbose() : checkMesh();
+		checkMesh(verbose);
 		break;
 	case STAR:
 		checkStar();
@@ -64,68 +67,14 @@ void Checker::check(bool verbose){
 	}
 }
 
-void Checker::checkMesh(){
-
+void Checker::checkMeshNode(int node, bool verbose){
 	int dimX, dimY;
 	dimX = floor(sqrt(this->topology.N));
 	dimY = dimX;
 	int REPRESENTATION_BITS = ceil(log2(dimX));
 
-	for(int i = 0; i < this->topology.N; i++){
-		bool nodeFailed = false;
-		for(int j = 0; j < this->topology.VC; j++){
-			std::stringstream inputTrafficStream;
-			inputTrafficStream << inputTrafficList[i][j];
-			int flit;
-			//		std::cout << inputTrafficList[i] << std::endl;
-			while(!inputTrafficStream.eof()){
-				std::string flitString;
-				inputTrafficStream >> flitString;
-				if(flitString.size() != 10){
-					continue;
-				}
-				//				std::cout << flitString << std::endl;
-				flit = std::stoul(flitString, nullptr, 16);
-				//			int srcX, srcY;
-
-				int destX, destY;
-				if(((flit >> 30) == 1) || (flit >> 30) == -1){//Head Flit or Tail Flit
-					destY = flit & ((1 << REPRESENTATION_BITS) - 1);
-					destX = (flit >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
-					//				srcX = (flit >> 8) & 0xf;
-					//				srcY = (flit >> 12) & 0xf;
-				} else{
-					destY = (flit >> 4) & ((1 << REPRESENTATION_BITS) - 1);
-					destX = (flit >> (4 + REPRESENTATION_BITS)) & ((1 << REPRESENTATION_BITS) - 1);
-					//				srcX = (flit >> 12) & 0xf;
-					//				srcY = (flit >> 16) & 0xf;
-				}
-				int destinationNode = destX + destY * dimX;
-				//				std::cout << destinationNode << std::endl;
-				if(outputTrafficList[destinationNode][j].find(flitString) == std::string::npos){
-					std::cout << "Failed at Node " << i << "\tVC: " << j << "\tFlit:" << flitString << std::endl;
-					nodeFailed |= true;
-					return;
-				}
-			}
-		}
-		if(nodeFailed)
-			std::cout << "Node" << i << " Failed" << std::endl;
-		else
-			std::cout << "Node" << i << " Passed" << std::endl;
-	}
-}
-
-//Bugged!
-void Checker::checkMeshVerbose(){
-
-	int dimX, dimY;
-	dimX = floor(sqrt(this->topology.N));
-	dimY = dimX;
-	int REPRESENTATION_BITS = ceil(log2(dimX));
-
-	for(int i = 0; i < this->topology.N; i++){
-		bool nodeFailed = false;
+	int i = node;
+	bool nodeFailed = false;
 		for(int j = 0; j < this->topology.VC; j++){
 			std::stringstream inputTrafficStream;
 			inputTrafficStream << inputTrafficList[i][j];
@@ -156,31 +105,67 @@ void Checker::checkMeshVerbose(){
 				int destinationNode = destX + destY * dimX;
 				int destinationVC = j;
 				//			std::cout << destinationNode << std::endl;
-				int foundNode = -1;
-				int foundVC = -1;
-				for(int k = 0; k < this->topology.N; k++){
-					for(int l = 0; l < this->topology.VC; l++){
-						if(outputTrafficList[k][l].find(flitString) != std::string::npos){
-							foundNode = k;
-							foundVC = l;
-							break;
-						}
+
+				if(!verbose){
+					if(outputTrafficList[destinationNode][j].find(flitString) == std::string::npos){
+						std::cout << "Failed at Node " << i << "\tVC: " << j << "\tFlit:" << flitString << std::endl;
+						nodeFailed |= true;
+						return;
 					}
 				}
-				//				std::cout << "Destination Node: " << destinationNode << "\tDestination VC: " << destinationVC << "\tFound Node: " << foundNode << "\tFound VC: " << foundVC << std::endl;
-				if(!(foundNode == destinationNode && foundVC == destinationVC)){
-					if(foundNode == -1 && foundVC == -1)
-						std::cout << "Flit: " << flitString << " did not reach it's destination" << std::endl;
-					else
-						std::cout << "Flit: " << flitString << " misrouted to Node " << foundNode << " on VC " << foundVC << std::endl;
-					nodeFailed |= true;
+				else{
+					int foundNode = -1;
+					int foundVC = -1;
+
+					if(outputTrafficList[destinationNode][j].find(flitString) != std::string::npos){
+						foundNode = destinationNode;
+						foundVC = j;
+					} else {
+						for(int k = 0; k < this->topology.N; k++){
+							for(int l = 0; l < this->topology.VC; l++){
+								if(outputTrafficList[k][l].find(flitString) != std::string::npos){
+									foundNode = k;
+									foundVC = l;
+									break;
+								}
+							}
+						}
+					}
+
+					if(!(foundNode == destinationNode && foundVC == destinationVC)){
+						if(foundNode == -1 && foundVC == -1)
+							std::cout << "Flit: " << flitString << " did not reach it's destination" << std::endl;
+						else
+							std::cout << "Flit: " << flitString << " misrouted" << \
+									"\t Source Node: " << i << "\tSource VC: " << j << \
+									"\tExpected Destination: " << destinationNode << "\tExpected VC: " << destinationVC << \
+									"\tFound Node: " << foundNode << "\tFound VC: " << foundVC << \
+								std::endl;
+						nodeFailed |= true;
+					}
 				}
 			}
 		}
 		if(nodeFailed)
-			std::cout << "Node" << i << " Failed" << std::endl;
-		else
+			this->nodeStatus[i] = false;
+}
+
+// Checking is Multithreaded!!!!!!
+// Shoutout to Prof. Vivek Kumar, IIITD
+void Checker::checkMesh(bool verbose){
+	std::vector<std::thread> checkThreads;
+
+	for(int i = 0; i < topology.N; i++){
+		checkThreads.push_back(std::thread(&Checker::checkMeshNode, this, i, verbose));
+	}
+
+	for (auto& t: checkThreads) t.join();
+
+	for(int i = 0; i < topology.N; i++){
+		if(nodeStatus[i])
 			std::cout << "Node" << i << " Passed" << std::endl;
+		else
+			std::cout << "Node" << i << " Failed" << std::endl;
 	}
 }
 

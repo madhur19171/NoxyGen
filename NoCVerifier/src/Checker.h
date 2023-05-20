@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <thread>
 #include "definitions.h"
 #include "Topology/Topology.h"
 
@@ -41,8 +42,9 @@ public:
 private:
 	std::vector<std::vector<std::string>> inputTrafficList;//2D Vector of Input Traffic[Node][VC]
 	std::vector<std::vector<std::string>> outputTrafficList;//2D Vector of Output Traffic[Node][VC]
-	void checkMesh();
-	void checkMeshVerbose();
+	bool * nodeStatus;
+	void checkMesh(bool verbose);
+	void checkMeshNode(int node, bool verbose);
 
 	void checkStar();
 	void checkStarVerbose();

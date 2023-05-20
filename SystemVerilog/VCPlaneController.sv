@@ -92,7 +92,7 @@ module VCPlaneController
 	end
 	
 	always_comb begin
-		if(counter == 3)
+		if(counter == (VC - 1))
 			counterNext = 0;
 		else
 			counterNext = counter + 1;

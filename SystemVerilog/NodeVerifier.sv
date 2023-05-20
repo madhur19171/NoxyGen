@@ -67,14 +67,14 @@ module NodeVerifier #(	parameter N = 4,
 	int DIM = $sqrt(N);
 	int REPRESENTATION_BITS = $clog2(DIM);
 	
-	int destinationX;
-	int destinationY;
-	int messageNumberInject;
-	int destination;
-	int sourceX;
-	int sourceY;
-	int messageNumberEject;
-	int source;
+	int destinationX [VC - 1 : 0];
+	int destinationY [VC - 1 : 0];
+	int messageNumberInject [VC - 1 : 0];
+	int destination [VC - 1 : 0];
+	int sourceX ;
+	int sourceY ;
+	int messageNumberEject ;
+	int source ;
 	
 	VCPlaneController #(.VC(VC)) vcPlaneController (.clk(clk), .rst(rst), .VCPlaneSelectorCFSM(currentVC));
 	
@@ -169,20 +169,23 @@ module NodeVerifier #(	parameter N = 4,
 					data_out_VC[currentVC] = inputVectors[currentVC][flitsInjected[currentVC]];
 					valid_out_VC[currentVC] = 1;
 					injecting[currentVC] = 1;
-					injectionTime[currentVC] = clockCycles;
+					if(isHeadFlit(data_out)) begin	// // Packet Injection Starts when the Head is valid to enter NI Buffer
+						injectionTime[currentVC] = clockCycles;
+						destinationX[currentVC] = data_out & ((1 << REPRESENTATION_BITS) - 1);
+						destinationY[currentVC] = (data_out >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
+						messageNumberInject[currentVC] = (data_out >> 4 * REPRESENTATION_BITS) & messageNumberMask;
+						destination[currentVC] = DIM * destinationY[currentVC] + destinationX[currentVC];
+					end
 				end else begin 
 					if(valid_out & ready_out) begin
 						valid_out_VC[currentVC] = 0;	//Flit is injected
 						injecting[currentVC] = 0;
 						injected[currentVC] = 1;
 						timeSinceInjection[currentVC] = 0;
-						flitsInjected[currentVC]++;
-						if(isHeadFlit(data_out)) begin
-							destinationX = data_out & ((1 << REPRESENTATION_BITS) - 1);
-							destinationY = (data_out >> REPRESENTATION_BITS) & ((1 << REPRESENTATION_BITS) - 1);
-							messageNumberInject = (data_out >> 4 * REPRESENTATION_BITS) & messageNumberMask;
-							destination = DIM * destinationY + destinationX;
-							$display("Node%0d: Message: %0d Destination: %0d Injection_Time: %0d Departure_Time: %0d VC: %0d", INDEX, messageNumberInject, destination, injectionTime[currentVC], clockCycles, currentVC);
+						flitsInjected[currentVC]++;	// Here, flit level injection is taken care of
+						
+						if (isTailFlit(data_out)) begin	// Packet Injection Ends when the Tail enters NI Buffer
+							$display("Node%0d: Message: %0d Destination: %0d Injection_Time: %0d Departure_Time: %0d VC: %0d", INDEX, messageNumberInject[currentVC], destination[currentVC], injectionTime[currentVC], clockCycles, currentVC);
 							injectionTime[currentVC] = 0;
 							packetsInjected[currentVC]++;
 						end

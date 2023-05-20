@@ -1,7 +1,7 @@
 CC=gcc
 CXX=g++
 CFLAGS=
-CPPFLAGS=
+CPPFLAGS= -pthread
 LDFLAGS=
 
 VERIFIER_DIR	:=	$(NOXYGEN_HOME)/NoCVerifier
