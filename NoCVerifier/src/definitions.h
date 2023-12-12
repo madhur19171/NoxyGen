@@ -12,7 +12,8 @@ enum TopologyType {
 	UNDEFINED_TOPOLOGY = -1,
 	MESH = 0,
 	STAR = 1,
-	IRREGULAR = 2
+	IRREGULAR = 2,
+	TORUS=3
 };
 
 enum TrafficType{

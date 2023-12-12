@@ -138,6 +138,11 @@ int main(int argc, char *argv[]){
 	if(topologyType == MESH){
 		topology = new Mesh(N, DATA_WIDTH, nodeList, flitsPerPacket, VC, fixedSizePackets);
 	}
+	
+	// All software aspects of Mesh and Torus are the same
+	if(topologyType == TORUS){
+		topology = new Mesh(N, DATA_WIDTH, nodeList, flitsPerPacket, VC, fixedSizePackets);
+	}
 
 	TestBenchGenerator testBenchGenerator (N, DATA_WIDTH, flitsPerPacket, VC, numberOfPacketsPerNode, simulator);
 
@@ -147,6 +152,12 @@ int main(int argc, char *argv[]){
 
 	if(generateTrafficFiles){
 		if(topologyType == MESH){	// TODO: Add other topologies as well!
+			Mesh *mesh = (Mesh *) topology;
+			mesh->generateTrafficFiles(inputVectorDir,
+					numberOfPacketsPerNode, trafficType, maxDelay, 0);
+		}
+		
+		if(topologyType == TORUS){	// TODO: Add other topologies as well!
 			Mesh *mesh = (Mesh *) topology;
 			mesh->generateTrafficFiles(inputVectorDir,
 					numberOfPacketsPerNode, trafficType, maxDelay, 0);

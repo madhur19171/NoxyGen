@@ -57,6 +57,16 @@ ifeq "$(TOPOLOGY)" "MESH"
 					HFBDepth=$(HFBDepth) \
 					FlitsPerPacket=$(FlitsPerPacket)
 endif
+					
+ifeq "$(TOPOLOGY)" "TORUS"
+		$(PYTHON) $(SCRIPT_DIR)/Torus.py DIM=$(DIM) \
+					VC=$(VC) \
+					TYPE_WIDTH=$(TYPE_WIDTH) \
+					DATA_WIDTH=$(DATA_WIDTH) \
+					FIFO_DEPTH=$(FIFO_DEPTH) \
+					HFBDepth=$(HFBDepth) \
+					FlitsPerPacket=$(FlitsPerPacket)
+endif
 	
 	mv *.dot $(EXAMPLES_DIR)/$(DESIGN_NAME)/dot/
 	
